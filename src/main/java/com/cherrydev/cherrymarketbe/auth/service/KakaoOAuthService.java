@@ -27,6 +27,7 @@ import java.util.Objects;
 import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.LOCAL;
 import static com.cherrydev.cherrymarketbe.account.enums.UserRole.ROLE_CUSTOMER;
 import static com.cherrydev.cherrymarketbe.auth.constants.OAuthConstant.*;
+import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.jwt.JwtProvider.*;
 

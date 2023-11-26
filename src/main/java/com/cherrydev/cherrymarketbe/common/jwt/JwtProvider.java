@@ -26,6 +26,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 
 
@@ -37,11 +38,6 @@ public class JwtProvider {
 
     private final RedisService redisService;
     private final AccountDetailsServiceImpl accountDetailsServiceImpl;
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String AUTHORIZATION_KEY = "auth";
-    public static final String BEARER_PREFIX = "Bearer ";
-    public static final long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 30; // 30분
-    public static final long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 24 * 7 * 2; // 2주
 
     @Value("${spring.jwt.secretKey}")
     private String secretKey;

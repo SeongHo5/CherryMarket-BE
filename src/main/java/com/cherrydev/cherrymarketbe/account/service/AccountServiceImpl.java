@@ -30,9 +30,8 @@ import java.util.Arrays;
 import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.*;
 import static com.cherrydev.cherrymarketbe.account.enums.UserRole.ROLE_CUSTOMER;
 import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.*;
+import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
-import static com.cherrydev.cherrymarketbe.common.jwt.JwtAuthFilter.BLACK_LIST_KEY_PREFIX;
-import static com.cherrydev.cherrymarketbe.common.jwt.JwtProvider.*;
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRandomCode;
 import static org.springframework.beans.propertyeditors.CustomBooleanEditor.VALUE_TRUE;
 

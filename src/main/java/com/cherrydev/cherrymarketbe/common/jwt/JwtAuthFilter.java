@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.BLACK_LIST_KEY_PREFIX;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.BLACKLISTED_TOKEN;
 import static com.cherrydev.cherrymarketbe.common.log.CherryLogger.logRequestInfo;
 
@@ -28,8 +29,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
-
-    public static final String BLACK_LIST_KEY_PREFIX = "JWT::BLACK_LIST::";
 
     protected void doFilterInternal(
             HttpServletRequest request,
