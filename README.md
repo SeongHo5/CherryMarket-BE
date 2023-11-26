@@ -2,6 +2,8 @@
 
 ![main.png](./docs/main.png)
 
+![develop-CI](https://github.com/SeongHo5/CherryMarket-BE/actions/workflows/develop-CI.yml/badge.svg)
+
 ## 🔎 서비스 개요
 
 **🍒체리 마켓🍒**은 다양한 식품을 온라인으로 쉽게 구매할 수 있는 e-Commerce 웹 서비스입니다.
