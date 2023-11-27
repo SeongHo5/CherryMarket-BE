@@ -17,7 +17,7 @@ public enum UserRole {
         return this.authority;
     }
 
-    public static class Authority {
+    private static class Authority {
         public static final String ROLE_CUSTOMER = "ROLE_CUSTOMER";
         public static final String ROLE_SELLER = "ROLE_SELLER";
         public static final String ROLE_MANAGER = "ROLE_MANAGER";
