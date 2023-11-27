@@ -75,7 +75,7 @@ public class KakaoOAuthService implements OAuthService {
 
     @Override
     @Transactional
-    public ResponseEntity<?> signOut(
+    public ResponseEntity<Void> signOut(
             final AccountDetails accountDetails
     ) {
         String email = accountDetails.getUsername();

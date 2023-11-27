@@ -17,4 +17,8 @@ public final class EmailConstant {
     public static final Long VERIFICATION_CODE_EXPIRE_TIME = 60 * 3L; // 3분
     public static final Long WHITE_LIST_VERIFIED_TIME = 60 * 60 * 24L; // 1일
 
+    private EmailConstant() {
+        throw new IllegalStateException("유틸리티 클래스는 인스턴스화할 수 없습니다.");
+    }
+
 }

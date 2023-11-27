@@ -1,6 +1,5 @@
 package com.cherrydev.cherrymarketbe.auth.controller;
 
-import com.cherrydev.cherrymarketbe.account.service.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.*;
 import com.cherrydev.cherrymarketbe.auth.service.AuthServiceImpl;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtReissueResponseDto;

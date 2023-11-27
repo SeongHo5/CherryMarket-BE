@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Rollback
-public class AccountControllerTest {
+class AccountControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -26,7 +26,7 @@ public class AccountControllerTest {
     @Test
     @Transactional
     @WithAnonymousUser
-    public void 회원가입_Request_성공() throws Exception {
+    void 회원가입_Request_성공() throws Exception {
         // Given
         SignUpRequestDto signUpRequestDto = AccountFactory.createSignUpRequestDtoA();
         String requestBody = Jackson.toJsonString(signUpRequestDto);

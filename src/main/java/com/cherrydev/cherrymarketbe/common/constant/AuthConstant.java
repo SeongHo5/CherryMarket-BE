@@ -19,4 +19,8 @@ public final class AuthConstant {
     public static final String OAUTH_KAKAO_PREFIX = "OAUTH::KAKAO::";
     public static final String OAUTH_KAKAO_REFRESH_PREFIX = "OAUTH::KAKAO::REFRESH::";
     public static final String OAUTH_KAKAO_GRANT_TYPE = "authorization_code";
+
+    private AuthConstant() {
+        throw new IllegalStateException("유틸리티 클래스는 인스턴스화할 수 없습니다.");
+    }
 }

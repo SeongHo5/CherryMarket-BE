@@ -21,7 +21,7 @@ public class NaverOAuthService implements OAuthService {
     }
 
     @Override
-    public ResponseEntity<?> signOut(AccountDetails accountDetails) {
+    public ResponseEntity<Void> signOut(AccountDetails accountDetails) {
         return null;
     }
 }

@@ -40,7 +40,7 @@ public class FileService {
      * @param multipartFile 업로드할 파일(이미지만 가능)
      * @param dirName       업로드할 디렉토리 이름
      */
-    public void uploadSingleFile(MultipartFile multipartFile, String dirName) {
+    public String uploadSingleFile(MultipartFile multipartFile, String dirName) {
         checkFileExist(multipartFile);
         checkFileFormat(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         checkFileSizeLimit(multipartFile.getSize());
@@ -52,7 +52,7 @@ public class FileService {
 
         String fileName = dirName + DIRECTORY_SEPARATOR + multipartFile.getOriginalFilename();
         try {
-            String uploadImageUrl = putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
+            return putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
         } catch (IOException e) {
             throw new ServiceFailedException(FAILED_TO_UPLOAD_FILE);
         }
@@ -64,7 +64,7 @@ public class FileService {
      * @param multipartFiles 업로드할 파일(이미지만 가능)
      * @param dirName        업로드할 디렉토리 이름
      */
-    public void uploadMultipleFiles(List<MultipartFile> multipartFiles, String dirName) {
+    public String uploadMultipleFiles(List<MultipartFile> multipartFiles, String dirName) {
 
         checkFileExist(multipartFiles);
 
@@ -86,11 +86,12 @@ public class FileService {
 
             String fileName = dirName + DIRECTORY_SEPARATOR + multipartFile.getOriginalFilename();
             try {
-                String uploadImageUrl = putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
+                return putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
             } catch (IOException e) {
                 throw new ServiceFailedException(FAILED_TO_UPLOAD_FILE);
             }
         }
+        return null;
     }
 
     public void deleteSingleFile(String url, String dirName) {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRandomCode;
+import static jakarta.mail.Message.RecipientType.TO;
 
 
 @Service
@@ -33,7 +34,7 @@ public class EmailService {
         MimeMessage message = emailSender.createMimeMessage();
 
         try {
-            message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress(recipient));
+            message.addRecipient(TO, new InternetAddress(recipient));
             message.setSubject(subject, ENCODING_CHARSET);
             message.setText(content, ENCODING_CHARSET, MAILER_SUBTYPE);
         } catch (MessagingException e) {

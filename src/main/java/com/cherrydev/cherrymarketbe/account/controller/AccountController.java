@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountServiceImpl accountServiceImpl;
-//    private final CreditService creditService;
 
     /**
      * 회원가입
@@ -53,29 +52,5 @@ public class AccountController {
     ) {
         accountServiceImpl.deleteAccount(accountDetails);
     }
-
-//    /**
-//     * 적립금(크레딧) 추가
-//     */
-//    @PostMapping("/add-credit")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void addCredit(
-//            final @RequestBody CreditRequestDto creditRequestDto
-//    ) {
-//        creditService.addCredit(creditRequestDto);
-//    }
-//
-//    /**
-//     * 내 적립금 조회
-//     * @param accountDetails 로그인한 사용자 정보
-//     * @return 적립금 정보(총/사용완료/사용가능/만료)
-//     */
-//    @GetMapping("/get-credit")
-//    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-//    public ResponseEntity<CustomerCreditSummaryDto> getCredit(
-//            final @AuthenticationPrincipal AccountDetails accountDetails
-//    ) {
-//        return creditService.getCreditAmounts(accountDetails);
-//    }
 
 }

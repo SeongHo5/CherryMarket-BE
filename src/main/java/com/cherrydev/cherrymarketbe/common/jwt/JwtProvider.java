@@ -42,7 +42,7 @@ public class JwtProvider {
     @Value("${spring.jwt.secretKey}")
     private String secretKey;
     private Key key;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     // secretKey를 Base64로 인코딩
     @PostConstruct

@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
-public class AccountServiceTest {
+class AccountServiceTest {
 
     @InjectMocks
     AccountServiceImpl accountService;
@@ -42,7 +42,7 @@ public class AccountServiceTest {
 
 
     @Test
-    public void 회원가입_이메일중복() {
+    void 회원가입_이메일중복() {
         // Given
         SignUpRequestDto signUpRequestDto = AccountFactory.createSignUpRequestDtoA();
 
@@ -58,7 +58,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void 회원가입_금지된_이름() {
+    void 회원가입_금지된_이름() {
         // Given
         SignUpRequestDto signUpRequestDto = AccountFactory.createSignUpRequestDtoB();
 
@@ -71,7 +71,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void 로그인_실패_없는_사용자() {
+    void 로그인_실패_없는_사용자() {
         // Given
         SignInRequestDto signInRequestDto = new SignInRequestDto(
                 "test1@example.com",
@@ -90,7 +90,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void 로그인_실패_이용제한된_사용자() {
+    void 로그인_실패_이용제한된_사용자() {
         // Given
         SignInRequestDto signInRequestDto = new SignInRequestDto(
                 "test1@example.com",
@@ -111,7 +111,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void 로그인_실패_탈퇴한_사용자() {
+    void 로그인_실패_탈퇴한_사용자() {
         // Given
         SignInRequestDto signInRequestDto = new SignInRequestDto(
                 "test1@example.com",
@@ -131,7 +131,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void 내_정보_보기() {
+    void 내_정보_보기() {
         // Given
         Account account = AccountFactory.createAccountA();
 
