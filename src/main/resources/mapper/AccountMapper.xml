@@ -22,6 +22,12 @@
     </resultMap>
 
     <!--    SELECT-->
+    <select id="findByaccountId" resultMap="accountMap">
+        select *
+        from ACNT
+        where ACNT_ID = #{accountId}
+    </select>
+
     <select id="findByEmail" resultMap="accountMap">
         select *
         from ACNT

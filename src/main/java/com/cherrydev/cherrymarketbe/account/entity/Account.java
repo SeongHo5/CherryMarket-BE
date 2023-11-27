@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.beans.Transient;
+import java.io.Serial;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 

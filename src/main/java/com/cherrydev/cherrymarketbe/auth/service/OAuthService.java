@@ -9,5 +9,5 @@ public interface OAuthService {
 
     public ResponseEntity<SignInResponseDto> signIn(final OAuthRequestDto oAuthRequestDto);
 
-    public ResponseEntity<?> signOut(final AccountDetails accountDetails);
+    public ResponseEntity<Void> signOut(final AccountDetails accountDetails);
 }

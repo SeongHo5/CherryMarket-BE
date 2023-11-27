@@ -5,6 +5,10 @@ import java.time.format.DateTimeFormatter;
 
 public class TimeFormatter {
 
+    private TimeFormatter() {
+        throw new IllegalStateException("유틸리티 클래스는 인스턴스화할 수 없습니다.");
+    }
+
     /**
      * LocalDate를 String으로 변환
      */

@@ -45,16 +45,42 @@ jobs:
             echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./application.properties
         shell: bash
 
-      - name: Build & Test with Gradle
-        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
         with:
-          arguments: clean build
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
 
-      - name: Comment test result to PR
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Build & Test with Gradle
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew build sonar --info
+
+      - name: Add comment test result to PR
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
+
+      - name: Add coverage comment to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          title: 📝 Code Coverage Report
+          paths: |
+            ${{ github.workspace }}/**/build/reports/jacoco/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 40
+          min-coverage-changed-files: 60
 
       - name: Add comment when test failed
         uses: mikepenz/action-junit-report@v3

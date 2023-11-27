@@ -26,10 +26,8 @@ import java.util.Objects;
 
 import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.LOCAL;
 import static com.cherrydev.cherrymarketbe.account.enums.UserRole.ROLE_CUSTOMER;
-import static com.cherrydev.cherrymarketbe.auth.constants.OAuthConstant.*;
 import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
-import static com.cherrydev.cherrymarketbe.common.jwt.JwtProvider.*;
 
 
 @Slf4j
@@ -77,7 +75,7 @@ public class KakaoOAuthService implements OAuthService {
 
     @Override
     @Transactional
-    public ResponseEntity<?> signOut(
+    public ResponseEntity<Void> signOut(
             final AccountDetails accountDetails
     ) {
         String email = accountDetails.getUsername();
@@ -93,7 +91,6 @@ public class KakaoOAuthService implements OAuthService {
     /**
      * 사용자가 로컬 계정으로 이미 가입되어 있는지 확인한다.
      */
-    @Transactional
     public void checkIfAccountLocallyRegistered(final OAuthAccountInfoDto accountInfo) {
         String email = accountInfo.getEmail();
         if (accountRepository.existByEmailAndRegistType(email, LOCAL)) {

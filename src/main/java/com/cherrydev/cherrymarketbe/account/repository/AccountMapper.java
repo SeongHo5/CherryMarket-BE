@@ -13,12 +13,12 @@ public interface AccountMapper {
 
     void delete(Account account);
 
+    Optional<Account> findByaccountId(Long id);
+
     Optional<Account> findByEmail(String email);
 
     boolean existByEmailAndRegistType(String email, RegisterType registType);
 
     boolean existByEmail(String email);
-
-
 
 }

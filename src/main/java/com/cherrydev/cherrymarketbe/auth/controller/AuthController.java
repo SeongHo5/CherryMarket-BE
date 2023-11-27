@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.auth.controller;
 
-import com.cherrydev.cherrymarketbe.account.service.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.*;
+import com.cherrydev.cherrymarketbe.auth.service.AuthServiceImpl;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtReissueResponseDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.service.EmailService;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AccountServiceImpl accountServiceImpl;
+    private final AuthServiceImpl authServiceImpl;
     private final EmailService emailService;
 
     /**
@@ -30,7 +30,7 @@ public class AuthController {
     public ResponseEntity<SignInResponseDto> signIn(
             final @Valid @RequestBody SignInRequestDto signInRequestDto
     ) {
-        return accountServiceImpl.signIn(signInRequestDto);
+        return authServiceImpl.signIn(signInRequestDto);
     }
 
     /**
@@ -42,7 +42,7 @@ public class AuthController {
     public void signOut(
             final @RequestBody JwtRequestDto jwtRequestDto
     ) {
-        accountServiceImpl.signOut(jwtRequestDto);
+        authServiceImpl.signOut(jwtRequestDto);
     }
 
     /**
@@ -52,7 +52,7 @@ public class AuthController {
     public ResponseEntity<JwtReissueResponseDto> reissue(
             final @RequestBody JwtRequestDto jwtRequestDto
             ) {
-        return accountServiceImpl.reissue(jwtRequestDto);
+        return authServiceImpl.reissue(jwtRequestDto);
     }
 
     /**
