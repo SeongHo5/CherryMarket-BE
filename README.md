@@ -10,6 +10,8 @@
 
 고객들은 맛과 품질에 중점을 둔 광범위한 식품 선택을 통해 쇼핑할 수 있으며, 키워드 검색 기능을 통해 원하는 상품을 빠르게 찾을 수 있습니다.
 
+["CherryMarket" 프론트엔드 Repository 보기](https://github.com/SeongHo5/CherryMarket-FE)
+
 ---
 
 ## 👥 팀원 소개
