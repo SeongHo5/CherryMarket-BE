@@ -31,7 +31,7 @@ public class FileService {
     private final String bucket = "myvelog";
     private final static String[] SUPPORTED_IMAGE_FORMAT = {"jpg", "jpeg", "png"};
     private final static int FILE_LIMIT_MAX_COUNT = 3;
-    private final static long FILE_LIMIT_MAX_SIZE = 3 * 1024 * 1024; // 3MB
+    private final static long FILE_LIMIT_MAX_SIZE = 3L * 1024 * 1024; // 3MB
 
     /**
      * 단일 파일 업로드
