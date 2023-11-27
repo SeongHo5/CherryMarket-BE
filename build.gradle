@@ -16,7 +16,7 @@ java {
 }
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = "0.8.8"
 }
 
 sonar {
@@ -95,14 +95,11 @@ dependencies {
 tasks.named('test') {
     outputs.dir snippetsDir
     useJUnitPlatform()
-
 }
 
 jacocoTestReport {
-    dependsOn test
+    dependsOn(test)
 }
-
-
 
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
