@@ -65,11 +65,22 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew build sonar --info
 
-      - name: Comment test result to PR
+      - name: Add comment test result to PR
         uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
         with:
           files: '**/build/test-results/test/TEST-*.xml'
+
+      - name: Add coverage comment to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.6.1
+        with:
+          title: 📝 Code Coverage Report
+          path: |
+            ${{ github.workspace }}/**/build/reports/jacoco/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 40
+          min-coverage-changed-files: 60
 
       - name: Add comment when test failed
         uses: mikepenz/action-junit-report@v3
