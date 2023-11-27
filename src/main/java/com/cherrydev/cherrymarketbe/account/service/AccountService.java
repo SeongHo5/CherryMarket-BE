@@ -21,14 +21,4 @@ public interface AccountService {
 
     ResponseEntity<AccountInfoDto> getAccountInfo(final @AuthenticationPrincipal AccountDetails accountDetails);
 
-    ResponseEntity<SignInResponseDto> signIn(final SignInRequestDto signInRequestDto);
-
-    void signOut(final JwtRequestDto jwtRequestDto);
-
-     ResponseEntity<JwtReissueResponseDto> reissue(
-            final JwtRequestDto jwtRequestDto
-    );
-
-
-
 }
