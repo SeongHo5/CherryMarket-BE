@@ -91,7 +91,6 @@ public class KakaoOAuthService implements OAuthService {
     /**
      * 사용자가 로컬 계정으로 이미 가입되어 있는지 확인한다.
      */
-    @Transactional
     public void checkIfAccountLocallyRegistered(final OAuthAccountInfoDto accountInfo) {
         String email = accountInfo.getEmail();
         if (accountRepository.existByEmailAndRegistType(email, LOCAL)) {
