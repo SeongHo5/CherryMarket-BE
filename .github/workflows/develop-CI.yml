@@ -76,8 +76,7 @@ jobs:
         uses: madrapps/jacoco-report@v1.6.1
         with:
           title: 📝 Code Coverage Report
-          paths: |
-            ${{ github.workspace }}/**/build/reports/jacoco/jacocoTestReport.xml
+          paths: ${{ github.workspace }}/**/build/reports/jacoco/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 40
           min-coverage-changed-files: 60
@@ -94,7 +93,7 @@ jobs:
         with:
           status: ${{ job.status }}
           author_name: <BackEnd-CI> Build & Test Failed
-          fields: repo, message, commit, author, action, eventName, ref, workflow, job, took
+          fields: repo, message, commit, author, action, eventName, workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: failure()
