@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 @Rollback
-@ActiveProfiles("dev")
 @AutoConfigureMockMvc
 @SpringBootTest
 class AccountControllerTest {
