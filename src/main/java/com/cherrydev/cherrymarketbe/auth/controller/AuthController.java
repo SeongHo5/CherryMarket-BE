@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authServiceImpl;
+    private final AuthServiceImpl authService;
     private final EmailService emailService;
 
     /**
@@ -30,7 +30,7 @@ public class AuthController {
     public ResponseEntity<SignInResponseDto> signIn(
             final @Valid @RequestBody SignInRequestDto signInRequestDto
     ) {
-        return authServiceImpl.signIn(signInRequestDto);
+        return authService.signIn(signInRequestDto);
     }
 
     /**
@@ -42,7 +42,7 @@ public class AuthController {
     public void signOut(
             final @RequestBody JwtRequestDto jwtRequestDto
     ) {
-        authServiceImpl.signOut(jwtRequestDto);
+        authService.signOut(jwtRequestDto);
     }
 
     /**
@@ -52,7 +52,7 @@ public class AuthController {
     public ResponseEntity<JwtReissueResponseDto> reissue(
             final @RequestBody JwtRequestDto jwtRequestDto
             ) {
-        return authServiceImpl.reissue(jwtRequestDto);
+        return authService.reissue(jwtRequestDto);
     }
 
     /**
@@ -67,4 +67,30 @@ public class AuthController {
     ) {
         emailService.sendVerificationMail(email);
     }
+
+    /**
+     * 비밀번호 재설정 이메일 발송
+     * @param email 메일 보낼 주소
+     */
+    @PostMapping("/send-reset-email")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendPasswordResetEmail(
+            final @Email @RequestParam String email
+    ) {
+        emailService.sendPasswordResetMail(email);
+    }
+
+    /**
+     * 비밀번호 재설정 확인
+     * @param verificationCode 인증 코드
+     */
+    @GetMapping("/verify-reset-email")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> verifyPasswordResetEmail(
+            final @RequestParam String email,
+            final @RequestParam String verificationCode
+    ) {
+        return authService.verifyPasswordResetEmail(email, verificationCode);
+    }
+
 }
