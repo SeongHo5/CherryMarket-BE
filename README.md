@@ -12,6 +12,8 @@
 
 ["CherryMarket" 프론트엔드 Repository 보기](https://github.com/SeongHo5/CherryMarket-FE)
 
+["CherryMarket" API 문서 보기](https://app.gitbook.com/o/TNBcX6l2BZaEI1edsewh/s/kNT5qahMOhsyWOaZgLfw/)
+
 ---
 
 ## 👥 팀원 소개
