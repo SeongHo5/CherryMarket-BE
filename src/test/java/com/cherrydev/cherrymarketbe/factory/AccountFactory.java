@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.factory;
 
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 
 import java.time.LocalDate;
 

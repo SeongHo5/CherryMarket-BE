@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.account;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.auth.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 import com.cherrydev.cherrymarketbe.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +9,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-
-@SpringBootTest
-@AutoConfigureMockMvc
 @Rollback
+@ActiveProfiles("dev")
+@AutoConfigureMockMvc
+@SpringBootTest
 class AccountControllerTest {
 
     @Autowired
@@ -35,6 +37,14 @@ class AccountControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "admin@devcherry.com")
+    void 내정보_조회_성공() throws Exception {
+        // Given
+
     }
 
 
