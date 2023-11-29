@@ -1,10 +1,7 @@
 package com.cherrydev.cherrymarketbe.account.controller;
 
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.dto.AccountInfoDto;
-import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
+import com.cherrydev.cherrymarketbe.account.dto.*;
 import com.cherrydev.cherrymarketbe.account.service.AccountServiceImpl;
-import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/account")
 public class AccountController {
 
-    private final AccountServiceImpl accountServiceImpl;
+    private final AccountServiceImpl accountService;
 
     /**
      * 회원가입
@@ -28,7 +25,7 @@ public class AccountController {
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public void signUp(final @Valid @RequestBody SignUpRequestDto signUpRequestDto) {
-        accountServiceImpl.createAccount(signUpRequestDto);
+        accountService.createAccount(signUpRequestDto);
     }
 
     /**
@@ -39,7 +36,7 @@ public class AccountController {
     public ResponseEntity<AccountInfoDto> getAccountInfo(
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
-        return accountServiceImpl.getAccountInfo(accountDetails);
+        return accountService.getAccountInfo(accountDetails);
     }
 
     /**
@@ -48,11 +45,11 @@ public class AccountController {
     @PatchMapping("/my-info/modify")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER')")
-    public void modifyAccount(
+    public ResponseEntity<AccountInfoDto> modifyAccount(
             final @AuthenticationPrincipal AccountDetails accountDetails,
             final @RequestBody ModifyAccountInfoRequestDto requestDto
     ) {
-        accountServiceImpl.modifyAccount(accountDetails, requestDto);
+        return accountService.modifyAccount(accountDetails, requestDto);
     }
 
     /**
@@ -64,7 +61,7 @@ public class AccountController {
     public void dropOut(
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
-        accountServiceImpl.deleteAccount(accountDetails);
+        accountService.deleteAccount(accountDetails);
     }
 
 }

@@ -94,7 +94,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void modifyAccount(
+    public ResponseEntity<AccountInfoDto> modifyAccount(
             final AccountDetails accountDetails,
             final ModifyAccountInfoRequestDto requestDto
     ) {
@@ -115,6 +115,12 @@ public class AccountServiceImpl implements AccountService {
         }
 
         accountMapper.updateAccountInfo(account);
+
+        return ResponseEntity
+                .ok()
+                .body(
+                        new AccountInfoDto(account)
+                );
     }
 
     @Override
