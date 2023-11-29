@@ -24,4 +24,5 @@ public class AccountInfoDto {
         this.birthdate = localDateToString(account.getBirthdate());
     }
 
+
 }

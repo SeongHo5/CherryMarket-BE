@@ -1,5 +1,6 @@
-package com.cherrydev.cherrymarketbe.auth.dto;
+package com.cherrydev.cherrymarketbe.account.dto;
 
+import com.cherrydev.cherrymarketbe.account.entity.Agreement;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -28,17 +29,22 @@ public class SignUpRequestDto {
             message = "비밀번호는 8자에서 20자 사이이며, 특수문자를 포함해야 합니다.")
     @NotNull String password;
 
-    @Pattern(regexp = "^\\+82 10-[0-9]{4}-[0-9]{4}$", message = "휴대폰 번호 형식만 가능합니다. ex) +82 10-1234-5678")
     @NotNull String contact;
 
     @Pattern(regexp = "^(MALE|FEMALE)$", message = "성별 형식이 일치하지 않습니다.")
     @NotNull String gender;
 
-    @Pattern(regexp = "^(19|20)\\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$",
+    @Pattern(regexp = "^(19|20)\\d{2}-(0[1-9]|1[012])-(0[1-9]|[12]\\d|3[01])$",
             message = "생년월일 형식이 일치하지 않습니다.")
     @NotNull String birthdate;
 
-    public Account toEntity(String encodedPassword) {
+    Boolean serviceAgreement;
+
+    Boolean privacyAgreement;
+
+    Boolean marketingAgreement;
+
+    public Account toEntity(final String encodedPassword) {
         return Account.builder()
                 .name(this.getName())
                 .email(this.getEmail())
@@ -50,6 +56,16 @@ public class SignUpRequestDto {
                 .registerType(LOCAL)
                 .userRole(ROLE_CUSTOMER)
                 .build();
+    }
+
+    public Agreement toAgreementEntity(final Account account) {
+        return Agreement.builder()
+                .accountId(account.getAccountId())
+                .termsOfService(serviceAgreement)
+                .privacyPolicy(privacyAgreement)
+                .marketing(marketingAgreement)
+                .build();
+
     }
 
 }
