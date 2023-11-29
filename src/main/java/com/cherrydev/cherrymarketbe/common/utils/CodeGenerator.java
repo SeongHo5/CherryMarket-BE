@@ -10,7 +10,8 @@ import java.util.Random;
  */
 public class CodeGenerator {
 
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String CHARACTERS_FOR_CODE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final String CHARACTERS_FOR_PASSWORD = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
     private static final Random random = new SecureRandom();
 
     private CodeGenerator() {
@@ -24,7 +25,15 @@ public class CodeGenerator {
     public static String generateRandomCode(final int requiredLength) {
         StringBuilder sb = new StringBuilder(requiredLength);
         for (int i = 0; i < requiredLength; i++) {
-            sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+            sb.append(CHARACTERS_FOR_CODE.charAt(random.nextInt(CHARACTERS_FOR_CODE.length())));
+        }
+        return sb.toString();
+    }
+
+    public static String generateRandomPassword(final int requiredLength) {
+        StringBuilder sb = new StringBuilder(requiredLength);
+        for (int i = 0; i < requiredLength; i++) {
+            sb.append(CHARACTERS_FOR_PASSWORD.charAt(random.nextInt(CHARACTERS_FOR_PASSWORD.length())));
         }
         return sb.toString();
     }
