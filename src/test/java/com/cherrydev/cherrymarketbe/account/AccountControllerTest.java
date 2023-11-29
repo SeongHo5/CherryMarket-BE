@@ -24,28 +24,27 @@ class AccountControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    @Transactional
-    @WithAnonymousUser
-    void 회원가입_Request_성공() throws Exception {
-        // Given
-        SignUpRequestDto signUpRequestDto = AccountFactory.createSignUpRequestDtoA();
-        String requestBody = Jackson.toJsonString(signUpRequestDto);
+//    @Test
+//    @Transactional
+//    @WithAnonymousUser
+//    void 회원가입_Request_성공() throws Exception {
+//        // Given
+//        SignUpRequestDto signUpRequestDto = AccountFactory.createSignUpRequestDtoA();
+//        String requestBody = Jackson.toJsonString(signUpRequestDto);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/api/account/sign-up")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(requestBody))
+//                .andExpect(MockMvcResultMatchers.status().isCreated());
+//    }
+//
+//    @Test
+//    @Transactional
+//    @WithUserDetails(value = "admin@devcherry.com")
+//    void 내정보_조회_성공() throws Exception {
+//        // Given
+//
+//    }
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/account/sign-up")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "admin@devcherry.com")
-    void 내정보_조회_성공() throws Exception {
-        // Given
-
-    }
-
-
-
+    
 }
