@@ -2,7 +2,6 @@ package com.cherrydev.cherrymarketbe.common.service;
 
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
-import com.cherrydev.cherrymarketbe.common.service.template.EmailTemplate;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -13,17 +12,16 @@ import org.springframework.stereotype.Service;
 
 import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
+import static com.cherrydev.cherrymarketbe.common.service.template.EmailTemplate.*;
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRandomCode;
 import static jakarta.mail.Message.RecipientType.TO;
 
-
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class EmailService {
 
     private final JavaMailSender emailSender;
-    private final EmailTemplate emailTemplate;
     private final RedisService redisService;
 
     private void sendMail(
@@ -59,7 +57,7 @@ public class EmailService {
         String verificationCode = generateRandomCode(VERIFICATION_CODE_LENGTH);
 
         redisService.setDataExpire(PREFIX_VERIFY + email, verificationCode, VERIFICATION_CODE_EXPIRE_TIME);
-        sendMail(email, emailTemplate.VERIFICATION_TITTLE, emailTemplate.createVerificationMessage(verificationCode));
+        sendMail(email, VERIFICATION_TITTLE, createVerificationMessage(verificationCode));
     }
 
     public void sendPasswordResetMail(final String email) {
@@ -68,36 +66,7 @@ public class EmailService {
         String verificationCode = generateRandomCode(VERIFICATION_CODE_LENGTH);
 
         redisService.setDataExpire(PREFIX_PW_RESET + email, verificationCode, VERIFICATION_CODE_EXPIRE_TIME);
-        sendMail(email, emailTemplate.PW_RESET_TITTLE, emailTemplate.createPasswordResetMessage(verificationCode));
-    }
-
-    /**
-     * 본인 인증 코드 검증
-     * <p>
-     * 인증에 성공하면 1일간 인증된 이메일로 등록
-     * @param email 인증 코드를 보냈던 이메일
-     * @param code  검증할(사용자가 입력한) 인증 코드
-     */
-    public void verifyEmail(final String email, final String code) {
-        String validCode = redisService.getData(PREFIX_VERIFY + email);
-        if (!code.equals(validCode)) {
-            throw new AuthException(INVALID_EMAIL_VERIFICATION_CODE);
-        }
-        redisService.setDataExpire(PREFIX_VERIFIED + email, VALUE_TRUE, WHITE_LIST_VERIFIED_TIME);
-        redisService.deleteData(PREFIX_VERIFY + email);
-    }
-
-    /**
-     * 비밀번호 재설정 코드 검증
-     * @return 검증 성공 여부
-     */
-    public boolean verifyPasswordResetEmail(final String email, final String code) {
-        String validCode = redisService.getData(PREFIX_PW_RESET + email);
-        if (!code.equals(validCode)) {
-            throw new AuthException(INVALID_EMAIL_VERIFICATION_CODE);
-        }
-        redisService.deleteData(PREFIX_PW_RESET + email);
-        return true;
+        sendMail(email, PW_RESET_TITTLE, createPasswordResetMessage(verificationCode));
     }
 
     // ============ PRIVATE METHODS ============

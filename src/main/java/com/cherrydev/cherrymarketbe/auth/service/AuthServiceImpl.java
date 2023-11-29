@@ -9,7 +9,6 @@ import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.*;
-import com.cherrydev.cherrymarketbe.common.service.EmailService;
 import com.cherrydev.cherrymarketbe.common.service.RedisService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.DELETED;
 import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.RESTRICTED;
 import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
+import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.*;
+import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.PREFIX_PW_RESET;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRandomPassword;
 import static org.springframework.beans.propertyeditors.CustomBooleanEditor.VALUE_TRUE;
@@ -35,7 +36,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
-    private final EmailService emailService;
 
     private static final int NEW_PASSWORD_LENGTH = 12;
 
@@ -121,25 +121,49 @@ public class AuthServiceImpl implements AuthService {
                 );
     }
 
+    /**
+     * 비밀번호 재설정 코드 검증 & 비밀번호 재설정
+     *
+     * @param email            이메일
+     * @param verificationCode 인증 코드
+     * @return 재설정된 비밀번호
+     */
     @Transactional
     public ResponseEntity<String> verifyPasswordResetEmail(
             final String email,
             final String verificationCode
     ) {
-        boolean isVerified = emailService.verifyPasswordResetEmail(email, verificationCode);
-        if (isVerified) {
-            String newPassword = generateRandomPassword(NEW_PASSWORD_LENGTH);
-            String encodedPassword = passwordEncoder.encode(newPassword);
-            Account account = findAccountByEmail(email);
-            account.updatePassword(encodedPassword);
-            accountMapper.updateAccountInfo(account);
-            return ResponseEntity
-                    .ok()
-                    .body(newPassword);
-        }
-        return null;
+        verifyResetCode(email, verificationCode);
+
+        String newPassword = generateRandomPassword(NEW_PASSWORD_LENGTH);
+        String encodedPassword = passwordEncoder.encode(newPassword);
+
+        Account account = findAccountByEmail(email);
+        account.updatePassword(encodedPassword);
+        accountMapper.updateAccountInfo(account);
+
+        return ResponseEntity
+                .ok()
+                .body(newPassword);
     }
 
+    /**
+     * 본인 인증 코드 검증
+     * <p>
+     * 인증에 성공하면 1일간 인증된 이메일로 등록
+     *
+     * @param email 인증 코드를 보냈던 이메일
+     * @param code  검증할(사용자가 입력한) 인증 코드
+     */
+    public ResponseEntity<Void> verifyEmail(final String email, final String code) {
+        String validCode = redisService.getData(PREFIX_VERIFY + email);
+        if (!code.equals(validCode)) {
+            throw new AuthException(INVALID_EMAIL_VERIFICATION_CODE);
+        }
+        redisService.setDataExpire(PREFIX_VERIFIED + email, VALUE_TRUE, WHITE_LIST_VERIFIED_TIME);
+        redisService.deleteData(PREFIX_VERIFY + email);
+        return ResponseEntity.ok().build();
+    }
 
     // =============== PRIVATE METHODS =============== //
 
@@ -206,5 +230,18 @@ public class AuthServiceImpl implements AuthService {
         redisService.setDataExpire(
                 BLACK_LIST_KEY_PREFIX + accessToken,
                 VALUE_TRUE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
+    }
+
+    /**
+     * 비밀번호 재설정 코드 검증
+     *
+     * @return 검증 성공 여부
+     */
+    private void verifyResetCode(final String email, final String code) {
+        String validCode = redisService.getData(PREFIX_PW_RESET + email);
+        if (!code.equals(validCode)) {
+            throw new AuthException(INVALID_EMAIL_VERIFICATION_CODE);
+        }
+        redisService.deleteData(PREFIX_PW_RESET + email);
     }
 }

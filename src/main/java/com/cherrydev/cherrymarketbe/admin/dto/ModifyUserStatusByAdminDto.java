@@ -26,7 +26,7 @@ public class ModifyUserStatusByAdminDto {
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$")
     LocalDate restrictedUntil;
 
-    public ModifyUserStatusByAdminDto(String email, String newStatus, @Nullable LocalDate restrictedUntil) {
+    public ModifyUserStatusByAdminDto(String email, String newStatus, LocalDate restrictedUntil) {
         this.email = email;
         this.newStatus = UserStatus.valueOf(newStatus);
         this.restrictedUntil = restrictedUntil;

@@ -69,6 +69,19 @@ public class AuthController {
     }
 
     /**
+     * 본인 인증 확인
+     *
+     * @param verificationCode 인증 코드
+     */
+    @GetMapping("/verify-email")
+    public ResponseEntity<Void> verifyEmail(
+            final @RequestParam String email,
+            final @RequestParam String verificationCode
+    ) {
+        return authService.verifyEmail(email, verificationCode);
+    }
+
+    /**
      * 비밀번호 재설정 이메일 발송
      * @param email 메일 보낼 주소
      */
