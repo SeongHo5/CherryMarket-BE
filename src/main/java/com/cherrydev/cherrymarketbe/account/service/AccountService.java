@@ -12,7 +12,7 @@ public interface AccountService {
 
     void createAccount(final SignUpRequestDto signUpRequestDto);
 
-    void modifyAccount(final @AuthenticationPrincipal AccountDetails accountDetails, final ModifyAccountInfoRequestDto requestDto);
+    ResponseEntity<AccountInfoDto> modifyAccount(final @AuthenticationPrincipal AccountDetails accountDetails, final ModifyAccountInfoRequestDto requestDto);
 
     void deleteAccount(final @AuthenticationPrincipal AccountDetails accountDetails);
 
