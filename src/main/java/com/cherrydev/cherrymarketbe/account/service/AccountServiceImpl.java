@@ -1,8 +1,12 @@
 package com.cherrydev.cherrymarketbe.account.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
+import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
+import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.account.entity.Agreement;
 import com.cherrydev.cherrymarketbe.account.enums.ForbiddenUserName;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
+import com.cherrydev.cherrymarketbe.account.repository.AgreementMapper;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
@@ -13,9 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.cherrydev.cherrymarketbe.account.dto.AccountInfoDto;
-import com.cherrydev.cherrymarketbe.auth.dto.*;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.*;
@@ -31,7 +35,8 @@ import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRa
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
 
-    private final AccountMapper accountRepository;
+    private final AccountMapper accountMapper;
+    private final AgreementMapper agreementMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -44,9 +49,12 @@ public class AccountServiceImpl implements AccountService {
         checkEmailIsDuplicated(requestedEmail);
 
         String encodedPassword = passwordEncoder.encode(signUpRequestDto.getPassword());
-        Account account = signUpRequestDto.toEntity(encodedPassword);
 
-        accountRepository.save(account);
+        Account account = signUpRequestDto.toEntity(encodedPassword);
+        accountMapper.save(account);
+
+        Agreement agreement = signUpRequestDto.toAgreementEntity(account);
+        agreementMapper.save(agreement);
     }
 
     @Transactional
@@ -69,7 +77,8 @@ public class AccountServiceImpl implements AccountService {
                 .registerType(KAKAO)
                 .build();
 
-        accountRepository.save(account);
+        accountMapper.save(account);
+        // TODO : OAuthAccountInfoDto 에서 Agreement 정보를 가져올 수 있도록 수정
     }
 
     @Override
@@ -85,14 +94,33 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void modifyAccount(final AccountDetails accountDetails) {
-        // TODO 곧
+    public void modifyAccount(
+            final AccountDetails accountDetails,
+            final ModifyAccountInfoRequestDto requestDto
+    ) {
+        Account account = accountDetails.getAccount();
+
+        if (requestDto.getPassword() != null) {
+            String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+            account.updatePassword(encodedPassword);
+        }
+
+        if (requestDto.getContact() != null) {
+            account.updateContact(requestDto.getContact());
+        }
+
+        if (requestDto.getBirthdate() != null) {
+            LocalDate birthdate = LocalDate.parse(requestDto.getBirthdate());
+            account.updateBirthdate(birthdate);
+        }
+
+        accountMapper.updateAccountInfo(account);
     }
 
     @Override
     @Transactional
     public void deleteAccount(final AccountDetails accountDetails) {
-        accountRepository.delete(accountDetails.getAccount());
+        accountMapper.delete(accountDetails.getAccount());
     }
 
     // =============== PRIVATE METHODS =============== //
@@ -101,13 +129,14 @@ public class AccountServiceImpl implements AccountService {
      * 회원 가입 시 이메일이 중복되는지 확인한다.
      */
     private void checkEmailIsDuplicated(String email) {
-        if (accountRepository.existByEmail(email)) {
+        if (accountMapper.existByEmail(email)) {
             throw new DuplicatedException(CONFLICT_ACCOUNT);
         }
     }
 
     /**
      * 회원 가입 시 이름에 금지어가 포함되어 있는지 확인한다.
+     *
      * @see ForbiddenUserName 금지어 목록
      */
     private void checkUsernameIsProhibited(String username) {

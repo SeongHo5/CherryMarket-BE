@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.common.dto;
 
+import com.github.pagehelper.PageInfo;
 import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,7 +11,6 @@ import java.util.List;
 public class MyPage<T> {
 
     List<T> content;
-
     int numberOfElements;
     long totalElements;
     int totalPages;
@@ -19,26 +19,15 @@ public class MyPage<T> {
     boolean first;
     boolean last;
 
-    public MyPage(PageImpl<T> page) {
-        this.content = page.getContent();
-        this.numberOfElements = page.getNumberOfElements();
-        this.totalElements = page.getTotalElements();
-        this.totalPages = page.getTotalPages();
-        this.number = page.getNumber();
-        this.size = page.getSize();
-        this.first = page.isFirst();
-        this.last = page.isLast();
-    }
-
-    public MyPage(Page<T> page){
-        this.content = page.getContent();
-        this.numberOfElements = page.getNumberOfElements();
-        this.totalElements = page.getTotalElements();
-        this.totalPages = page.getTotalPages();
-        this.number = page.getNumber();
-        this.size = page.getSize();
-        this.first = page.isFirst();
-        this.last = page.isLast();
+    public MyPage(PageInfo<T> pageInfo) {
+        this.content = pageInfo.getList();
+        this.numberOfElements = pageInfo.getSize();
+        this.totalElements = pageInfo.getTotal();
+        this.totalPages = pageInfo.getPages();
+        this.number = pageInfo.getPageNum();
+        this.size = pageInfo.getPageSize();
+        this.first = pageInfo.isIsFirstPage();
+        this.last = pageInfo.isIsLastPage();
     }
 
 }

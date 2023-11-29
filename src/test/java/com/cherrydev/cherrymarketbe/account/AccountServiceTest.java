@@ -5,19 +5,16 @@ import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
 import com.cherrydev.cherrymarketbe.account.service.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
-import com.cherrydev.cherrymarketbe.auth.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 import com.cherrydev.cherrymarketbe.auth.service.AuthServiceImpl;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.factory.AccountFactory;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.Objects;

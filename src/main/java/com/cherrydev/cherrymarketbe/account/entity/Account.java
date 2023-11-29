@@ -67,6 +67,25 @@ public class Account {
         this.userStatus = userStatus;
     }
 
+    /**
+     * MyBatis Mapper 용
+     */
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Account updatePassword(String encodePassword) {
+        this.password = encodePassword;
+        return this;
+    }
+
+    public void updateContact(String contact) {
+        this.contact = contact;
+    }
+
+    public void updateBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
+    }
     public void updateAccountRole(UserRole userRole) {
         this.userRole = userRole;
     }
@@ -75,9 +94,9 @@ public class Account {
         this.userStatus = userStatus;
     }
 
-    public Account updatePassword(String encodePassword) {
-        this.password = encodePassword;
-        return this;
+    public void updateRestrictedUntil(LocalDate restrictedUntil) {
+        this.restrictedUntil = restrictedUntil;
     }
+
 
 }

@@ -9,6 +9,7 @@ import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.*;
+import com.cherrydev.cherrymarketbe.common.service.EmailService;
 import com.cherrydev.cherrymarketbe.common.service.RedisService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.DELETED;
 import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.RESTRICTED;
 import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
+import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRandomPassword;
 import static org.springframework.beans.propertyeditors.CustomBooleanEditor.VALUE_TRUE;
 
 @Slf4j
@@ -29,13 +31,17 @@ import static org.springframework.beans.propertyeditors.CustomBooleanEditor.VALU
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final AccountMapper accountRepository;
+    private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
+    private final EmailService emailService;
+
+    private static final int NEW_PASSWORD_LENGTH = 12;
 
     /**
      * 로그인 처리를 위해 사용자를 조회하고, 비밀번호를 검증한다.
+     *
      * @param signInRequestDto 로그인 요청 정보(E-mail, PW)
      * @return 로그인 응답 정보(토큰, 토큰 유효기간, 사용자 이름, 사용자 권한)
      */
@@ -72,13 +78,13 @@ public class AuthServiceImpl implements AuthService {
 
     /**
      * 로그아웃 처리를 위해 사용자 인증 수단(토큰)을 검증하고, 무효화한다.
+     *
      * @param jwtRequestDto 인증 수단(토큰)
      */
     @Override
     @Transactional
     public void signOut(final JwtRequestDto jwtRequestDto) {
         jwtProvider.validateToken(jwtRequestDto.getAccessToken());
-
 
         Claims claims = jwtProvider.getInfoFromToken(jwtRequestDto.getAccessToken());
         String email = claims.getSubject();
@@ -88,6 +94,7 @@ public class AuthServiceImpl implements AuthService {
 
     /**
      * 토큰 재발급
+     *
      * @param jwtRequestDto 기존 토큰
      * @return 재발급된 토큰
      */
@@ -114,26 +121,48 @@ public class AuthServiceImpl implements AuthService {
                 );
     }
 
+    @Transactional
+    public ResponseEntity<String> verifyPasswordResetEmail(
+            final String email,
+            final String verificationCode
+    ) {
+        boolean isVerified = emailService.verifyPasswordResetEmail(email, verificationCode);
+        if (isVerified) {
+            String newPassword = generateRandomPassword(NEW_PASSWORD_LENGTH);
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            Account account = findAccountByEmail(email);
+            account.updatePassword(encodedPassword);
+            accountMapper.updateAccountInfo(account);
+            return ResponseEntity
+                    .ok()
+                    .body(newPassword);
+        }
+        return null;
+    }
+
+
     // =============== PRIVATE METHODS =============== //
 
     /**
      * 이메일로 사용자를 조회한다.
+     *
      * @param email 사용자 이메일
      * @return 조회된 사용자
      */
     private Account findAccountByEmail(final String email) {
-        return accountRepository.findByEmail(email)
+        return accountMapper.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
     }
 
     /**
      * 계정의 상태를 검증한다.
+     *
      * @param account 계정 정보
      * @throws NotFoundException 계정이 삭제(DELETED) 상태일 경우
-     * @throws AuthException 계정이 제한(RESTRICTED) 상태일 경우
+     * @throws AuthException     계정이 제한(RESTRICTED) 상태일 경우
      * @see UserStatus
      */
-    private void checkUserStatusByEmail(Account account) {
+    protected void checkUserStatusByEmail(Account account) {
         if (account.getUserStatus().equals(DELETED)) {
             throw new NotFoundException(DELETED_ACCOUNT);
         }

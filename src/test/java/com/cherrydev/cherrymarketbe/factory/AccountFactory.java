@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.factory;
 
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 
 import java.time.LocalDate;
 
@@ -19,9 +19,12 @@ public class AccountFactory {
                 .name("김영희")
                 .email("test@example.com")
                 .password("Testuser12#")
-                .contact(("+82 10-1234-5678"))
+                .contact(("010-1234-5678"))
                 .gender("FEMALE")
                 .birthdate("1990-01-01")
+                .serviceAgreement(Boolean.TRUE)
+                .privacyAgreement(Boolean.TRUE)
+                .marketingAgreement(Boolean.TRUE)
                 .build();
     }
 

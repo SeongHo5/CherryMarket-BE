@@ -57,13 +57,16 @@ public class EmailService {
         checkIfCodeAlreadySent(email, PREFIX_VERIFY);
 
         String verificationCode = generateRandomCode(VERIFICATION_CODE_LENGTH);
+
         redisService.setDataExpire(PREFIX_VERIFY + email, verificationCode, VERIFICATION_CODE_EXPIRE_TIME);
         sendMail(email, emailTemplate.VERIFICATION_TITTLE, emailTemplate.createVerificationMessage(verificationCode));
     }
 
     public void sendPasswordResetMail(final String email) {
         checkIfCodeAlreadySent(email, PREFIX_PW_RESET);
+
         String verificationCode = generateRandomCode(VERIFICATION_CODE_LENGTH);
+
         redisService.setDataExpire(PREFIX_PW_RESET + email, verificationCode, VERIFICATION_CODE_EXPIRE_TIME);
         sendMail(email, emailTemplate.PW_RESET_TITTLE, emailTemplate.createPasswordResetMessage(verificationCode));
     }

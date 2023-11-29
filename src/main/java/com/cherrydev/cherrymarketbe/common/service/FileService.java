@@ -28,7 +28,7 @@ public class FileService {
 
     private final AmazonS3Client objectStorageClient;
 
-    private final String bucket = "myvelog";
+    private static final String BUCKET_NAME = "myvelog";
     private static final String[] SUPPORTED_IMAGE_FORMAT = {"jpg", "jpeg", "png"};
     private static final int FILE_LIMIT_MAX_COUNT = 3;
     private static final long FILE_LIMIT_MAX_SIZE = 3L * 1024 * 1024; // 3MB
@@ -105,9 +105,9 @@ public class FileService {
      */
     private String putFileToBucket(InputStream file, String fileName, ObjectMetadata objectMetadata) {
         objectStorageClient.putObject(
-                new PutObjectRequest(bucket, fileName, file, objectMetadata).withCannedAcl(
+                new PutObjectRequest(BUCKET_NAME, fileName, file, objectMetadata).withCannedAcl(
                         CannedAccessControlList.PublicRead));
-        return objectStorageClient.getUrl(bucket, fileName).toString();
+        return objectStorageClient.getUrl(BUCKET_NAME, fileName).toString();
     }
 
     /**
@@ -116,7 +116,7 @@ public class FileService {
     private void deleteFileFromBucket(String url, String dirName) {
         final String[] split = url.split("/");
         final String fileName = dirName + DIRECTORY_SEPARATOR + split[split.length - 1];
-        DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
+        DeleteObjectRequest request = new DeleteObjectRequest(BUCKET_NAME, fileName);
         log.info("Deleted Image from Object Storage : " + request);
         objectStorageClient.deleteObject(request);
     }

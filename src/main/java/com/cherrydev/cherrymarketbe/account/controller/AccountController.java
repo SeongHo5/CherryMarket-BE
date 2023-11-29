@@ -2,8 +2,9 @@ package com.cherrydev.cherrymarketbe.account.controller;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.dto.AccountInfoDto;
+import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
 import com.cherrydev.cherrymarketbe.account.service.AccountServiceImpl;
-import com.cherrydev.cherrymarketbe.auth.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,19 @@ public class AccountController {
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
         return accountServiceImpl.getAccountInfo(accountDetails);
+    }
+
+    /**
+     * 내 정보 수정
+     */
+    @PatchMapping("/my-info/modify")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER')")
+    public void modifyAccount(
+            final @AuthenticationPrincipal AccountDetails accountDetails,
+            final @RequestBody ModifyAccountInfoRequestDto requestDto
+    ) {
+        accountServiceImpl.modifyAccount(accountDetails, requestDto);
     }
 
     /**
