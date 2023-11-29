@@ -7,6 +7,7 @@ import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.common.exception.dto.ExceptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -85,5 +86,13 @@ public class ExceptionAdvice {
         return ResponseEntity.
                 status(404).
                 body(new ExceptionDto(404, "Not Found / Please Contact to Admin"));
+    }
+
+    @ExceptionHandler({MyBatisSystemException.class})
+    protected ResponseEntity<ExceptionDto> myBatisSystemException(MyBatisSystemException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.
+                status(404).
+                body(new ExceptionDto(500, "DB Error / Please Contact to Admin"));
     }
 }
