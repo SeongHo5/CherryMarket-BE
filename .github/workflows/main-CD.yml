@@ -1,33 +1,25 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: MarketCHERRY-BackEnd CI
+name: MarketCHERRY-BackEnd CD
 
 on:
   push:
     branches:
-      - develop
+      - main
   pull_request:
     branches:
-      - develop
+      - main
 
 permissions:
   contents: read
 
 jobs:
 
-  cherrydev-backend:
+  cherrymarket-backend:
     permissions: write-all
-    name: MarketCHERRY-BackEnd CI
-    environment: dev
+    name: MarketCHERRY-BackEnd CD
+    environment: prod
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v3
 
@@ -94,10 +86,23 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          author_name: <BackEnd-CI> Build & Test Failed
+          author_name: <BackEnd-CD> Build & Test Failed
           fields: repo, message, commit, author, action, eventName, workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: failure()
 
+      - name: Deploy to Naver Cloud Instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          port: ${{ secrets.SERVER_SSH_PORT }}
+          script: |
+            cd ~/cherrymarket-be
+            git pull
+            ./gradlew clean build -x test
+            bash ./deploy/deploy.sh
+            
 
