@@ -97,7 +97,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          passwrod: ${{ secrets.SERVER_KEY }}
+          password: ${{ secrets.SERVER_KEY }}
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
             cd ~/cherrymarket-be
