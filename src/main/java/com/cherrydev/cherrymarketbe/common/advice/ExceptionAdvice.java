@@ -92,7 +92,7 @@ public class ExceptionAdvice {
     protected ResponseEntity<ExceptionDto> myBatisSystemException(MyBatisSystemException ex) {
         log.error(ex.getMessage());
         return ResponseEntity.
-                status(404).
+                status(500).
                 body(new ExceptionDto(500, "DB Error / Please Contact to Admin"));
     }
 }
