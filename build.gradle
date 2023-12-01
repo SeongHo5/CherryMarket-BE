@@ -80,6 +80,7 @@ dependencies {
 
     // MAIL
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'com.j2html:j2html:1.4.0'
 
     // AWS-SDK-S3
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.3.1'
