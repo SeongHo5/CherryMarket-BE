@@ -16,6 +16,8 @@ public enum ExceptionStatus {
     NOT_SOCIAL_ACCOUNT(400, "소셜 가입 계정이 아닙니다."),
     NOT_ALLOWED_CATEGORY_NAME(400, "카테고리 이름은 한글만 가능합니다."),
     NOT_ALLOWED_EMPTY_CONTENT(400, "내용을 입력해주세요."),
+    ADDRESS_COUNT_EXCEEDED(400, "주소는 최대 3개까지 등록할 수 있습니다."),
+    DEFAULT_ADDRESS_ALREADY_EXISTS(400, "이미 등록된 기본 주소가 있습니다."),
 
     // 401 - Unauthorized : 비인증(인증 수단이 없음)
     NO_AUTHORIZATION(401, "인증 정보가 없습니다."),
@@ -40,6 +42,7 @@ public enum ExceptionStatus {
     NOT_FOUND_CREDIT(404, "적립 내역이 존재하지 않습니다."),
     NOT_FOUND_POST(404, "게시글이 존재하지 않습니다."),
     NOT_FOUND_GOODS(404, "상품이 존재하지 않습니다."),
+    NOT_FOUND_GRANT_TYPE(404, "존재하지 않는 포인트 지급 타입입니다."),
     NOT_FOUND_COMMENT(404, "댓글이 존재하지 않습니다."),
     NOT_FOUND_CATEGORY(404, "카테고리가 존재하지 않습니다."),
     NOT_FOUND_DISCOUNT(404, "등록되지 않은 할인 코드 입니다."),
