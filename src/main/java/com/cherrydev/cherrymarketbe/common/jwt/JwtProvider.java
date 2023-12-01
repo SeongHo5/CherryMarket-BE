@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.common.jwt;
 
-import com.cherrydev.cherrymarketbe.account.service.AccountDetailsServiceImpl;
+import com.cherrydev.cherrymarketbe.account.service.impl.AccountDetailsServiceImpl;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
 import com.cherrydev.cherrymarketbe.common.service.RedisService;
@@ -63,7 +63,8 @@ public class JwtProvider {
     }
 
     /**
-     * Authentication 객체로 토큰을 발급한다.
+     * 토큰을 발급한다.
+     * @param email 사용자 이메일
      * @return 토큰 발급 결과(액세스 토큰, 리프레시 토큰, 만료 시간)
      */
     public JwtResponseDto createJwtToken(String email) {

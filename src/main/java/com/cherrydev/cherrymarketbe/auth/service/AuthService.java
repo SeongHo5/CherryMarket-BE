@@ -12,8 +12,10 @@ public interface AuthService {
 
     void signOut(final JwtRequestDto jwtRequestDto);
 
-    ResponseEntity<JwtReissueResponseDto> reissue(
-            final JwtRequestDto jwtRequestDto
-    );
+    ResponseEntity<JwtReissueResponseDto> reissue(final JwtRequestDto jwtRequestDto);
+
+    ResponseEntity<Void> verifyEmail(final String email, final String verificationCode);
+
+    ResponseEntity<String> verifyPasswordResetEmail(final String email, final String verificationCode);
 
 }

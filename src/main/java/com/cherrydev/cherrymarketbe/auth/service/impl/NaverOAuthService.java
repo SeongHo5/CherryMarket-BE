@@ -1,8 +1,9 @@
-package com.cherrydev.cherrymarketbe.auth.service;
+package com.cherrydev.cherrymarketbe.auth.service.impl;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInResponseDto;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthRequestDto;
+import com.cherrydev.cherrymarketbe.auth.service.OAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
