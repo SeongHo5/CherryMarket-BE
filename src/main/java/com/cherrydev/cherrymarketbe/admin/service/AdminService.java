@@ -67,7 +67,7 @@ public class AdminService {
         accountMapper.updateAccountStatus(account);
     }
 
-    // 공지사항 작성 /
+    // 공지사항 작성 //
 
     // =============== PRIVATE METHODS =============== //
 
