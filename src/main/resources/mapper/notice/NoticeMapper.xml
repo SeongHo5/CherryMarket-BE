@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.notice.repository.NoticeMapper">
+    <resultMap id="noticeMap" type="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        <result property="noticeId" column="NOTICE_ID"/>
+        <result property="code" column="NOTICE_CODE"/>
+        <result property="category" column="NOTICE_CTGRY"/>
+        <result property="subject" column="NOTICE_SJ"/>
+        <result property="content" column="NOTICE_CN"/>
+        <result property="status" column="NOTICE_STTUS"/>
+        <result property="displayDate" column="NOTICE_BGNDE"/>
+        <result property="hideDate" column="NOTICE_ENDDE"/>
+        <result property="createNt" column="CREAT_DE"/>
+    </resultMap>
+
+
+    <!--    INSERT-->
+    <insert id="insert" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        <selectKey keyProperty="noticeId" keyColumn="Notice_ID" resultType="Long" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into NOTICE (NOTICE_CODE, NOTICE_CTGRY, NOTICE_SJ, NOTICE_CN, NOTICE_STTUS, NOTICE_BGNDE, NOTICE_ENDDE, )
+        values (#{code}, #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
+    </insert>
+
+</mapper>
