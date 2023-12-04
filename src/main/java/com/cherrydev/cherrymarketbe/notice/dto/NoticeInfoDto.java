@@ -12,15 +12,14 @@ import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampT
 public class NoticeInfoDto {
     long noticeId;
     int code;
-//    NoticeCategory category;
     String category;
     String subject;
     String content;
-//    NoticeStatus status;
     String status;
     String displayDate;
     String hideDate;
     String createNt;
+    String deleteNt;
 
 
   public NoticeInfoDto(Notice notice) {
@@ -33,5 +32,6 @@ public class NoticeInfoDto {
         this.displayDate = timeStampToString(notice.getDisplayDate());
         this.hideDate = timeStampToString(notice.getHideDate()) ;
         this.createNt = timeStampToString(notice.getCreateNt()) ;
+        this.deleteNt = timeStampToString(notice.getDeleteNt()) ;
     }
 }

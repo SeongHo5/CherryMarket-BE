@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum NoticeStatus {
 
     DISPLAY("게시"),
-    HIDE("비게시");
+    DELETED("비 게시");
 
 
     private final String status;

@@ -13,11 +13,12 @@
         <result property="displayDate" column="NOTICE_BGNDE"/>
         <result property="hideDate" column="NOTICE_ENDDE"/>
         <result property="createNt" column="CREAT_DE"/>
+        <result property="deleteNt" column="DELETED_DE"/>
     </resultMap>
 
 
     <!--    INSERT-->
-    <insert id="insert" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+    <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
         <selectKey keyProperty="noticeId" keyColumn="Notice_ID" resultType="Long" order="AFTER">
             select last_insert_id()
         </selectKey>
@@ -25,8 +26,33 @@
         values (#{code}, #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
     </insert>
 
-    <!--    GET-->
-    <select id="getNoticeById" parameterType="Long" resultMap="noticeMap">
-        select * from NOTICE where NOTICE_ID = #{noticeId}
+    <!--   SELECT -->
+    <select id="findByNoticeId" parameterType="Long" resultMap="noticeMap">
+        select *
+        from NOTICE
+        where NOTICE_ID = #{noticeId}
     </select>
+
+    <select id="findAll" resultMap="noticeMap">
+        select NOTICE_ID,
+               NOTICE_CODE,
+               NOTICE_CTGRY,
+               NOTICE_SJ,
+               NOTICE_CN,
+               NOTICE_STTUS,
+               NOTICE_BGNDE,
+               NOTICE_ENDDE,
+               CREAT_DE
+        from NOTICE
+        ORDER BY NOTICE_ID
+    </select>
+
+
+    <!--   DELETE -->
+    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        UPDATE NOTICE
+        SET NOTICE_STTUS = 'DELETED',
+            DELETED_DE = now()
+        WHERE NOTICE_ID = #{noticeId}
+    </delete>
 </mapper>

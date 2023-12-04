@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @Transactional(readOnly = true) // 읽기 전용 트랜잭션 설정 추가
@@ -21,12 +23,27 @@ public class NoticeServiceImpl implements NoticeService{
     @Override
     @Transactional
     public void createNotice(final NoticeRequestDto noticeRequestDto) {
-        noticeMapper.insert(noticeRequestDto.toEntity());
+        noticeMapper.save(noticeRequestDto.toEntity());
     }
-
+    @Override
     @Transactional(readOnly = true)
     public ResponseEntity<NoticeInfoDto> getNoticeInfo(final Long noticeId) {
-        Notice notice = noticeMapper.getNoticeById(noticeId);
-        return ResponseEntity.ok().body(new NoticeInfoDto(notice)); // 응답 생성 및 반환
+        Notice notice = noticeMapper.findByNoticeId(noticeId);
+        return ResponseEntity.ok()
+                .body(new NoticeInfoDto(notice)); // 응답 생성 및 반환
+    }
+    @Override
+    @Transactional
+    public ResponseEntity<List<NoticeInfoDto>> findAll() {
+        List<NoticeInfoDto> notices = noticeMapper.findAll();
+        return ResponseEntity.ok()
+                .body(notices); // 응답 생성 및 반환{
+                 // 응답 생성 및 반환
+    }
+    @Override
+    @Transactional
+    public void deleteNotice(final Long noticeId) {
+        noticeMapper.delete(noticeId); // 삭제 처리
+        log.info("Notice deleted with id: {}", noticeId); // 로그 출력
     }
 }

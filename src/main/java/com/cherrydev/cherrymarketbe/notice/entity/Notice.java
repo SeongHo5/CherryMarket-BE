@@ -20,10 +20,11 @@ public class Notice {
     private Timestamp displayDate;
     private Timestamp hideDate;
     private Timestamp createNt;
+    private Timestamp deleteNt;
 
     @Builder
     public Notice(Long noticeId, int code, NoticeCategory category, String subject, String content,
-                  NoticeStatus status, Timestamp displayDate, Timestamp hideDate,Timestamp createNt
+                  NoticeStatus status, Timestamp displayDate, Timestamp hideDate,Timestamp createNt, Timestamp deleteNt
                  ) {
         this.noticeId = noticeId;
         this.code = code;
@@ -34,5 +35,6 @@ public class Notice {
         this.displayDate = displayDate;
         this.hideDate = hideDate;
         this.createNt = createNt;
+        this.deleteNt = deleteNt;
     }
 }

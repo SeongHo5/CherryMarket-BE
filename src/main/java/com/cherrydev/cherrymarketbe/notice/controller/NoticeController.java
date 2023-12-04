@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +27,21 @@ public class NoticeController {
     public void addNotice(final @Valid @RequestBody NoticeRequestDto noticeRequestDto){
         noticeService.createNotice(noticeRequestDto);
  }
-    //공지사항 수정
+    //공지사항 조회
     @GetMapping("/notice-info")
     public ResponseEntity<NoticeInfoDto> getNoticeInfo(@RequestParam Long noticeId) {
+        log.info("{} 공지사항 조회 했음", noticeId);
         return noticeService.getNoticeInfo(noticeId);
     }
 
+    //공지사항 전체조회
+    @GetMapping("/notice-list")
+    public ResponseEntity<List<NoticeInfoDto>> getNoticeList() {
+        return noticeService.findAll();
+    }
+
+    @DeleteMapping("/delete-notice")
+    public void deleteNotice(@RequestParam Long noticeId) {
+        noticeService.deleteNotice(noticeId);
+    }
 }
