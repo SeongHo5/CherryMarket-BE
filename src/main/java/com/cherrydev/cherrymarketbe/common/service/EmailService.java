@@ -48,7 +48,7 @@ public class EmailService {
      * <p>
      * ※ 이메일 발송에 약 7초 정도 소요됩니다.
      *
-     * @param email 인증 코드를 전송할 이메일
+     * @param email 전송할 이메일
      */
     public void sendVerificationMail(final String email) {
         checkIfEmailIsWhiteListed(email);
@@ -67,6 +67,10 @@ public class EmailService {
 
         redisService.setDataExpire(PREFIX_PW_RESET + email, verificationCode, VERIFICATION_CODE_EXPIRE_TIME);
         sendMail(email, PW_RESET_TITTLE, createPasswordResetMessage(verificationCode));
+    }
+
+    public void sendNotificationMail(final String email) {
+        sendMail(email, PW_RESET_INFO_TITTLE, createPasswordResetInfoMessage());
     }
 
     // ============ PRIVATE METHODS ============

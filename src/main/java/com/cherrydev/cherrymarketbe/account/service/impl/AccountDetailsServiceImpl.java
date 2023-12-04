@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.account.service;
+package com.cherrydev.cherrymarketbe.account.service.impl;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;

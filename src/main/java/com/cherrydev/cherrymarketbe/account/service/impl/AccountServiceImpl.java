@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.account.service;
+package com.cherrydev.cherrymarketbe.account.service.impl;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
@@ -7,11 +7,15 @@ import com.cherrydev.cherrymarketbe.account.entity.Agreement;
 import com.cherrydev.cherrymarketbe.account.enums.ForbiddenUserName;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
 import com.cherrydev.cherrymarketbe.account.repository.AgreementMapper;
+import com.cherrydev.cherrymarketbe.account.service.AccountService;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto;
+import com.cherrydev.cherrymarketbe.common.event.AccountRegistrationEvent;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
+import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountMapper accountMapper;
     private final AgreementMapper agreementMapper;
     private final PasswordEncoder passwordEncoder;
-
+    private final ApplicationEventPublisher eventPublisher;
     @Override
     @Transactional
     public void createAccount(final SignUpRequestDto signUpRequestDto) {
@@ -55,8 +59,11 @@ public class AccountServiceImpl implements AccountService {
 
         Agreement agreement = signUpRequestDto.toAgreementEntity(account);
         agreementMapper.save(agreement);
+
+        publishWelcomeEvent(account);
     }
 
+    @Override
     @Transactional
     public void createAccountByOAuth(final OAuthAccountInfoDto oAuthAccountInfoDto) {
         String email = oAuthAccountInfoDto.getEmail();
@@ -78,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
                 .build();
 
         accountMapper.save(account);
-        // TODO : OAuthAccountInfoDto 에서 Agreement 정보를 가져올 수 있도록 수정
+        publishWelcomeEvent(account);
     }
 
     @Override
@@ -129,6 +136,18 @@ public class AccountServiceImpl implements AccountService {
         accountMapper.delete(accountDetails.getAccount());
     }
 
+    /**
+     * 이메일로 사용자를 조회한다.
+     *
+     * @param email 사용자 이메일
+     * @return 조회된 사용자
+     */
+    @Override
+    public Account findAccountByEmail(final String email) {
+        return accountMapper.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
+    }
+
     // =============== PRIVATE METHODS =============== //
 
     /**
@@ -152,6 +171,11 @@ public class AccountServiceImpl implements AccountService {
         if (isProhibited) {
             throw new AuthException(PROHIBITED_USERNAME);
         }
+    }
+
+    private void publishWelcomeEvent(Account account) {
+        AccountRegistrationEvent event = new AccountRegistrationEvent(this, account);
+        eventPublisher.publishEvent(event);
     }
 
 }
