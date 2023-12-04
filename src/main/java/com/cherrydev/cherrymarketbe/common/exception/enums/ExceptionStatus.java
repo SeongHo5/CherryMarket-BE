@@ -11,6 +11,7 @@ public enum ExceptionStatus {
     INVALID_INPUT_VALUE(400, "입력 값이 잘못되었습니다."),
     INVALID_TYPE_VALUE(400, "요청 타입이 잘못되었습니다."),
     INVALID_USER_ROLE(400, "존재하지 않는 권한입니다."),
+    BLACKLISTED_IP(400, "차단된 IP입니다."),
     INVALID_USER_STATUS(400, "존재하지 않는 상태입니다."),
     NO_FILE_TO_UPLOAD(400, "업로드할 파일이 없습니다."),
     NOT_SOCIAL_ACCOUNT(400, "소셜 가입 계정이 아닙니다."),
@@ -47,6 +48,7 @@ public enum ExceptionStatus {
     NOT_FOUND_CATEGORY(404, "카테고리가 존재하지 않습니다."),
     NOT_FOUND_DISCOUNT(404, "등록되지 않은 할인 코드 입니다."),
     NOT_FOUND_MAKER(404, "등록되지 않은 제조사 입니다."),
+    NOT_FOUND_FILE(404, "파일이 존재하지 않습니다."),
 
     // 405 - Method Not Allowed
     METHOD_NOT_ALLOWED(405, "허용되지 않는 HTTP 메서드입니다."),
@@ -63,6 +65,9 @@ public enum ExceptionStatus {
 
     // 415 - Unsupported Media Type
     UNSUPPORTED_FILE_FORMAT(415, "지원하지 않는 파일 형식입니다."),
+
+    // 429 - Too Many Requests
+    TOO_MANY_REQUESTS(429, "요청 횟수를 초과하였습니다. 잠시 후 다시 시도해주세요."),
 
     // 500 - Internal Server Error
     FAIL_TO_SEND_EMAIL(500, "이메일 전송 실패"),

@@ -31,7 +31,6 @@ public class AdminService {
 
     @Value("${oauth.kakao.adminKey}")
     private String kakaoAdminKey;
-    private static final String KAKAO_ADMIN_PREFIX = "KakaoAK";
 
     private final AccountMapper accountMapper;
     private final RestTemplate restTemplate;
