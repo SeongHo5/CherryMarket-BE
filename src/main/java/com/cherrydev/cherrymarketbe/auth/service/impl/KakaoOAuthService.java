@@ -2,8 +2,7 @@ package com.cherrydev.cherrymarketbe.auth.service.impl;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
-;
-import com.cherrydev.cherrymarketbe.account.service.AccountService;
+import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInResponseDto;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.*;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.kakao.KakaoAccountResponse;
@@ -42,7 +41,7 @@ public class KakaoOAuthService implements OAuthService {
     private String kakaoClientSecret;
 
     private final AccountMapper accountMapper;
-    private final AccountService accountService;
+    private final AccountServiceImpl accountService;
     private final RestTemplate restTemplate;
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
@@ -108,7 +107,7 @@ public class KakaoOAuthService implements OAuthService {
      */
     private OAuthTokenResponseDto getOAuthToken(final String authCode) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(KAKAO_AUTH_URL)
-                .queryParam("grant_type", OAUTH_KAKAO_GRANT_TYPE)
+                .queryParam("grant_type", GRANT_TYPE_AUTHORIZATION)
                 .queryParam("client_id", kakaoClientId)
                 .queryParam("redirect_uri", KAKAO_REDIRECT_URI)
                 .queryParam("code", authCode)

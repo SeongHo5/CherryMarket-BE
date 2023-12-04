@@ -1,9 +1,6 @@
 package com.cherrydev.cherrymarketbe.common.advice;
 
-import com.cherrydev.cherrymarketbe.common.exception.AuthException;
-import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
-import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
-import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
+import com.cherrydev.cherrymarketbe.common.exception.*;
 import com.cherrydev.cherrymarketbe.common.exception.dto.ExceptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
