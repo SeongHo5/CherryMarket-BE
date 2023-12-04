@@ -92,10 +92,10 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: failure()
 
-      - name: Build & Test with Gradle
+      - name: Build JAR file for deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build -x test
+        run: ./gradlew clean build -x test
 
       - name: Make deployable artifact
         run: |
