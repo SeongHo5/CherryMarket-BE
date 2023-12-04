@@ -14,7 +14,7 @@ import static com.cherrydev.cherrymarketbe.notice.enums.NoticeStatus.DISPLAY;
 @Value
 @Builder
 public class NoticeRequestDto {
-
+    long noticeId;
     int code;
     String category;
     String subject;
@@ -36,6 +36,5 @@ public class NoticeRequestDto {
                 .hideDate(Timestamp.valueOf(this.getHideDate()))
                 .build();
     }
-
 
 }

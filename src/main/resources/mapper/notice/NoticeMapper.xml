@@ -21,8 +21,12 @@
         <selectKey keyProperty="noticeId" keyColumn="Notice_ID" resultType="Long" order="AFTER">
             select last_insert_id()
         </selectKey>
-        insert into NOTICE (NOTICE_CODE, NOTICE_CTGRY, NOTICE_SJ, NOTICE_CN, NOTICE_STTUS, NOTICE_BGNDE, NOTICE_ENDDE, )
+        insert into NOTICE (NOTICE_CODE, NOTICE_CTGRY, NOTICE_SJ, NOTICE_CN, NOTICE_STTUS, NOTICE_BGNDE, NOTICE_ENDDE)
         values (#{code}, #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
     </insert>
 
+    <!--    GET-->
+    <select id="getNoticeById" parameterType="Long" resultMap="noticeMap">
+        select * from NOTICE where NOTICE_ID = #{noticeId}
+    </select>
 </mapper>

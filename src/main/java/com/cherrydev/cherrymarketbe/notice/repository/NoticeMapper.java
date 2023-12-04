@@ -6,4 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface NoticeMapper {
     void insert(Notice notice);
+
+    Notice getNoticeById(Long noticeId);
 }
