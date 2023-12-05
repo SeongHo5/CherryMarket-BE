@@ -25,18 +25,18 @@
         <result property = "price" column = "GOODS_PRICE"/>
     </resultMap>
 
-    <insert id = "saveGoods" parameterType = "com.cherrydev.cherrymarketbe.goods.entity.Goods">
+    <insert id = "save" parameterType = "com.cherrydev.cherrymarketbe.goods.entity.Goods">
         insert into GOODS (GOODS_NM, GOODS_PRICE, GOODS_DC, GOODS_CSTDY_TY, GOODS_CPCY, GOODS_SPLPC, GOODS_EXPR_DE, GOODS_ALLERGY_INFO, GOODS_INVTRY, GOODS_ORGPLCE)
         values (#{goodsName}, #{price}, #{description}, #{storageType}, #{capacity}, #{retailPrice}, #{expDate}, #{allergyInfo},
                 #{inventory}, #{originPlace};
     </insert>
 
-    <select id = "findAllGoods" resultMap="GoodsListDtoMap">
+    <select id = "findAll" resultMap="GoodsListDtoMap">
         select GOODS_ID, GOODS_NM, GOODS_PRICE
         from GOODS;
     </select>
 
-    <delete id = "deleteGoodsById" parameterType = "Long">
+    <delete id = "deleteById" parameterType = "Long">
         delete
         from GOODS
         where GOODS_ID = #{goodsId};

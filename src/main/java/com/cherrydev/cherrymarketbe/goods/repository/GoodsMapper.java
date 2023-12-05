@@ -8,9 +8,9 @@ import java.util.List;
 
 @Mapper
 public interface GoodsMapper {
-    void saveGoods(Goods goods);
+    void save(Goods goods);
 
-    List<GoodsListDto> findAllGoods();
+    List<GoodsListDto> findAll();
 
-    void deleteGoodsById(Long goodsId);
+    void deleteById(Long goodsId);
 }

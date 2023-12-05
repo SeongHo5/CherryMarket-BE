@@ -19,35 +19,31 @@ public class MakerController {
 
     private final MakerService makerService;
 
-    @GetMapping("/makerlist")
+    @GetMapping("/list")
     public ResponseEntity<List<MakerDto>> getMakerList() {
-        List<MakerDto> makerList = makerService.findAll();
-        return ResponseEntity.ok(makerList);
+        return ResponseEntity.ok(makerService.findAll());
     }
 
-    @GetMapping("/makerinfo")
+    @GetMapping("/info")
     public ResponseEntity<MakerDto> getMakerInfo(@RequestParam String businessNumber) {
-        MakerDto makerDto = makerService.findByBusinessNumber(businessNumber);
-        return ResponseEntity.ok(makerDto);
+        return ResponseEntity.ok(makerService.findByBusinessNumber(businessNumber));
     }
 
-    @PostMapping("/addmaker")
+    @PostMapping("/add")
     public ResponseEntity<MakerDto> addMaker(final @Valid @RequestBody MakerDto makerDto) {
         makerService.save(makerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(makerDto);
     }
 
-    @GetMapping("/delmaker")
+    @GetMapping("/delete")
     public ResponseEntity<List<MakerDto>> delMaker(@RequestParam Long makerId) {
         makerService.deleteById(makerId);
-        List<MakerDto> makerList = makerService.findAll();
-        return ResponseEntity.ok(makerList);
+        return ResponseEntity.ok(makerService.findAll());
     }
 
-    @PostMapping("/updatemaker")
+    @PostMapping("/update")
     public ResponseEntity<List<MakerDto>> updateMaker(final  @Valid @RequestBody MakerDto makerDto) {
         makerService.updateById(makerDto);
-        List<MakerDto> makerList = makerService.findAll();
-        return ResponseEntity.ok(makerList);
+        return ResponseEntity.ok(makerService.findAll());
     }
 }

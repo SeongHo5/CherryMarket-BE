@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface GoodsService {
 
-    void addGoods(final GoodsDto GoodsDto);
+    void save(final GoodsDto goodsDto);
 
-    List<GoodsListDto> findAllGoods();
+    List<GoodsListDto> findAll();
 
-    void deleteGoodsById(Long goodsId);
+    void deleteById(Long goodsId);
 }

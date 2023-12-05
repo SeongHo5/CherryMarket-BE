@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Value;
 
-import javax.annotation.RegEx;
 
 @Value
 @Builder

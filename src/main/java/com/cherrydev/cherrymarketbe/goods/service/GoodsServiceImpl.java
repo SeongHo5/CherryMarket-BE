@@ -22,22 +22,21 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Override
     @Transactional
-    public void addGoods(final GoodsDto goodsDto) {
+    public void save(final GoodsDto goodsDto) {
         Goods goods = goodsDto.toEntity();
-        goodsMapper.saveGoods(goods);
+        goodsMapper.save(goods);
     }
 
     @Override
     @Transactional
-    public List<GoodsListDto> findAllGoods() {
-        List<GoodsListDto> goodsList = goodsMapper.findAllGoods();
-        return goodsList;
+    public List<GoodsListDto> findAll() {
+        return goodsMapper.findAll();
     }
 
     @Override
     @Transactional
-    public void deleteGoodsById(Long goodsId) {
-        goodsMapper.deleteGoodsById(goodsId);
+    public void deleteById(Long goodsId) {
+        goodsMapper.deleteById(goodsId);
 
     }
 }

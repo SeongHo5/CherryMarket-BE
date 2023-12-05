@@ -7,8 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,22 +20,22 @@ public class GoodsController {
     private final GoodsServiceImpl goodsService;
 
     /* Insert */
-    @PostMapping("/addgoods")
+    @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addGoods(final @Valid @RequestBody GoodsDto GoodsDto) {
-        goodsService.addGoods(GoodsDto);
+    public void save(final @Valid @RequestBody GoodsDto GoodsDto) {
+        goodsService.save(GoodsDto);
     }
     /* Select */
-    @GetMapping("/goodslist")
-    public List<GoodsListDto> getGoodsList(){
-        return goodsService.findAllGoods();
+    @GetMapping("/list")
+    public List<GoodsListDto> getList(){
+        return goodsService.findAll();
     }
 
     /* Delete */
     @DeleteMapping("/delgoods")
     @ResponseStatus(HttpStatus.CREATED)
-    public void delGoods(Long goodsId) {
-        goodsService.deleteGoodsById(goodsId);
+    public void delete(Long goodsId) {
+        goodsService.deleteById(goodsId);
     }
 
 }
