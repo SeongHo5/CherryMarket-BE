@@ -12,8 +12,8 @@
         <result property="status" column="NOTICE_STTUS"/>
         <result property="displayDate" column="NOTICE_BGNDE"/>
         <result property="hideDate" column="NOTICE_ENDDE"/>
-        <result property="createNt" column="CREAT_DE"/>
-        <result property="deleteNt" column="DELETED_DE"/>
+        <result property="createDate" column="CREAT_DE"/>
+        <result property="deleteDate" column="DELETED_DE"/>
     </resultMap>
 
 

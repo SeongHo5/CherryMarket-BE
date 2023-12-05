@@ -20,7 +20,7 @@ public class NoticeRequestDto {
 
     public Notice toEntity() {
         return Notice.builder()
-                .code("001")
+//                .code("001")
                 .category(NoticeCategory.valueOf(this.getCategory()))
                 .subject(this.getSubject())
                 .content(this.getContent())

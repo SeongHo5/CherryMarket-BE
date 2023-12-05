@@ -19,8 +19,8 @@ public class NoticeInfoDto {
     String status;
     String displayDate;
     String hideDate;
-    String createNt;
-    String deleteNt;
+    String createDate;
+    String deleteDate;
 
     public NoticeInfoDto(Notice notice) {
         this.noticeId = notice.getNoticeId();
@@ -31,8 +31,8 @@ public class NoticeInfoDto {
         this.status = notice.getStatus().toString();
         this.displayDate = timeStampToString(notice.getDisplayDate());
         this.hideDate = timeStampToString(notice.getHideDate());
-        this.createNt = timeStampToString(notice.getCreateNt());
-        this.deleteNt = notice.getDeleteNt() != null ? timeStampToString(notice.getDeleteNt()) : null;
+        this.createDate = timeStampToString(notice.getCreateDate());
+        this.deleteDate = notice.getDeleteDate() != null ? timeStampToString(notice.getDeleteDate()) : null;
     }
     public static List<NoticeInfoDto> convertToDtoList(List<Notice> noticeList) {
         return noticeList.stream()

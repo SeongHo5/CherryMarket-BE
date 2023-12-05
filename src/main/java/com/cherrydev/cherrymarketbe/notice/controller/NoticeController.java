@@ -32,7 +32,6 @@ public class NoticeController {
     // 조회 - 아이디
     @GetMapping("/notice-info/search-id")
     public ResponseEntity<NoticeInfoDto> getNoticeInfoById(@RequestParam Long noticeId) {
-        log.info("{} 공지사항 조회 했음", noticeId);
         return noticeService.getNoticeInfo(noticeId);
     }
 
@@ -58,7 +57,7 @@ public class NoticeController {
       return noticeService.modifyNotice(requestDto, noticeId);
     }
 
-    // 삭제
+    // 삭제 - 아이디
     @DeleteMapping("/delete-notice")
     @ResponseStatus(HttpStatus.OK)
     public void deleteNotice(@RequestParam Long noticeId) {

@@ -61,7 +61,6 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public void deleteNotice(final Long noticeId) {
         noticeMapper.delete(noticeId);
-        log.info("Notice deleted with id: {}", noticeId);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .status(DisplayStatus.ACTIVE)
                 .displayDate(Timestamp.valueOf(modifyDto.getDisplayDate()))
                 .hideDate(Timestamp.valueOf(modifyDto.getHideDate()))
-                .deleteNt(null)
+                .deleteDate(null)
                 .build();
 
         noticeMapper.update(newNotice);
