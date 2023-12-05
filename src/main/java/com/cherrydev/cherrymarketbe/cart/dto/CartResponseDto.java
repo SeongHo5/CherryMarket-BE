@@ -4,6 +4,8 @@ import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.cart.entity.TestDiscount;
 import com.cherrydev.cherrymarketbe.cart.entity.TestGoods;
 
+import java.util.Optional;
+
 public record CartResponseDto(
         Long cartId,
         Long goodsId,
@@ -15,7 +17,7 @@ public record CartResponseDto(
         Integer inventory,
         Long discountId,
         String discountType,
-        Integer disountRate
+        Integer discountRate
 ) {
 
     // TODO : Goods, Discount entity 불러오기
@@ -24,6 +26,21 @@ public record CartResponseDto(
 
         TestGoods goods = cart.getGoods();
         TestDiscount discount = goods.getDiscount();
+
+        Long discountId = Optional
+                .ofNullable(discount)
+                .map(TestDiscount::getDiscountId)
+                .orElse(0L);
+
+        String discountType = Optional
+                .ofNullable(discount)
+                .map(TestDiscount::getDiscountType)
+                .orElse("");
+
+        Integer discountRate = Optional
+                .ofNullable(discount)
+                .map(TestDiscount::getDiscountRate)
+                .orElse(0);
 
         return new CartResponseDto(
                 cart.getCartId(),
@@ -34,9 +51,9 @@ public record CartResponseDto(
                 cart.getQuantity(),
                 goods.getPrice(),
                 goods.getInventory(),
-                discount.getDiscountId(),
-                discount.getDiscountType(),
-                discount.getDiscountRate()
+                discountId,
+                discountType,
+                discountRate
         );
 
     }
