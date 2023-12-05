@@ -13,8 +13,7 @@ public interface NoticeMapper {
 
     Notice findByNoticeId(Long noticeId);
     Notice findByNoticeCode(String noticeCode);
-
-    List<NoticeInfoDto> findAll();
+    List<Notice> findAll();
 
     void delete(Long noticeId);
 

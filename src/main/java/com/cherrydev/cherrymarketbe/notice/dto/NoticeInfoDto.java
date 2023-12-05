@@ -4,6 +4,8 @@ package com.cherrydev.cherrymarketbe.notice.dto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import lombok.Getter;
 
+import java.util.List;
+
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
 
 
@@ -20,7 +22,6 @@ public class NoticeInfoDto {
     String createNt;
     String deleteNt;
 
-
     public NoticeInfoDto(Notice notice) {
         this.noticeId = notice.getNoticeId();
         this.code = notice.getCode();
@@ -33,6 +34,9 @@ public class NoticeInfoDto {
         this.createNt = timeStampToString(notice.getCreateNt());
         this.deleteNt = notice.getDeleteNt() != null ? timeStampToString(notice.getDeleteNt()) : null;
     }
-
-
+    public static List<NoticeInfoDto> convertToDtoList(List<Notice> noticeList) {
+        return noticeList.stream()
+                .map(NoticeInfoDto::new)
+                .toList();
+    }
 }

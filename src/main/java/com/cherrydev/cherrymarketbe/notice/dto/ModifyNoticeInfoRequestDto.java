@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class ModifyNoticeInfoRequestDto {
-//    long noticeId;
     String code;
     String category;
     String subject;
@@ -16,7 +15,6 @@ public class ModifyNoticeInfoRequestDto {
 
 
     public ModifyNoticeInfoRequestDto( String category, String subject, String content, String displayDate, String hideDate) {
-//        this.code = code;
         this.category = category;
         this.subject = subject;
         this.content = content;

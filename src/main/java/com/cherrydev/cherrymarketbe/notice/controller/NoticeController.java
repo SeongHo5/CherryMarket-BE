@@ -49,7 +49,7 @@ public class NoticeController {
         return noticeService.findAll();
     }
 
-
+    // 수정
     @PatchMapping("/modify")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<NoticeInfoDto> modifyNotice(

@@ -1,20 +1,15 @@
 package com.cherrydev.cherrymarketbe.notice.dto;
 
-
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
 import lombok.Builder;
 import lombok.Value;
-
 import java.sql.Timestamp;
-
-
 
 @Value
 @Builder
 public class NoticeRequestDto {
-//    long noticeId;
     String code;
     String category;
     String subject;
@@ -23,10 +18,7 @@ public class NoticeRequestDto {
     String displayDate;
     String hideDate;
 
-
-
     public Notice toEntity() {
-//        String noticeCode = (this.getCode() == null) ? "001" : this.getCode();
         return Notice.builder()
                 .code("001")
                 .category(NoticeCategory.valueOf(this.getCategory()))
