@@ -1,36 +1,44 @@
 package com.cherrydev.cherrymarketbe.cart.dto;
 
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
+import com.cherrydev.cherrymarketbe.cart.entity.TestDiscount;
 import com.cherrydev.cherrymarketbe.cart.entity.TestGoods;
-import com.cherrydev.cherrymarketbe.cart.enums.CustodyType;
-
-import java.math.BigDecimal;
 
 public record CartResponseDto(
-        Long accountId,
-        Integer quantity,
+        Long cartId,
         Long goodsId,
+        String goodsStatus,
+        String custodyType,
         String goodsName,
-        BigDecimal goodsPrice,
-        CustodyType custodyType
-//        Long discountId,
-//        BigDecimal discountRate
+        Integer quantity,
+        Integer price,
+        Integer inventory,
+        Long discountId,
+        String discountType,
+        Integer disountRate
 ) {
 
     // TODO : Goods, Discount entity 불러오기
 
-    public static CartResponseDto fromCart(Cart cart) {
-        TestGoods goods = cart.getGoods();
+    public static CartResponseDto createResponseForListing(Cart cart) {
 
-        //Discount discount = cart.getDiscount();
+        TestGoods goods = cart.getGoods();
+        TestDiscount discount = goods.getDiscount();
 
         return new CartResponseDto(
-                cart.getAccountId(),
-                cart.getQuantity(),
+                cart.getCartId(),
                 goods.getGoodsId(),
+                goods.getGoodsStatus(),
+                goods.getCustodyType(),
                 goods.getGoodsName(),
+                cart.getQuantity(),
                 goods.getPrice(),
-                goods.getCustodyType());
+                goods.getInventory(),
+                discount.getDiscountId(),
+                discount.getDiscountType(),
+                discount.getDiscountRate()
+        );
+
     }
 
 }

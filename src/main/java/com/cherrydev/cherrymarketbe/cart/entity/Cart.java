@@ -19,25 +19,71 @@ public class Cart {
 
     private TestGoods goods;
 
-    //private Discount discount;
+    public static class CartUpdateBuilder {
+        private Long cartId;
+        private Integer quantity;
 
-    private Timestamp createdAt;
+        public CartUpdateBuilder cartId(Long cartId) {
+            this.cartId = cartId;
+            return this;
+        }
 
-    private Timestamp updatedAt;
+        public CartUpdateBuilder quantity(Integer quantity) {
+            this.quantity = quantity;
+            return this;
+        }
 
-    @Builder
-    public Cart(Long accountId, Integer quantity
-                ,TestGoods goods
-            //, Discount discount,
-                ) {
-        this.accountId = accountId;
-        this.quantity = quantity;
-        this.goods = goods;
-//        this.discount = discount;
+
+        public Cart build() {
+            Cart cart = new Cart();
+            cart.cartId = this.cartId;
+            cart.quantity = this.quantity;
+
+            return cart;
+        }
     }
 
-    public Cart updateGoodsQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public static class CartCreateBuilder {
+        private Long accountId;
+        private Integer quantity;
+        private TestGoods goods;
+
+
+        public CartCreateBuilder accountId(Long accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public CartCreateBuilder quantity(Integer quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public CartCreateBuilder goods(TestGoods goods) {
+            this.goods = goods;
+            return this;
+        }
+
+        public Cart build() {
+            Cart cart = new Cart();
+            cart.accountId = this.accountId;
+            cart.quantity = this.quantity;
+            cart.goods = this.goods;
+
+            return cart;
+        }
+    }
+
+    public static CartUpdateBuilder builderUpdate(){
+        return new CartUpdateBuilder();
+    }
+
+    public static CartCreateBuilder builderCreate(){
+        return new CartCreateBuilder();
+    }
+
+    public Cart updateQuantity(Integer newQuantity) {
+        this.quantity = newQuantity;
         return this;
     }
 

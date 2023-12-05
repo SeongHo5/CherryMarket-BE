@@ -6,15 +6,64 @@
 
     <resultMap id="cartResultMap" type="com.cherrydev.cherrymarketbe.cart.entity.Cart">
         <result property="cartId" column="CART_ID"/>
-        <result property="accountId" column="ACNT_ID"/>
-        <result property="goodsId" column="GOODS_ID"/>
-        <result property="goodsQuantity" column="CART_QY"/>
-        <result property="createdAt" column="CREAT_DE"/>
-        <result property="updatedAt" column="UPDT_DE"/>
+        <result property="quantity" column="CART_QY"/>
+
+        <association property="goods" javaType="com.cherrydev.cherrymarketbe.cart.entity.TestGoods">
+            <result property="goodsId" column="GOODS_ID"/>
+            <result property="goodsName" column="GOODS_NM"/>
+            <result property="price" column="GOODS_PRICE"/>
+            <result property="inventory" column="GOODS_INVTRY"/>
+            <result property="custodyType" column="GOODS_CSTDY_TY"/>
+            <result property="goodsStatus" column="GOODS_SEL_STTUS"/>
+
+            <association property="discount" notNullColumn="DSCNT_ID" javaType="com.cherrydev.cherrymarketbe.cart.entity.TestDiscount">
+                <result property="discountId" column="DSCNT_ID"/>
+                <result property="discountType" column="DSCNT_TY"/>
+                <result property="discountRate" column="DSCNT_RATE"/>
+            </association>
+        </association>
     </resultMap>
 
-    <select id="findCartsByAccountId" resultMap="cartResultMap">
-        select * from cart where account_id = #{accountId}
+    <select id="findCartsByAccountId" parameterType="Long" resultMap="cartResultMap">
+        select
+            cart.CART_ID,
+            goods.GOODS_ID,
+            goods.GOODS_SEL_STTUS,
+            goods.GOODS_NM,
+            goods.GOODS_CSTDY_TY,
+            cart.CART_QY,
+            goods.GOODS_PRICE,
+            goods.GOODS_INVTRY,
+            discount.DSCNT_ID,
+            discount.DSCNT_TY,
+            discount.DSCNT_RATE
+        from  CART cart
+                  join GOODS goods on cart.GOODS_ID = goods.GOODS_ID
+                  left join DSCNT discount on goods.GOODS_DSCNT_ID = discount.DSCNT_ID
+        where ACNT_ID = #{accountId};
     </select>
+
+    <select id="findByCartId">
+        select CART_QY
+        from CART
+        where CART_ID = #{cartId}
+    </select>
+
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+        insert into CART (ACNT_ID, GOODS_ID, CART_QY, CREAT_DE, UPDT_DE)
+        values (#{accountId}, #{goods.goodsId}, #{quantity}, now(), now())
+    </insert>
+
+    <update id="updateQuantity" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+        update CART
+        SET CART_QY = #{quantity}, UPDT_DE = now()
+        WHERE CART_ID = #{cartId};
+    </update>
+
+    <delete id="deleteByCartId">
+        delete
+        from CART
+        where CART_ID = #{cartId}
+    </delete>
 
 </mapper>
