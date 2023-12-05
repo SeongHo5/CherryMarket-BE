@@ -22,7 +22,7 @@ public record CartResponseDto(
 
     // TODO : Goods, Discount entity 불러오기
 
-    public static CartResponseDto createCartListItemResponse(Cart cart) {
+    public static CartResponseDto getCartsList(Cart cart) {
 
         TestGoods goods = cart.getGoods();
         TestDiscount discount = goods.getDiscount();

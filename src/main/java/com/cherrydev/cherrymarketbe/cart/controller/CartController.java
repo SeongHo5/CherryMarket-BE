@@ -31,16 +31,18 @@ public class CartController {
             final @RequestParam Long accountId
             //final @RequestBody CartRequestDto requestDto
             //final @AuthenticationPrincipal AccountDetails accountDetails
-    ){
-        return cartService.getAvailableCartItems(accountId);
+    ){  Map<String, List<CartResponseDto>> availableCarts = cartService.getAvailableCarts(accountId);
+        return ResponseEntity.ok(availableCarts);
+
         //return cartService.getCartItems(accountDetails);
     }
 
     @PostMapping("/refresh-unavailable")
-    public ResponseEntity<List<CartResponseDto>> getUnavailableCartItems (
+    public ResponseEntity<List<CartResponseDto>> getUnavailableCarts (
             final @RequestParam Long accountId
     ){
-        return cartService.getUnAvailableCartItems(accountId);
+        List<CartResponseDto> unavailableCarts = cartService.getUnAvailableCarts(accountId);
+        return ResponseEntity.ok(unavailableCarts);
     }
 
     @PostMapping("/add")

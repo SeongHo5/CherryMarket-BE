@@ -26,27 +26,25 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public ResponseEntity<Map<String, List<CartResponseDto>>> getAvailableCartItems(Long accountId){
+    public Map<String, List<CartResponseDto>> getAvailableCarts(Long accountId){
 
         List<Cart> cartItems = cartMapper.findCartsByAccountId(accountId);
-        Map<String,List<CartResponseDto>> groupByStorageTypeItems = cartItems.stream()
+
+        return cartItems.stream()
                 .filter(this::isGoodsAvailable)
                 .map(this::convertToResponseDto)
                 .collect(Collectors.groupingBy(CartResponseDto::storageType));
-
-        return ResponseEntity.ok(groupByStorageTypeItems);
     }
     @Transactional
     @Override
-    public ResponseEntity<List<CartResponseDto>> getUnAvailableCartItems(Long accountId){
+    public List<CartResponseDto> getUnAvailableCarts(Long accountId){
 
         List<Cart> cartItems = cartMapper.findCartsByAccountId(accountId);
-        List<CartResponseDto> unavailableCartItems = cartItems.stream()
+
+        return cartItems.stream()
                 .filter(cart -> !isGoodsAvailable(cart))
                 .map(this::convertToResponseDto)
                 .toList();
-
-        return ResponseEntity.ok(unavailableCartItems);
     }
 
     @Transactional
@@ -76,7 +74,7 @@ public class CartServiceImpl implements CartService {
     }
 
     private CartResponseDto convertToResponseDto(Cart cart) {
-        return CartResponseDto.createCartListItemResponse(cart);
+        return CartResponseDto.getCartsList(cart);
     }
 
 }

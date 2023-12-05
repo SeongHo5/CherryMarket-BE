@@ -29,7 +29,6 @@ public class Cart {
             return this;
         }
 
-
         public Cart build() {
             Cart cart = new Cart();
             cart.cartId = this.cartId;
