@@ -13,8 +13,8 @@
             <result property="goodsName" column="GOODS_NM"/>
             <result property="price" column="GOODS_PRICE"/>
             <result property="inventory" column="GOODS_INVTRY"/>
-            <result property="custodyType" column="GOODS_CSTDY_TY"/>
-            <result property="goodsStatus" column="GOODS_SEL_STTUS"/>
+            <result property="storageType" column="GOODS_CSTDY_TY"/>
+            <result property="salesStatus" column="GOODS_SEL_STTUS"/>
 
             <association property="discount" notNullColumn="DSCNT_ID" javaType="com.cherrydev.cherrymarketbe.cart.entity.TestDiscount">
                 <result property="discountId" column="DSCNT_ID"/>

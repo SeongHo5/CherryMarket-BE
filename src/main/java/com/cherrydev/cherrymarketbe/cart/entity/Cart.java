@@ -1,11 +1,7 @@
 package com.cherrydev.cherrymarketbe.cart.entity;
 
-
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
 
 @Getter
 @NoArgsConstructor
@@ -80,11 +76,6 @@ public class Cart {
 
     public static CartCreateBuilder builderCreate(){
         return new CartCreateBuilder();
-    }
-
-    public Cart updateQuantity(Integer newQuantity) {
-        this.quantity = newQuantity;
-        return this;
     }
 
 }

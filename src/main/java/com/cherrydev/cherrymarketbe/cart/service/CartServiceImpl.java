@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.cart.service;
 
 import com.cherrydev.cherrymarketbe.cart.dto.CartRequestDto;
-import com.cherrydev.cherrymarketbe.cart.dto.CartRequestUpdateDto;
+import com.cherrydev.cherrymarketbe.cart.dto.CartRequestChangeDto;
 import com.cherrydev.cherrymarketbe.cart.dto.CartResponseDto;
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.cart.repository.CartMapper;
@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -24,17 +26,27 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    //public ResponseEntity<List<CartResponseDto>> getCartItems(AccountDetails accountDetails) {
-    public ResponseEntity<List<CartResponseDto>> getCartItems(Long accountId) {
+    public ResponseEntity<Map<String, List<CartResponseDto>>> getAvailableCartItems(Long accountId){
 
-        //List<Cart> cartItems = cartMapper.findCartsByAccountId(accountDetails.getAccount().getAccountId());
         List<Cart> cartItems = cartMapper.findCartsByAccountId(accountId);
-        List<CartResponseDto> responseDtos = cartItems.stream()
+        Map<String,List<CartResponseDto>> groupByStorageTypeItems = cartItems.stream()
                 .filter(this::isGoodsAvailable)
+                .map(this::convertToResponseDto)
+                .collect(Collectors.groupingBy(CartResponseDto::storageType));
+
+        return ResponseEntity.ok(groupByStorageTypeItems);
+    }
+    @Transactional
+    @Override
+    public ResponseEntity<List<CartResponseDto>> getUnAvailableCartItems(Long accountId){
+
+        List<Cart> cartItems = cartMapper.findCartsByAccountId(accountId);
+        List<CartResponseDto> unavailableCartItems = cartItems.stream()
+                .filter(cart -> !isGoodsAvailable(cart))
                 .map(this::convertToResponseDto)
                 .toList();
 
-        return ResponseEntity.ok(responseDtos);
+        return ResponseEntity.ok(unavailableCartItems);
     }
 
     @Transactional
@@ -46,25 +58,25 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public void updateQuantity(CartRequestUpdateDto requestUpdateDto) {
-        Cart cart = requestUpdateDto.toEntity();
+    public void updateQuantity(CartRequestChangeDto requestChangeDto) {
+        Cart cart = requestChangeDto.toEntity();
         cartMapper.updateQuantity(cart);
 
     }
 
     @Transactional
     @Override
-    public ResponseEntity<Void> deleteCartItem(Long cartId) {
-        cartMapper.deleteByCartId(cartId);
-        return ResponseEntity.noContent().build();
+    public void deleteCartItem(CartRequestChangeDto requestChangeDto) {
+        Cart cart = requestChangeDto.toEntity();
+        cartMapper.deleteByCartId(cart);
     }
 
     public boolean isGoodsAvailable(Cart cart) {
-        return cart.getGoods().getGoodsStatus().equals("ON_SALE");
+        return cart.getGoods().getSalesStatus().equals("ON_SALE");
     }
 
     private CartResponseDto convertToResponseDto(Cart cart) {
-        return CartResponseDto.createResponseForListing(cart);
+        return CartResponseDto.createCartListItemResponse(cart);
     }
 
 }

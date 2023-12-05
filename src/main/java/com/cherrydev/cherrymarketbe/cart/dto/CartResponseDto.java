@@ -7,8 +7,8 @@ import com.cherrydev.cherrymarketbe.cart.entity.TestGoods;
 public record CartResponseDto(
         Long cartId,
         Long goodsId,
-        String goodsStatus,
-        String custodyType,
+        String salesStatus,
+        String storageType,
         String goodsName,
         Integer quantity,
         Integer price,
@@ -20,7 +20,7 @@ public record CartResponseDto(
 
     // TODO : Goods, Discount entity 불러오기
 
-    public static CartResponseDto createResponseForListing(Cart cart) {
+    public static CartResponseDto createCartListItemResponse(Cart cart) {
 
         TestGoods goods = cart.getGoods();
         TestDiscount discount = goods.getDiscount();
@@ -28,8 +28,8 @@ public record CartResponseDto(
         return new CartResponseDto(
                 cart.getCartId(),
                 goods.getGoodsId(),
-                goods.getGoodsStatus(),
-                goods.getCustodyType(),
+                goods.getSalesStatus(),
+                goods.getStorageType(),
                 goods.getGoodsName(),
                 cart.getQuantity(),
                 goods.getPrice(),

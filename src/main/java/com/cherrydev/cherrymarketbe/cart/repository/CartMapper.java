@@ -1,7 +1,6 @@
 package com.cherrydev.cherrymarketbe.cart.repository;
 
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
-import com.cherrydev.cherrymarketbe.cart.entity.TestGoods;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -15,7 +14,7 @@ public interface CartMapper {
 
    void updateQuantity(Cart cart);
 
-   void deleteByCartId(Long cartId);
+   void deleteByCartId(Cart cart);
 
 
 }

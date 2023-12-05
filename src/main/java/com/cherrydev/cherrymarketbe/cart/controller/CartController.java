@@ -1,11 +1,10 @@
 package com.cherrydev.cherrymarketbe.cart.controller;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
+
 import com.cherrydev.cherrymarketbe.cart.dto.CartRequestDto;
-import com.cherrydev.cherrymarketbe.cart.dto.CartRequestUpdateDto;
+import com.cherrydev.cherrymarketbe.cart.dto.CartRequestChangeDto;
 import com.cherrydev.cherrymarketbe.cart.dto.CartResponseDto;
-import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.cart.service.CartServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -25,15 +25,22 @@ public class CartController {
 
     private AccountDetails accountDetails;
 
-    @PostMapping("/refresh")
+    @PostMapping("/refresh-available")
     //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity< List<CartResponseDto>> getCartItems (
+    public ResponseEntity<Map<String, List<CartResponseDto>>> getAvailableCartItems (
             final @RequestParam Long accountId
             //final @RequestBody CartRequestDto requestDto
             //final @AuthenticationPrincipal AccountDetails accountDetails
     ){
-        return cartService.getCartItems(accountId);
+        return cartService.getAvailableCartItems(accountId);
         //return cartService.getCartItems(accountDetails);
+    }
+
+    @PostMapping("/refresh-unavailable")
+    public ResponseEntity<List<CartResponseDto>> getUnavailableCartItems (
+            final @RequestParam Long accountId
+    ){
+        return cartService.getUnAvailableCartItems(accountId);
     }
 
     @PostMapping("/add")
@@ -45,15 +52,16 @@ public class CartController {
 
     @PatchMapping("/update")
     public ResponseEntity<Void> updateQuantity (
-            final @RequestBody CartRequestUpdateDto requestUpdateDto)  {
-        cartService.updateQuantity(requestUpdateDto);
-        return ResponseEntity.ok().build();
+            final @RequestBody CartRequestChangeDto requestChangeDto)  {
+        cartService.updateQuantity(requestChangeDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteCartItem (
-            final @RequestParam Long cartId){
-        return cartService.deleteCartItem(cartId);
+            final @RequestBody CartRequestChangeDto requestChangeDto){
+        cartService.deleteCartItem(requestChangeDto);
+        return ResponseEntity.noContent().build();
     }
 
 }
