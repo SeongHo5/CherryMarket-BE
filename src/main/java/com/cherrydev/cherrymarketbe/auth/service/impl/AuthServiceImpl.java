@@ -1,10 +1,14 @@
-package com.cherrydev.cherrymarketbe.auth.service;
+package com.cherrydev.cherrymarketbe.auth.service.impl;
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.account.enums.UserStatus;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
+import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInResponseDto;
+import com.cherrydev.cherrymarketbe.auth.service.AuthService;
+import com.cherrydev.cherrymarketbe.common.event.AccountRegistrationEvent;
+import com.cherrydev.cherrymarketbe.common.event.PasswordResetEvent;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
@@ -13,6 +17,7 @@ import com.cherrydev.cherrymarketbe.common.service.RedisService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,10 +37,12 @@ import static org.springframework.beans.propertyeditors.CustomBooleanEditor.VALU
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
+    private final AccountServiceImpl accountService;
     private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
+    private final ApplicationEventPublisher eventPublisher;
 
     private static final int NEW_PASSWORD_LENGTH = 12;
 
@@ -52,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
     ) {
         String email = signInRequestDto.getEmail();
         String requestedPassword = signInRequestDto.getPassword();
-        Account account = findAccountByEmail(email);
+        Account account = accountService.findAccountByEmail(email);
 
         checkUserStatusByEmail(account);
         checkPasswordIsCorrect(requestedPassword, account);
@@ -128,6 +135,7 @@ public class AuthServiceImpl implements AuthService {
      * @param verificationCode 인증 코드
      * @return 재설정된 비밀번호
      */
+    @Override
     @Transactional
     public ResponseEntity<String> verifyPasswordResetEmail(
             final String email,
@@ -138,13 +146,17 @@ public class AuthServiceImpl implements AuthService {
         String newPassword = generateRandomPassword(NEW_PASSWORD_LENGTH);
         String encodedPassword = passwordEncoder.encode(newPassword);
 
-        Account account = findAccountByEmail(email);
+        Account account = accountService.findAccountByEmail(email);
         account.updatePassword(encodedPassword);
         accountMapper.updateAccountInfo(account);
-
+        publishPasswordResetEvent(account);
         return ResponseEntity
                 .ok()
                 .body(newPassword);
+    }
+    private void publishPasswordResetEvent(Account account) {
+        PasswordResetEvent event = new PasswordResetEvent(this, account.getEmail());
+        eventPublisher.publishEvent(event);
     }
 
     /**
@@ -155,6 +167,7 @@ public class AuthServiceImpl implements AuthService {
      * @param email 인증 코드를 보냈던 이메일
      * @param code  검증할(사용자가 입력한) 인증 코드
      */
+    @Override
     public ResponseEntity<Void> verifyEmail(final String email, final String code) {
         String validCode = redisService.getData(PREFIX_VERIFY + email);
         if (!code.equals(validCode)) {
@@ -166,17 +179,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // =============== PRIVATE METHODS =============== //
-
-    /**
-     * 이메일로 사용자를 조회한다.
-     *
-     * @param email 사용자 이메일
-     * @return 조회된 사용자
-     */
-    private Account findAccountByEmail(final String email) {
-        return accountMapper.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
-    }
 
     /**
      * 계정의 상태를 검증한다.

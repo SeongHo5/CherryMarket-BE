@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.auth.controller;
 
 import com.cherrydev.cherrymarketbe.auth.dto.*;
-import com.cherrydev.cherrymarketbe.auth.service.AuthServiceImpl;
+import com.cherrydev.cherrymarketbe.auth.service.impl.AuthServiceImpl;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtReissueResponseDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.service.EmailService;

@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.common.service;
 
+import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthTokenResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Map;
+
+import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.OAUTH_KAKAO_PREFIX;
+import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.OAUTH_KAKAO_REFRESH_PREFIX;
 
 
 @Service
@@ -69,19 +73,33 @@ public class RedisService {
         stringRedisTemplate.delete(key);
     }
 
-    public void addHashData(String key, String id, String endTime) {
-        HashOperations<String, String, String> valueOperations = redisTemplate.opsForHash();
-        valueOperations.put(key, id, endTime);
-    }
+    // ==================== REDIS - OAUTH ==================== //
+    /**
+     * OAuth 인증 토큰을 Redis에 저장한다.
+     *
+     * @param oAuthTokenResponseDto OAuth 인증 토큰
+     * @param email                 사용자 이메일
+     */
+    public void saveTokenToRedis(
+            final OAuthTokenResponseDto oAuthTokenResponseDto,
+            final String email
+    ) {
+        String accessToken = oAuthTokenResponseDto.getAccessToken();
+        Long expiresIn = oAuthTokenResponseDto.getExpiresIn();
 
-    public Map<String, String> getAllHashData(String key) {
-        HashOperations<String, String, String> valueOperations = redisTemplate.opsForHash();
-        return valueOperations.entries(key);
-    }
+        String refreshToken = oAuthTokenResponseDto.getRefreshToken();
+        Long refreshTokenExpiresIn = oAuthTokenResponseDto.getRefreshTokenExpiresIn();
 
-    public void deleteHashData(String key, String id) {
-        HashOperations<String, String, String> valueOperations = redisTemplate.opsForHash();
-        valueOperations.delete(key, id);
+        setDataExpire(OAUTH_KAKAO_PREFIX + email, accessToken, expiresIn);
+        setDataExpire(OAUTH_KAKAO_REFRESH_PREFIX + email, refreshToken, refreshTokenExpiresIn);
     }
-
+    /**
+     * Redis에 저장된 OAuth 인증 토큰을 삭제한다.
+     *
+     * @param email 사용자 이메일
+     */
+    public void deleteKakaoTokenFromRedis(final String email) {
+        deleteData(OAUTH_KAKAO_PREFIX + email);
+        deleteData(OAUTH_KAKAO_REFRESH_PREFIX + email);
+    }
 }

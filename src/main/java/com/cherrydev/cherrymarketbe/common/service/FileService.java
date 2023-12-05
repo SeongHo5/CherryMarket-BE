@@ -35,6 +35,16 @@ public class FileService {
     private static final String DIRECTORY_SEPARATOR = "/";
 
     /**
+     * 파일 URL 가져오기
+     *
+     * @param fileName 파일 이름(확장자 포함)
+     * @param dirName  파일이 있는 디렉토리 이름
+     */
+    public String getUrl(String fileName, String dirName) {
+        return objectStorageClient.getResourceUrl(BUCKET_NAME, dirName + DIRECTORY_SEPARATOR + fileName);
+    }
+
+    /**
      * 단일 파일 업로드
      *
      * @param multipartFile 업로드할 파일(이미지만 가능)
@@ -94,8 +104,24 @@ public class FileService {
         return null;
     }
 
+    /**
+     * 단일 파일 삭제
+     *
+     * @param url     파일 URL
+     * @param dirName 삭제할 파일이 있는 디렉토리 이름
+     */
     public void deleteSingleFile(String url, String dirName) {
+        checkFileExist(url);
         deleteFileFromBucket(url, dirName);
+    }
+
+    /**
+     * 다중 파일 삭제
+     * @param urls 파일 URL 목록
+     * @param dirName 삭제할 파일이 있는 디렉토리 이름
+     */
+    public void deleteMultipleFiles(List<String> urls, String dirName) {
+        urls.forEach(url -> deleteFileFromBucket(url, dirName));
     }
 
     // ============== PRIVATE METHODS ==============
@@ -111,7 +137,7 @@ public class FileService {
     }
 
     /**
-     * Object Storage 단일 파일 삭제 처리
+     * Object Storage 파일 삭제 처리
      */
     private void deleteFileFromBucket(String url, String dirName) {
         final String[] split = url.split("/");
@@ -119,6 +145,17 @@ public class FileService {
         DeleteObjectRequest request = new DeleteObjectRequest(BUCKET_NAME, fileName);
         log.info("Deleted Image from Object Storage : " + request);
         objectStorageClient.deleteObject(request);
+    }
+
+    // ------ VALIDATION ------ //
+
+    /**
+     * 단일 파일 업로드 시 파일 null 체크
+     */
+    private void checkFileExist(MultipartFile multipartFile) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            throw new ServiceFailedException(NO_FILE_TO_UPLOAD);
+        }
     }
 
     /**
@@ -133,11 +170,12 @@ public class FileService {
     }
 
     /**
-     * 단일 파일 업로드 시 파일 null 체크
+     * 파일 삭제 시 파일 존재 여부 체크
      */
-    private void checkFileExist(MultipartFile multipartFile) {
-        if (multipartFile == null || multipartFile.isEmpty()) {
-            throw new ServiceFailedException(NO_FILE_TO_UPLOAD);
+    private void checkFileExist(String url) {
+        boolean isExist = objectStorageClient.doesObjectExist(BUCKET_NAME, url);
+        if (!isExist) {
+            throw new ServiceFailedException(NOT_FOUND_FILE);
         }
     }
 
@@ -170,4 +208,6 @@ public class FileService {
             throw new ServiceFailedException(FILE_TOO_LARGE);
         }
     }
+
+
 }

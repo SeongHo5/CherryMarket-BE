@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.RewardMapper">
+    <resultMap id="rewardMap" type="com.cherrydev.cherrymarketbe.customer.entity.CustomerReward">
+        <result property="rewardId" column="CSTMR_REWARD_ID"/>
+        <result property="accountId" column="ACNT_ID"/>
+        <result property="rewardGrantType" column="CSTMR_REWARD_TY"/>
+        <result property="amounts" column="CSTMR_REWARD_AMOUNT"/>
+        <result property="earnedAt" column="CSTMR_REWARD_ACCML_DE"/>
+        <result property="expiredAt" column="CSTMR_REWARD_END_DE"/>
+        <result property="isUsed" column="CSTMR_REWARD_USE_AT"/>
+        <result property="usedAt" column="CSTMR_REWARD_USE_DE"/>
+        <result property="createdAt" column="CREAT_DE"/>
+        <result property="updatedAt" column="UPDT_DE"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerReward">
+        INSERT INTO CSTMR_REWARD (ACNT_ID,
+                                  CSTMR_REWARD_TY,
+                                  CSTMR_REWARD_AMOUNT,
+                                  CSTMR_REWARD_ACCML_DE,
+                                  CSTMR_REWARD_END_DE,
+                                  CSTMR_REWARD_USE_AT)
+        VALUES (#{accountId},
+                #{rewardGrantType},
+                #{amounts},
+                #{earnedAt},
+                #{expiredAt},
+                #{isUsed})
+    </insert>
+
+    <select id="findAllByAccount" resultMap="rewardMap" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+        SELECT CSTMR_REWARD_ID,
+               ACNT_ID,
+               CSTMR_REWARD_TY,
+               CSTMR_REWARD_AMOUNT,
+               CSTMR_REWARD_ACCML_DE,
+               CSTMR_REWARD_END_DE,
+               CSTMR_REWARD_USE_AT,
+               CSTMR_REWARD_USE_DE,
+               CREAT_DE,
+               UPDT_DE
+        FROM CSTMR_REWARD
+        WHERE ACNT_ID = #{accountId}
+    </select>
+</mapper>
