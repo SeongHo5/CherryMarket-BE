@@ -22,8 +22,6 @@ public class Goods {
     private String allergyInfo;
     private String originPlace;
     private String salesStatus;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
 
     @Builder
     public Goods(Long goodsId, String goodsName, String description, int price, int retailPrice, int inventory, String storageType, String capacity,
@@ -40,5 +38,11 @@ public class Goods {
         this.allergyInfo = allergyInfo;
         this.originPlace = originPlace;
         this.salesStatus = salesStatus;
+    }
+
+    public static Goods fromGoodsId(Long goodsId) {
+        Goods goods = new Goods();
+        goods.goodsId = goodsId;
+        return goods;
     }
 }
