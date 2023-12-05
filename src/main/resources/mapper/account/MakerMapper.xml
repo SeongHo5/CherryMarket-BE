@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.cherrydev.cherrymarketbe.maker.repository.MakerMapper">
+    <resultMap id = "makerMap" type = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        <result property = "makerId" column = "MAKR_ID"/>
+        <result property = "makerName" column = "MAKR_NM"/>
+        <result property = "businessNumber" column = "MAKR_BIZRNO"/>
+        <result property = "companyPhoneNumber" column = "MAKR_CTTPC"/>
+        <result property = "businessEmail" column = "MAKR_EMAIL"/>
+    </resultMap>
+
+    <select id = "findAllMaker" resultMap="makerMap">
+        select *
+        from MAKR
+        order by MAKR_ID
+    </select>
+
+    <select id = "findMakerByBusinessNumber" resultMap="makerMap">
+        select *
+        from MAKR
+        where MAKR_BIZRNO = #{businessNumber}
+    </select>
+
+    <insert id = "saveMaker" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        insert into MAKR (MAKR_NM, MAKR_BIZRNO, MAKR_CTTPC, MAKR_EMAIL, CREAT_DE, UPDT_DE)
+        values (#{makerName}, #{businessNumber}, #{companyPhoneNumber}, #{businessEmail}, now(), now())
+    </insert>
+
+    <delete id = "deleteMakerById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        delete
+        from MAKR
+        where MAKR_ID = #{makerId}
+    </delete>
+
+    <update id = "updateMakerById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        update MAKR
+        set MAKR_NM = #{makerName}, MAKR_BIZRNO = #{businessNumber}, MAKR_CTTPC = #{companyPhoneNumber}, MAKR_EMAIL = #{businessEmail}
+        where MAKR_ID = #{makerId}
+    </update>
+
+</mapper>
