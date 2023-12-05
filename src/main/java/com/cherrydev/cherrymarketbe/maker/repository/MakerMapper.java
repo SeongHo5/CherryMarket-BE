@@ -8,13 +8,13 @@ import java.util.List;
 @Mapper
 public interface MakerMapper {
 
-    List<MakerDto> findAllMaker();
+    List<MakerDto> findAll();
 
-    MakerDto findMakerByBusinessNumber(String businessNumber);
+    MakerDto findByBusinessNumber(String businessNumber);
 
-    void saveMaker(MakerDto makerDto);
+    void save(MakerDto makerDto);
 
-    void deleteMakerById(Long makerId);
+    void deleteById(Long makerId);
 
-    void updateMakerById(MakerDto makerDto);
+    void updateById(MakerDto makerDto);
 }

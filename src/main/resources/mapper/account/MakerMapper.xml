@@ -9,32 +9,37 @@
         <result property = "businessEmail" column = "MAKR_EMAIL"/>
     </resultMap>
 
-    <select id = "findAllMaker" resultMap="makerMap">
+    <select id = "findAll" resultMap="makerMap">
         select *
         from MAKR
         order by MAKR_ID
     </select>
 
-    <select id = "findMakerByBusinessNumber" resultMap="makerMap">
+    <select id = "findByBusinessNumber" resultMap="makerMap">
         select *
         from MAKR
         where MAKR_BIZRNO = #{businessNumber}
     </select>
 
-    <insert id = "saveMaker" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+    <insert id = "save" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
         insert into MAKR (MAKR_NM, MAKR_BIZRNO, MAKR_CTTPC, MAKR_EMAIL, CREAT_DE, UPDT_DE)
         values (#{makerName}, #{businessNumber}, #{companyPhoneNumber}, #{businessEmail}, now(), now())
     </insert>
 
-    <delete id = "deleteMakerById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+    <delete id = "deleteById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
         delete
         from MAKR
         where MAKR_ID = #{makerId}
     </delete>
 
-    <update id = "updateMakerById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+    <update id = "updateById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
         update MAKR
-        set MAKR_NM = #{makerName}, MAKR_BIZRNO = #{businessNumber}, MAKR_CTTPC = #{companyPhoneNumber}, MAKR_EMAIL = #{businessEmail}
+        <set>
+            <if test = "makerName != null">MAKR_NM = #{makerName},</if>
+            <if test = "businessNumber != null">MAKR_BIZRNO = #{businessNumber},</if>
+            <if test = "companyPhoneNumber != null">MAKR_CTTPC = #{companyPhoneNumber},</if>
+            <if test = "businessEmail != null">MAKR_EMAIL = #{businessEmail},</if>
+        </set>
         where MAKR_ID = #{makerId}
     </update>
 
