@@ -7,11 +7,10 @@ import lombok.Getter;
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
 
 
-
 @Getter
 public class NoticeInfoDto {
     long noticeId;
-    int code;
+    String code;
     String category;
     String subject;
     String content;
@@ -22,7 +21,7 @@ public class NoticeInfoDto {
     String deleteNt;
 
 
-  public NoticeInfoDto(Notice notice) {
+    public NoticeInfoDto(Notice notice) {
         this.noticeId = notice.getNoticeId();
         this.code = notice.getCode();
         this.category = notice.getCategory().toString();
@@ -30,8 +29,10 @@ public class NoticeInfoDto {
         this.content = notice.getContent();
         this.status = notice.getStatus().toString();
         this.displayDate = timeStampToString(notice.getDisplayDate());
-        this.hideDate = timeStampToString(notice.getHideDate()) ;
-        this.createNt = timeStampToString(notice.getCreateNt()) ;
-        this.deleteNt = timeStampToString(notice.getDeleteNt()) ;
+        this.hideDate = timeStampToString(notice.getHideDate());
+        this.createNt = timeStampToString(notice.getCreateNt());
+        this.deleteNt = notice.getDeleteNt() != null ? timeStampToString(notice.getDeleteNt()) : null;
     }
+
+
 }

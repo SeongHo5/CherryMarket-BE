@@ -20,17 +20,24 @@
     <!--    INSERT-->
     <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
         <selectKey keyProperty="noticeId" keyColumn="Notice_ID" resultType="Long" order="AFTER">
-            select last_insert_id()
+            SELECT MAX(NOTICE_ID) FROM NOTICE
         </selectKey>
         insert into NOTICE (NOTICE_CODE, NOTICE_CTGRY, NOTICE_SJ, NOTICE_CN, NOTICE_STTUS, NOTICE_BGNDE, NOTICE_ENDDE)
-        values (#{code}, #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
+        values ((select CONCAT('NT',nextval('NOTICE_SEQ')) from dual), #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
     </insert>
+
 
     <!--   SELECT -->
     <select id="findByNoticeId" parameterType="Long" resultMap="noticeMap">
         select *
         from NOTICE
         where NOTICE_ID = #{noticeId}
+    </select>
+
+    <select id="findByNoticeCode" parameterType="String" resultMap="noticeMap">
+        select *
+        from NOTICE
+        where NOTICE_CODE = #{code} and NOTICE_STTUS !='DELETED'
     </select>
 
     <select id="findAll" resultMap="noticeMap">
@@ -44,6 +51,7 @@
                NOTICE_ENDDE,
                CREAT_DE
         from NOTICE
+        WHERE NOTICE_STTUS !='DELETED'
         ORDER BY NOTICE_ID
     </select>
 
@@ -55,4 +63,24 @@
             DELETED_DE = now()
         WHERE NOTICE_ID = #{noticeId}
     </delete>
+
+    <!--   UPDATE -->
+
+    <update id="updateStatus" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        UPDATE NOTICE
+        <set>
+            NOTICE_STTUS = 'DELETED',
+            DELETED_DE = now()
+        </set>
+        WHERE NOTICE_ID = #{noticeId}
+    </update>
+
+    <insert id="update" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        <selectKey keyProperty="noticeId" keyColumn="Notice_ID" resultType="Long" order="AFTER">
+            SELECT MAX(NOTICE_ID) FROM NOTICE
+        </selectKey>
+        insert into NOTICE (NOTICE_CODE, NOTICE_CTGRY, NOTICE_SJ, NOTICE_CN, NOTICE_STTUS, NOTICE_BGNDE, NOTICE_ENDDE)
+        values (#{code}, #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
+    </insert>
+
 </mapper>

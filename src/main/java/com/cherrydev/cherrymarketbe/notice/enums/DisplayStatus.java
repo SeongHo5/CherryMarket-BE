@@ -3,14 +3,15 @@ package com.cherrydev.cherrymarketbe.notice.enums;
 import lombok.Getter;
 
 @Getter
-public enum NoticeStatus {
+public enum DisplayStatus {
 
-    DISPLAY("게시"),
-    DELETED("비 게시");
+    ACTIVE("게시"),
+    DELETED("비 게시"),
+    BLINDED ("신고 누적");
 
 
     private final String status;
-    NoticeStatus(String status) {
+    DisplayStatus(String status) {
         this.status = status;
     }
 }

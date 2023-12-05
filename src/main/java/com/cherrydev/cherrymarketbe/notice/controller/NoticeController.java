@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.notice.controller;
 
+import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
 import com.cherrydev.cherrymarketbe.notice.service.NoticeServiceImpl;
@@ -21,26 +22,45 @@ public class NoticeController {
 
     private final NoticeServiceImpl noticeService;
 
-    //공지사항 등록
+    // 등록
     @PostMapping("/add-notice")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addNotice(final @Valid @RequestBody NoticeRequestDto noticeRequestDto){
+    public void addNotice(final @Valid @RequestBody NoticeRequestDto noticeRequestDto) {
         noticeService.createNotice(noticeRequestDto);
- }
-    //공지사항 조회
-    @GetMapping("/notice-info")
-    public ResponseEntity<NoticeInfoDto> getNoticeInfo(@RequestParam Long noticeId) {
+    }
+
+    // 조회 - 아이디
+    @GetMapping("/notice-info/search-id")
+    public ResponseEntity<NoticeInfoDto> getNoticeInfoById(@RequestParam Long noticeId) {
         log.info("{} 공지사항 조회 했음", noticeId);
         return noticeService.getNoticeInfo(noticeId);
     }
 
-    //공지사항 전체조회
+    // 조회 - 코드
+    @GetMapping("/notice-info/search-code")
+    public ResponseEntity<NoticeInfoDto> getNoticeInfoByCode(@RequestParam String noticeCode) {
+
+        return noticeService.getNoticeInfoByCode(noticeCode);
+    }
+
+    // 전체 조회
     @GetMapping("/notice-list")
     public ResponseEntity<List<NoticeInfoDto>> getNoticeList() {
         return noticeService.findAll();
     }
 
+
+    @PatchMapping("/modify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<NoticeInfoDto> modifyNotice(
+            final @RequestBody ModifyNoticeInfoRequestDto requestDto,
+            @RequestParam Long noticeId) {
+      return noticeService.modifyNotice(requestDto, noticeId);
+    }
+
+    // 삭제
     @DeleteMapping("/delete-notice")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteNotice(@RequestParam Long noticeId) {
         noticeService.deleteNotice(noticeId);
     }

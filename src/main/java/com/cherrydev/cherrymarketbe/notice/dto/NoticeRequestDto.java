@@ -2,20 +2,20 @@ package com.cherrydev.cherrymarketbe.notice.dto;
 
 
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
+import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
 import lombok.Builder;
 import lombok.Value;
 
 import java.sql.Timestamp;
 
-import static com.cherrydev.cherrymarketbe.notice.enums.NoticeStatus.DISPLAY;
 
 
 @Value
 @Builder
 public class NoticeRequestDto {
-    long noticeId;
-    int code;
+//    long noticeId;
+    String code;
     String category;
     String subject;
     String content;
@@ -26,12 +26,13 @@ public class NoticeRequestDto {
 
 
     public Notice toEntity() {
+//        String noticeCode = (this.getCode() == null) ? "001" : this.getCode();
         return Notice.builder()
-                .code(this.getCode())
+                .code("001")
                 .category(NoticeCategory.valueOf(this.getCategory()))
                 .subject(this.getSubject())
                 .content(this.getContent())
-                .status(DISPLAY)
+                .status(DisplayStatus.ACTIVE)
                 .displayDate(Timestamp.valueOf(this.getDisplayDate()))
                 .hideDate(Timestamp.valueOf(this.getHideDate()))
                 .build();
