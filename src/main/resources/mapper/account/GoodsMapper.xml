@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.cherrydev.cherrymarketbe.goods.repository.GoodsMapper">
+    <resultMap id = "goodsMap" type = "com.cherrydev.cherrymarketbe.goods.entity.Goods">
+        <result property = "goodsId" column = "GOODS_ID"/>
+        <!--<result property = "goodsCode" column = "GOODS_CODE"/>-->
+        <result property = "goodsName" column = "GOODS_NM"/>
+        <result property = "description" column = "GOODS_DC"/>
+        <result property = "price" column = "GOODS_PRICE"/>
+        <result property = "retailPrice" column = "GOODS_SPLPC"/>
+        <result property = "inventory" column = "GOODS_INVNTRY"/>
+        <result property = "storageType" column = "GOODS_CSTDY_TY"/>
+        <result property = "capacity" column = "GOODS_CPCY"/>
+        <result property = "expDate" column = "GOODS_EXPR_DE"/>
+        <result property = "allergyInfo" column = "GOODS_ALLERGY_INFO"/>
+        <result property = "originPlace" column = "GOODS_ORGPLCE"/>
+        <result property = "salesStatus" column = "GOODS_SEL_STTUS"/>
+        <result property = "createdAt" column = "CREAT_DE"/>
+        <result property = "updatedAt" column = "UPDT_DE"/>
+    </resultMap>
+
+    <resultMap id = "GoodsListDtoMap" type = "com.cherrydev.cherrymarketbe.goods.dto.GoodsListDto">
+        <result property = "goodsId" column = "GOODS_ID"/>
+        <result property = "goodsName" column = "GOODS_NM"/>
+        <result property = "price" column = "GOODS_PRICE"/>
+    </resultMap>
+
+    <insert id = "saveGoods" parameterType = "com.cherrydev.cherrymarketbe.goods.entity.Goods">
+        insert into GOODS (GOODS_NM, GOODS_PRICE, GOODS_DC, GOODS_CSTDY_TY, GOODS_CPCY, GOODS_SPLPC, GOODS_EXPR_DE, GOODS_ALLERGY_INFO, GOODS_INVTRY, GOODS_ORGPLCE)
+        values (#{goodsName}, #{price}, #{description}, #{storageType}, #{capacity}, #{retailPrice}, #{expDate}, #{allergyInfo},
+                #{inventory}, #{originPlace};
+    </insert>
+
+    <select id = "findAllGoods" resultMap="GoodsListDtoMap">
+        select GOODS_ID, GOODS_NM, GOODS_PRICE
+        from GOODS;
+    </select>
+
+    <delete id = "deleteGoodsById" parameterType = "Long">
+        delete
+        from GOODS
+        where GOODS_ID = #{goodsId};
+    </delete>
+</mapper>
