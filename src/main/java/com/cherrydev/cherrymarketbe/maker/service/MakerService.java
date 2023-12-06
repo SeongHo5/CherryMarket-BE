@@ -19,8 +19,7 @@ public class MakerService {
 
     @Transactional
     public List<MakerDto> findAll() {
-        List<MakerDto> makerDtoList = makerMapper.findAll();
-        return makerDtoList;
+        return makerMapper.findAll();
     }
 
     @Transactional
@@ -29,17 +28,17 @@ public class MakerService {
     }
 
     @Transactional
-    public void save(MakerDto makerDto){
+    public void save(MakerDto makerDto) {
         makerMapper.save(makerDto);
     }
 
     @Transactional
-    public void deleteById(Long makerId){
+    public void deleteById(Long makerId) {
         makerMapper.deleteById(makerId);
     }
 
     @Transactional
-    public void updateById(MakerDto makerDto){
+    public void updateById(MakerDto makerDto) {
         makerMapper.updateById(makerDto);
     }
 }

@@ -22,8 +22,8 @@ public class GoodsController {
     /* Insert */
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public void save(final @Valid @RequestBody GoodsDto GoodsDto) {
-        goodsService.save(GoodsDto);
+    public void save(final @Valid @RequestBody GoodsDto goodsDto) {
+        goodsService.save(goodsDto);
     }
     /* Select */
     @GetMapping("/list")
