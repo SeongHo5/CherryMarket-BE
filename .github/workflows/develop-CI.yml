@@ -73,6 +73,13 @@ jobs:
         with:
           files: '**/build/test-results/test/TEST-*.xml'
 
+      - name: Add Sonar Cloud comment to PR
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: always()
+
       - name: Add coverage comment to PR
         id: jacoco
         uses: madrapps/jacoco-report@v1.6.1
