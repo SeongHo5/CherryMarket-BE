@@ -2,7 +2,7 @@ package com.cherrydev.cherrymarketbe.cart.dto;
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
-import com.cherrydev.cherrymarketbe.cart.entity.TestGoods;
+import com.cherrydev.cherrymarketbe.goods.entity.Goods;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -15,7 +15,7 @@ public record CartRequestDto(
 
     public Cart addCart(Account account) {
 
-        TestGoods goods = TestGoods.fromGoodsId(this.goodsId);
+        Goods goods = Goods.fromGoodsId(this.goodsId);
 
         return Cart.builderCreate()
                 .accountId(account.getAccountId())

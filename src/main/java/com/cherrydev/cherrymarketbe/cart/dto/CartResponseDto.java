@@ -2,7 +2,7 @@ package com.cherrydev.cherrymarketbe.cart.dto;
 
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.cart.entity.TestDiscount;
-import com.cherrydev.cherrymarketbe.cart.entity.TestGoods;
+import com.cherrydev.cherrymarketbe.goods.entity.Goods;
 
 import java.util.Optional;
 
@@ -17,16 +17,18 @@ public record CartResponseDto(
         Integer inventory,
         Long discountId,
         String discountType,
-        Double discountRate
+        int discountRate
 ) {
 
-    // TODO : Goods, Discount entity 불러오기
+    // TODO : Discount entity 불러오기
 
     public static CartResponseDto getCartsList(Cart cart) {
 
-        TestGoods goods = cart.getGoods();
+        Goods goods = cart.getGoods();
         TestDiscount discount = goods.getDiscount();
 
+
+        //Goods에서
         Long discountId = Optional
                 .ofNullable(discount)
                 .map(TestDiscount::getDiscountId)
@@ -37,10 +39,10 @@ public record CartResponseDto(
                 .map(TestDiscount::getDiscountType)
                 .orElse("");
 
-        Double discountRate = Optional
+        int discountRate = Optional
                 .ofNullable(discount)
                 .map(TestDiscount::getDiscountRate)
-                .orElse(0.0);
+                .orElse(0);
 
         return new CartResponseDto(
                 cart.getCartId(),

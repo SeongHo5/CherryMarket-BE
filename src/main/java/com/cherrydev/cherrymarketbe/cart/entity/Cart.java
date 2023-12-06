@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.cart.entity;
 
+import com.cherrydev.cherrymarketbe.goods.entity.Goods;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ public class Cart {
 
     private int quantity;
 
-    private TestGoods goods;
+    private Goods goods;
 
     public static class CartUpdateBuilder {
         private Long cartId;
@@ -41,7 +42,7 @@ public class Cart {
     public static class CartCreateBuilder {
         private Long accountId;
         private Integer quantity;
-        private TestGoods goods;
+        private Goods goods;
 
 
         public CartCreateBuilder accountId(Long accountId) {
@@ -54,7 +55,7 @@ public class Cart {
             return this;
         }
 
-        public CartCreateBuilder goods(TestGoods goods) {
+        public CartCreateBuilder goods(Goods goods) {
             this.goods = goods;
             return this;
         }
@@ -81,5 +82,7 @@ public class Cart {
     public boolean isGoodsAvailable() {
         return this.getGoods().getSalesStatus().equals("ON_SALE");
     }
+
+
 
 }

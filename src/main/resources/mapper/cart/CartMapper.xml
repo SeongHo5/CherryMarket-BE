@@ -8,7 +8,7 @@
         <result property="cartId" column="CART_ID"/>
         <result property="quantity" column="CART_QY"/>
 
-        <association property="goods" javaType="com.cherrydev.cherrymarketbe.cart.entity.TestGoods">
+        <association property="goods" javaType="com.cherrydev.cherrymarketbe.goods.entity.Goods">
             <result property="goodsId" column="GOODS_ID"/>
             <result property="goodsName" column="GOODS_NM"/>
             <result property="price" column="GOODS_PRICE"/>

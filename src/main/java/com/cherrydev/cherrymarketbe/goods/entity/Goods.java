@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goods.entity;
 
+import com.cherrydev.cherrymarketbe.cart.entity.TestDiscount;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,13 @@ public class Goods {
     private String originPlace;
     private String salesStatus;
 
+    private TestDiscount discount;
+
     @Builder
     public Goods(Long goodsId, String goodsName, String description, int price, int retailPrice, int inventory, String storageType, String capacity,
-                 Timestamp expDate, String allergyInfo, String originPlace, String salesStatus) {
+                 Timestamp expDate, String allergyInfo, String originPlace, String salesStatus
+
+                 ,TestDiscount discount) {
         this.goodsId = goodsId;
         this.goodsName = goodsName;
         this.description = description;
@@ -38,6 +43,7 @@ public class Goods {
         this.allergyInfo = allergyInfo;
         this.originPlace = originPlace;
         this.salesStatus = salesStatus;
+        this.discount = discount;
     }
 
     public static Goods fromGoodsId(Long goodsId) {
