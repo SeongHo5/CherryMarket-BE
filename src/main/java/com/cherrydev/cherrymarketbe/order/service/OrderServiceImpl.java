@@ -28,6 +28,7 @@ public class OrderServiceImpl implements OrderService{
 
     private final OrderMapper orderMapper;
 
+    @Transactional
     @Override
     public Map<OrderStatus, List<OrderResponseDto>> findAllOrders() {
         List<Order> orders = orderMapper.findAllOrders();
@@ -37,6 +38,7 @@ public class OrderServiceImpl implements OrderService{
                 .collect(Collectors.groupingBy(OrderResponseDto::orderStatus));
     }
 
+    @Transactional
     @Override
     public List<OrderResponseDto> findOrdersByAccountId(AccountDetails accountDetails) {
         List<Order> orders = orderMapper.findOrdersByAccountId(getAccountId(accountDetails));
