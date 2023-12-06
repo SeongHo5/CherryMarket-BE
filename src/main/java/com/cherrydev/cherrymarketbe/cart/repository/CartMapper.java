@@ -11,7 +11,7 @@ public interface CartMapper {
    void save(Cart cart);
    List<Cart> findCartsByAccountId(Long accountId);
    void update(Cart cart);
-   void delete(Cart cart);
+   void delete(Long cartId);
 
 
 }

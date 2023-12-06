@@ -10,7 +10,7 @@ import lombok.*;
 public record CartRequestDto(
         @NotNull Long accountId,
         @NotNull Long goodsId,
-        @NotNull Integer quantity
+        @NotNull int quantity
 ) {
 
     public Cart addCart(Account account) {

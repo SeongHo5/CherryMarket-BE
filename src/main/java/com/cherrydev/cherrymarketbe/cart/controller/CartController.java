@@ -66,9 +66,9 @@ public class CartController {
     @DeleteMapping("/delete")
     //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCartItem (
-            final @RequestBody CartRequestChangeDto requestChangeDto){
+            final @RequestParam Long cartId){
 
-        cartService.deleteCartItem(requestChangeDto);
+        cartService.deleteCartItem(cartId);
         return ResponseEntity.noContent().build();
     }
 

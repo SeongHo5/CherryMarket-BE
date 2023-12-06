@@ -54,13 +54,13 @@
         values (#{accountId}, #{goods.goodsId}, #{quantity}, now(), now())
     </insert>
 
-    <update id="updateQuantity" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+    <update id="update" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
         update CART
         SET CART_QY = #{quantity}, UPDT_DE = now()
         WHERE CART_ID = #{cartId};
     </update>
 
-    <delete id="deleteByCartId">
+    <delete id="delete">
         delete
         from CART
         where CART_ID = #{cartId}

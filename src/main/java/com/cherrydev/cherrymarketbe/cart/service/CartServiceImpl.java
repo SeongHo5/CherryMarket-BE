@@ -60,12 +60,10 @@ public class CartServiceImpl implements CartService {
         cartMapper.update(cart);
 
     }
-
     @Transactional
     @Override
-    public void deleteCartItem(CartRequestChangeDto requestChangeDto) {
-        Cart cart = requestChangeDto.toEntity();
-        cartMapper.delete(cart);
+    public void deleteCartItem(Long cartId) {
+        cartMapper.delete(cartId);
     }
 
     public Long getAccountId(AccountDetails accountDetails){

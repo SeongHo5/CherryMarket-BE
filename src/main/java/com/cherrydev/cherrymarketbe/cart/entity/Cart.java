@@ -11,7 +11,7 @@ public class Cart {
 
     private Long accountId;
 
-    private Integer quantity;
+    private int quantity;
 
     private TestGoods goods;
 
@@ -24,7 +24,7 @@ public class Cart {
             return this;
         }
 
-        public CartUpdateBuilder quantity(Integer quantity) {
+        public CartUpdateBuilder quantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
@@ -49,7 +49,7 @@ public class Cart {
             return this;
         }
 
-        public CartCreateBuilder quantity(Integer quantity) {
+        public CartCreateBuilder quantity(int quantity) {
             this.quantity = quantity;
             return this;
         }

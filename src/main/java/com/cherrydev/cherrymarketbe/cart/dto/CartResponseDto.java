@@ -12,12 +12,12 @@ public record CartResponseDto(
         String salesStatus,
         String storageType,
         String goodsName,
-        Integer quantity,
-        Integer price,
+        int quantity,
+        int price,
         Integer inventory,
         Long discountId,
         String discountType,
-        Integer discountRate
+        Double discountRate
 ) {
 
     // TODO : Goods, Discount entity 불러오기
@@ -37,10 +37,10 @@ public record CartResponseDto(
                 .map(TestDiscount::getDiscountType)
                 .orElse("");
 
-        Integer discountRate = Optional
+        Double discountRate = Optional
                 .ofNullable(discount)
                 .map(TestDiscount::getDiscountRate)
-                .orElse(0);
+                .orElse(0.0);
 
         return new CartResponseDto(
                 cart.getCartId(),

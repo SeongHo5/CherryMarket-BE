@@ -14,7 +14,7 @@ public interface CartService {
     Map<String, List<CartResponseDto>> getAvailableCarts(AccountDetails accountDetails);
     List<CartResponseDto> getUnavailableCarts(AccountDetails accountDetails);
     void addCartItem(CartRequestDto requestDto, AccountDetails accountDetails);
-    void deleteCartItem(CartRequestChangeDto requestChangeDto);
+    void deleteCartItem(Long cartId);
     void updateQuantity(CartRequestChangeDto requestChangeDto);
 
 }
