@@ -1,26 +1,16 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
+import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
-import com.cherrydev.cherrymarketbe.inquiry.repository.InquriyMapper;
-import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
+import com.cherrydev.cherrymarketbe.inquiry.repository.InquiryMapper;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
-import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
-import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
-import com.cherrydev.cherrymarketbe.notice.repository.NoticeMapper;
-import com.cherrydev.cherrymarketbe.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Timestamp;
-import java.util.List;
-
-import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 
 @Service
 @Slf4j
@@ -28,23 +18,38 @@ import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 @RequiredArgsConstructor
 
 public class InquiryServiceImpl implements InquiryService {
-    private final InquriyMapper inquriyMapper;
+    private final InquiryMapper inquiryMapper;
 
     @Override
     @Transactional
     public void createInquiry(final InquiryRequestDto inquiryRequestDto) {
-        inquriyMapper.save(inquiryRequestDto.toEntity());
+        inquiryMapper.save(inquiryRequestDto.toEntity());
     }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public ResponseEntity<NoticeInfoDto> getNoticeInfo(final Long noticeId) {
-//        Notice notice = noticeMapper.findByNoticeId(noticeId);
-//        return ResponseEntity.ok()
-//                .body(new NoticeInfoDto(notice));
-//    }
-//
-//    @Override
+
+    @Override
+    @Transactional
+    public void deleteInquiryById(final Long inquiryId) {
+       inquiryMapper.deleteById(inquiryId);
+    }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<InquiryInfoDto> getInquiryInfoById(final Long inquiryId) {
+        Inquiry inquiry = inquiryMapper.findByInquiryId(inquiryId);
+        return ResponseEntity.ok()
+                .body(new InquiryInfoDto(inquiry));
+    }
+
+    @Override
+    public ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode) {
+        Inquiry inquiry = inquiryMapper.findByInquiryCode(inquiryCode);
+        return ResponseEntity.ok()
+                .body(new InquiryInfoDto(inquiry));
+    }
+
+    //    @Override
 //    @Transactional(readOnly = true)
 //    public ResponseEntity<NoticeInfoDto> getNoticeInfoByCode(String noticeCode) {
 //        Notice notice = noticeMapper.findByNoticeCode(noticeCode);
@@ -61,11 +66,7 @@ public class InquiryServiceImpl implements InquiryService {
 //                .body(noticeDtos);
 //    }
 //
-//    @Override
-//    @Transactional
-//    public void deleteNotice(final Long noticeId) {
-//        noticeMapper.delete(noticeId);
-//    }
+
 //
 //    @Override
 //    @Transactional(rollbackFor = Exception.class)

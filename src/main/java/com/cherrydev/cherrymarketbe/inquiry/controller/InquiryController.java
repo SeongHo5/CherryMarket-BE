@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiry.controller;
 
+import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.service.InquiryServiceImpl;
 import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
@@ -26,22 +27,23 @@ public class InquiryController {
     // 등록
     @PostMapping("/add-inquiry")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addNotice(final @Valid @RequestBody InquiryRequestDto inquiryRequestDto) {
+    public void addInquiry(final @Valid @RequestBody InquiryRequestDto inquiryRequestDto) {
         inquiryService.createInquiry(inquiryRequestDto);
     }
-//
-//    // 조회 - 아이디
-//    @GetMapping("/notice-info/search-id")
-//    public ResponseEntity<NoticeInfoDto> getNoticeInfoById(@RequestParam Long noticeId) {
-//        return noticeService.getNoticeInfo(noticeId);
-//    }
-//
-//    // 조회 - 코드
-//    @GetMapping("/notice-info/search-code")
-//    public ResponseEntity<NoticeInfoDto> getNoticeInfoByCode(@RequestParam String noticeCode) {
-//
-//        return noticeService.getNoticeInfoByCode(noticeCode);
-//    }
+
+
+    // 조회 - 아이디
+    @GetMapping("/info-inquiry/search-id")
+    public ResponseEntity<InquiryInfoDto> getNoticeInfoById(@RequestParam Long inquiryId) {
+        return inquiryService.getInquiryInfoById(inquiryId);
+    }
+
+    // 조회 - 코드
+    @GetMapping("/info-inquiry/search-code")
+    public ResponseEntity<InquiryInfoDto> getNoticeInfoByCode(@RequestParam String inquiryCode) {
+
+        return inquiryService.getInquiryInfoByCode(inquiryCode);
+    }
 //
 //    // 전체 조회
 //    @GetMapping("/notice-list")
@@ -57,11 +59,11 @@ public class InquiryController {
 //            @RequestParam Long noticeId) {
 //      return noticeService.modifyNotice(requestDto, noticeId);
 //    }
-//
-//    // 삭제
-//    @DeleteMapping("/delete-notice")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void deleteNotice(@RequestParam Long noticeId) {
-//        noticeService.deleteNotice(noticeId);
-//    }
+
+    // 삭제
+    @DeleteMapping("/delete-inquiryId")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteInquiryById(@RequestParam Long inquiryId) {
+        inquiryService.deleteInquiryById(inquiryId);
+    }
 }

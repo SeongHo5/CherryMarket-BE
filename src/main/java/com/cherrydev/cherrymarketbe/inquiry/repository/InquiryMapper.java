@@ -1,15 +1,21 @@
 package com.cherrydev.cherrymarketbe.inquiry.repository;
 
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
-import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
-
 @Mapper
-public interface InquriyMapper {
+public interface InquiryMapper {
     void save(Inquiry inquiry);
 
+    void deleteById(Long inquiryId);
+
+    Inquiry findByInquiryId(Long inquiryId);
+
+    Inquiry findByInquiryCode(String inquiryCode);
+
+
+
+//    @Select("SELECT * FROM notice WHERE notice_id = #{noticeId}
 //    Notice findByNoticeId(Long noticeId);
 //    Notice findByNoticeCode(String noticeCode);
 //    List<Notice> findAll();

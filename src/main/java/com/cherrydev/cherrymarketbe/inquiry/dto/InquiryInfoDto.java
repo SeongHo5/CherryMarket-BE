@@ -1,42 +1,51 @@
-//package com.cherrydev.cherrymarketbe.inquiry.dto;
-//
-//
-//import com.cherrydev.cherrymarketbe.notice.entity.Notice;
-//import lombok.Getter;
-//
-//import java.util.List;
-//
-//import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
-//
-//
-//@Getter
-//public class InquiryInfoDto {
-//    long noticeId;
-//    String code;
-//    String category;
-//    String subject;
-//    String content;
-//    String status;
-//    String displayDate;
-//    String hideDate;
-//    String createDate;
-//    String deleteDate;
-//
-//    public InquiryInfoDto(Notice notice) {
-//        this.noticeId = notice.getNoticeId();
-//        this.code = notice.getCode();
-//        this.category = notice.getCategory().toString();
-//        this.subject = notice.getSubject();
-//        this.content = notice.getContent();
-//        this.status = notice.getStatus().toString();
-//        this.displayDate = timeStampToString(notice.getDisplayDate());
-//        this.hideDate = timeStampToString(notice.getHideDate());
-//        this.createDate = timeStampToString(notice.getCreateNt());
-//        this.deleteDate = notice.getDeleteNt() != null ? timeStampToString(notice.getDeleteNt()) : null;
-//    }
-//    public static List<InquiryInfoDto> convertToDtoList(List<Notice> noticeList) {
-//        return noticeList.stream()
-//                .map(InquiryInfoDto::new)
-//                .toList();
-//    }
-//}
+package com.cherrydev.cherrymarketbe.inquiry.dto;
+
+
+import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
+import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryDetailType;
+import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryType;
+import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
+import com.cherrydev.cherrymarketbe.notice.entity.Notice;
+import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
+import lombok.Getter;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
+
+
+@Getter
+public class InquiryInfoDto {
+    private final Long inquiryId;
+    private final Long userId;
+    private final String code;
+    private final String type;
+    private final String detailType;
+    private final String subject;
+    private final String content;
+    private final String status;
+    private final String phone;
+    private final String createDate;
+    private final String deleteDate;
+
+    public InquiryInfoDto(Inquiry inquiry) {
+        this.inquiryId = inquiry.getInquiryId();
+        this.userId = inquiry.getUserId();
+        this.code = inquiry.getCode();
+        this.type = inquiry.getType().toString();
+        this.detailType = inquiry.getDetailType().toString();
+        this.subject = inquiry.getSubject();
+        this.content = inquiry.getContent();
+        this.status = inquiry.getStatus().toString();
+        this.phone = inquiry.getPhone();
+        this.createDate = timeStampToString(inquiry.getCreateDate());
+        this.deleteDate = inquiry.getDeleteDate() != null ? timeStampToString(inquiry.getDeleteDate()) : null;
+    }
+
+    public static List<InquiryInfoDto> convertToDtoList(List<Inquiry> inquiryList) {
+        return inquiryList.stream()
+                .map(InquiryInfoDto::new)
+                .toList();
+    }
+}
