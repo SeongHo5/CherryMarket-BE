@@ -25,6 +25,9 @@ public class OrderController {
 
     private final OrderServiceImpl orderServiceImpl;
 
+    /**
+     * 주문 목록 - 전체 회원
+     */
     @GetMapping("/list-allUsers")
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Map<OrderStatus,List<OrderResponseDto>>> getOrders(){
@@ -32,6 +35,11 @@ public class OrderController {
        return ResponseEntity.ok(orders);
     }
 
+
+
+    /**
+     * 주문 목록 - 로그인 한 회원
+     */
     @GetMapping("/list")
     //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<OrderResponseDto>> getOrders(
@@ -40,6 +48,9 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    /**
+     * 주문 생성
+     */
     @PostMapping("/add")
     //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> createOrder (
@@ -48,7 +59,10 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping ("/change-status")
+    /**
+     * 주문 상태 변경
+     */
+    @PatchMapping ("/change-status")
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateOrderStatus (
             final @RequestBody OrderRequestChangeDto requestChangeDto) {
