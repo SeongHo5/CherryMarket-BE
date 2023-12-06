@@ -59,15 +59,20 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional
-    public void deleteNotice(final Long noticeId) {
-        noticeMapper.delete(noticeId);
+    public void deleteById(final Long noticeId) {
+        noticeMapper.deleteById(noticeId);
+    }
+    @Override
+    @Transactional
+    public void deleteByCode(final String code) {
+        noticeMapper.deleteByCode(code);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<NoticeInfoDto> modifyNotice(final ModifyNoticeInfoRequestDto modifyDto, final Long noticeId) {
+    public ResponseEntity<NoticeInfoDto> modifyNotice(final ModifyNoticeInfoRequestDto modifyDto) {
 
-        Notice notice = noticeMapper.findByNoticeId(noticeId);
+        Notice notice = noticeMapper.findByNoticeId(modifyDto.getNoticeId());
 
         notice.updateStatus(DELETED);
         noticeMapper.updateStatus(notice);

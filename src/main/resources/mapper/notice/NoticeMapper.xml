@@ -57,11 +57,18 @@
 
 
     <!--   DELETE -->
-    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+    <delete id="deleteById" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
         UPDATE NOTICE
         SET NOTICE_STTUS = 'DELETED',
             DELETED_DE = now()
         WHERE NOTICE_ID = #{noticeId}
+    </delete>
+
+    <delete id="deleteByCode" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        UPDATE NOTICE
+        SET NOTICE_STTUS = 'DELETED',
+            DELETED_DE = now()
+        WHERE NOTICE_CODE = #{CODE} AND  NOTICE_STTUS != 'DELETED'
     </delete>
 
     <!--   UPDATE -->

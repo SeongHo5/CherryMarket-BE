@@ -15,7 +15,8 @@ public interface NoticeMapper {
     Notice findByNoticeCode(String noticeCode);
     List<Notice> findAll();
 
-    void delete(Long noticeId);
+    void deleteById(Long noticeId);
+    void deleteByCode(String code);
 
     void update(Notice notice);
 

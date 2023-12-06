@@ -52,15 +52,21 @@ public class NoticeController {
     @PatchMapping("/modify")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<NoticeInfoDto> modifyNotice(
-            final @RequestBody ModifyNoticeInfoRequestDto requestDto,
-            @RequestParam Long noticeId) {
-      return noticeService.modifyNotice(requestDto, noticeId);
+            final @RequestBody ModifyNoticeInfoRequestDto requestDto) {
+      return noticeService.modifyNotice(requestDto);
     }
 
     // 삭제 - 아이디
-    @DeleteMapping("/delete-notice")
+    @DeleteMapping("/delete-notice-id")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteNotice(@RequestParam Long noticeId) {
-        noticeService.deleteNotice(noticeId);
+    public void deleteById(@RequestParam Long noticeId) {
+        noticeService.deleteById(noticeId);
+    }
+
+    // 삭제 - 코드
+    @DeleteMapping("/delete-notice-code")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteByCode(@RequestParam String code) {
+        noticeService.deleteByCode(code);
     }
 }

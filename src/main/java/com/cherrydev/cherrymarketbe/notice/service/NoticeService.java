@@ -15,8 +15,9 @@ public interface NoticeService {
 
     ResponseEntity<List<NoticeInfoDto>> findAll();
 
-    ResponseEntity<NoticeInfoDto> modifyNotice(ModifyNoticeInfoRequestDto requestDto, final Long noticeId);
-    void deleteNotice(Long noticeId);
+    ResponseEntity<NoticeInfoDto> modifyNotice(ModifyNoticeInfoRequestDto requestDto);
+    void deleteById(Long noticeId);
 
 
+    void deleteByCode(String code);
 }
