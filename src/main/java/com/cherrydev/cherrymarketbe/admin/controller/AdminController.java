@@ -3,8 +3,8 @@ package com.cherrydev.cherrymarketbe.admin.controller;
 import com.cherrydev.cherrymarketbe.admin.dto.*;
 import com.cherrydev.cherrymarketbe.admin.service.AdminService;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
-import com.cherrydev.cherrymarketbe.common.service.EmailService;
-import com.cherrydev.cherrymarketbe.common.service.FileService;
+import com.cherrydev.cherrymarketbe.customer.dto.reward.AddRewardRequestDto;
+import com.cherrydev.cherrymarketbe.customer.service.RewardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
-    private final EmailService emailService;
-    private final FileService fileService;
+    private final RewardService rewardService;
 
     /**
      * 계정 목록 전체 조회
@@ -53,6 +52,18 @@ public class AdminController {
             final @RequestBody ModifyUserStatusByAdminDto statusRequestDto
     ) {
         adminService.modifyAccountStatus(statusRequestDto);
+    }
+
+    /**
+     * 관리자에 의해 포인트 지급
+     * @param addRewardRequestDto 지급할 포인트 정보
+     */
+    @PostMapping("/grant-reward")
+    @ResponseStatus(HttpStatus.OK)
+    public void grantReward(
+            final @RequestBody AddRewardRequestDto addRewardRequestDto
+    ) {
+        rewardService.grantReward(addRewardRequestDto);
     }
 
 }
