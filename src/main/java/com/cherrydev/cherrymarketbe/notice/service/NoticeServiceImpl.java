@@ -70,7 +70,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<NoticeInfoDto> modifyNotice(final ModifyNoticeInfoRequestDto modifyDto) {
+    public ResponseEntity<NoticeInfoDto> modifyById(final ModifyNoticeInfoRequestDto modifyDto) {
 
         Notice notice = noticeMapper.findByNoticeId(modifyDto.getNoticeId());
 
@@ -90,6 +90,34 @@ public class NoticeServiceImpl implements NoticeService {
 
         noticeMapper.update(newNotice);
         NoticeInfoDto resultDto = new NoticeInfoDto(noticeMapper.findByNoticeId(newNotice.getNoticeId()));
+
+        return ResponseEntity
+                .ok()
+                .body(resultDto);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<NoticeInfoDto> modifyByCode(final ModifyNoticeInfoRequestDto modifyDto) {
+
+        Notice notice = noticeMapper.findByNoticeCode(modifyDto.getCode());
+
+        notice.updateStatus(DELETED);
+        noticeMapper.updateStatus(notice);
+
+        Notice newNotice = Notice.builder()
+                .code(modifyDto.getCode())
+                .category(NoticeCategory.valueOf(modifyDto.getCategory()))
+                .subject(modifyDto.getSubject())
+                .content(modifyDto.getContent())
+                .status(DisplayStatus.ACTIVE)
+                .displayDate(Timestamp.valueOf(modifyDto.getDisplayDate()))
+                .hideDate(Timestamp.valueOf(modifyDto.getHideDate()))
+                .deleteDate(null)
+                .build();
+
+        noticeMapper.update(newNotice);
+        NoticeInfoDto resultDto = new NoticeInfoDto(noticeMapper.findByNoticeCode(newNotice.getCode()));
 
         return ResponseEntity
                 .ok()

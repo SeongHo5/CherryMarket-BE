@@ -9,13 +9,17 @@ import java.util.List;
 
 @Mapper
 public interface NoticeMapper {
+
     void save(Notice notice);
 
     Notice findByNoticeId(Long noticeId);
+
     Notice findByNoticeCode(String noticeCode);
+
     List<Notice> findAll();
 
     void deleteById(Long noticeId);
+
     void deleteByCode(String code);
 
     void update(Notice notice);

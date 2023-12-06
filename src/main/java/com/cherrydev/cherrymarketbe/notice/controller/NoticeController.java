@@ -48,12 +48,20 @@ public class NoticeController {
         return noticeService.findAll();
     }
 
-    // 수정
-    @PatchMapping("/modify")
+    // 수정 - 아이디
+    @PatchMapping("/modify-id")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<NoticeInfoDto> modifyNotice(
+    public ResponseEntity<NoticeInfoDto> modifyById(
             final @RequestBody ModifyNoticeInfoRequestDto requestDto) {
-      return noticeService.modifyNotice(requestDto);
+      return noticeService.modifyById(requestDto);
+    }
+
+    // 수정 - 코드
+    @PatchMapping("/modify-code")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<NoticeInfoDto> modifyByCode(
+            final @RequestBody ModifyNoticeInfoRequestDto requestDto) {
+        return noticeService.modifyByCode(requestDto);
     }
 
     // 삭제 - 아이디
