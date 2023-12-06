@@ -11,6 +11,8 @@ public interface InquiryMapper {
 
     void deleteById(Long inquiryId);
 
+    void deleteByCode(String inquiryCode);
+
     Inquiry findByInquiryId(Long inquiryId);
 
     Inquiry findByInquiryCode(String inquiryCode);
@@ -20,5 +22,6 @@ public interface InquiryMapper {
     void updateStatusByDel(Inquiry inquiry);
 
     void update(Inquiry inquiry);
+
 
 }

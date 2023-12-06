@@ -14,13 +14,16 @@ public interface InquiryService {
 
     void deleteInquiryById(Long inquiryId);
 
+    void deleteInquiryByCode(String inquiryCode);
+
     ResponseEntity<InquiryInfoDto> getInquiryInfoById(Long inquiryId);
 
     ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode);
 
     ResponseEntity<List<InquiryInfoDto>> findAll();
 
-    ResponseEntity<InquiryInfoDto> modifyInquiry(ModifyInquiryRequestDto requestDto);
+    ResponseEntity<InquiryInfoDto> modifyInquiryById(ModifyInquiryRequestDto requestDto);
+    ResponseEntity<InquiryInfoDto> modifyInquiryByCode(ModifyInquiryRequestDto requestDto);
 
 
 }

@@ -42,6 +42,11 @@ public class InquiryServiceImpl implements InquiryService {
         inquiryMapper.deleteById(inquiryId);
     }
 
+    @Override
+    @Transactional
+    public void deleteInquiryByCode(String inquiryCode) {
+        inquiryMapper.deleteByCode(inquiryCode);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -52,6 +57,7 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode) {
         Inquiry inquiry = inquiryMapper.findByInquiryCode(inquiryCode);
         return ResponseEntity.ok()
@@ -59,6 +65,7 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<List<InquiryInfoDto>> findAll() {
         List<Inquiry> inquiries = inquiryMapper.findAll();
         List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
@@ -69,7 +76,7 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<InquiryInfoDto> modifyInquiry(final ModifyInquiryRequestDto modifyDto) {
+    public ResponseEntity<InquiryInfoDto> modifyInquiryById(final ModifyInquiryRequestDto modifyDto) {
 
         Inquiry inquiry = inquiryMapper.findByInquiryId(modifyDto.getInquiryId());
 
@@ -78,7 +85,6 @@ public class InquiryServiceImpl implements InquiryService {
         inquiryMapper.updateStatusByDel(inquiry);
 
         Inquiry newInquiry = Inquiry.builder()
-//                .inquiryId(inquiry.getInquiryId())
                 .userId(inquiry.getUserId())
                 .code(inquiry.getCode())
                 .type(InquiryType.valueOf(modifyDto.getType()))
@@ -92,6 +98,37 @@ public class InquiryServiceImpl implements InquiryService {
 
         inquiryMapper.update(newInquiry);
         InquiryInfoDto resultDto = new InquiryInfoDto(inquiryMapper.findByInquiryId(newInquiry.getInquiryId()));
+
+        return ResponseEntity
+                .ok()
+                .body(resultDto);
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<InquiryInfoDto> modifyInquiryByCode(final ModifyInquiryRequestDto modifyDto) {
+
+        Inquiry inquiry = inquiryMapper.findByInquiryCode(modifyDto.getCode());
+
+
+        inquiry.updateStatus(DELETED);
+        inquiryMapper.updateStatusByDel(inquiry);
+
+        Inquiry newInquiry = Inquiry.builder()
+                .userId(inquiry.getUserId())
+                .code(modifyDto.getCode())
+                .type(InquiryType.valueOf(modifyDto.getType()))
+                .detailType(InquiryDetailType.valueOf(modifyDto.getDetailType()))
+                .subject(modifyDto.getSubject())
+                .content(modifyDto.getContent())
+                .status(DisplayStatus.ACTIVE)
+                .phone(inquiry.getPhone())
+                .deleteDate(null)
+                .build();
+
+        inquiryMapper.update(newInquiry);
+        InquiryInfoDto resultDto = new InquiryInfoDto(inquiryMapper.findByInquiryCode(newInquiry.getCode()));
 
         return ResponseEntity
                 .ok()

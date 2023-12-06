@@ -32,7 +32,6 @@ public class InquiryController {
         inquiryService.createInquiry(inquiryRequestDto);
     }
 
-
     // 조회 - 아이디
     @GetMapping("/info-inquiry/search-id")
     public ResponseEntity<InquiryInfoDto> getNoticeInfoById(@RequestParam Long inquiryId) {
@@ -52,18 +51,33 @@ public class InquiryController {
         return inquiryService.findAll();
     }
 
-    // 수정
+    // 수정 - 아이디
     @PatchMapping("/modify-id")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<InquiryInfoDto> modifyInquiry(
+    public ResponseEntity<InquiryInfoDto> modifyInquiryById(
             final @RequestBody ModifyInquiryRequestDto requestDto) {
-      return inquiryService.modifyInquiry(requestDto);
+      return inquiryService.modifyInquiryById(requestDto);
     }
 
-    // 삭제
-    @DeleteMapping("/delete-inquiryId")
+    // 수정 - 코드
+    @PatchMapping("/modify-code")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<InquiryInfoDto> modifyInquiryByCode(
+            final @RequestBody ModifyInquiryRequestDto requestDto) {
+        return inquiryService.modifyInquiryByCode(requestDto);
+    }
+
+    // 삭제 - 아이디
+    @DeleteMapping("/delete-inquiry-id")
     @ResponseStatus(HttpStatus.OK)
     public void deleteInquiryById(@RequestParam Long inquiryId) {
         inquiryService.deleteInquiryById(inquiryId);
+    }
+
+    // 삭제 - 코드
+    @DeleteMapping("/delete-inquiry-code")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteInquiryById(@RequestParam String  inquiryCode) {
+        inquiryService.deleteInquiryByCode(inquiryCode);
     }
 }

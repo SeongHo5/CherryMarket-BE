@@ -35,6 +35,13 @@
         WHERE INQRY_ID = #{noticeId}
     </delete>
 
+    <delete id="deleteByCode" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
+        UPDATE INQRY
+        SET INQRY_STTUS = 'DELETED',
+            DELETED_DE = now()
+        WHERE INQRY_CODE = #{noticeId} and INQRY_STTUS !='DELETED'
+    </delete>
+
 
     <!--   SELECT -->
     <select id="findByInquiryId" parameterType="Long" resultMap="inquiryMap">

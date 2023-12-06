@@ -28,19 +28,4 @@ public class ModifyInquiryRequestDto {
         this.content = content;
         this.phone = phone;
     }
-
-//
-//    public Inquiry ConvertForDB(){
-//        return Inquiry.builder()
-////                .userId(this.getUserId())
-//                .inquiryId(this.getInquiryId())
-//                .code(this.getCode())
-//                .type(InquiryType.valueOf(this.getType()))
-//                .detailType(InquiryDetailType.valueOf(this.getDetailType()))
-//                .subject(this.getSubject())
-//                .content(this.getContent())
-//                .status(DisplayStatus.ACTIVE)
-//                .phone(this.getPhone())
-//                .build();
-//    }
 }
