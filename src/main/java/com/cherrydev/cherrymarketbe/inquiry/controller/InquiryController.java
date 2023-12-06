@@ -2,6 +2,7 @@ package com.cherrydev.cherrymarketbe.inquiry.controller;
 
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
+import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.service.InquiryServiceImpl;
 import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
@@ -44,21 +45,20 @@ public class InquiryController {
 
         return inquiryService.getInquiryInfoByCode(inquiryCode);
     }
-//
-//    // 전체 조회
-//    @GetMapping("/notice-list")
-//    public ResponseEntity<List<NoticeInfoDto>> getNoticeList() {
-//        return noticeService.findAll();
-//    }
-//
-//    // 수정
-//    @PatchMapping("/modify")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<NoticeInfoDto> modifyNotice(
-//            final @RequestBody ModifyNoticeInfoRequestDto requestDto,
-//            @RequestParam Long noticeId) {
-//      return noticeService.modifyNotice(requestDto, noticeId);
-//    }
+
+    // 전체 조회
+    @GetMapping("/inquiry-list")
+    public ResponseEntity<List<InquiryInfoDto>> getInquiryList() {
+        return inquiryService.findAll();
+    }
+
+    // 수정
+    @PatchMapping("/modify-id")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<InquiryInfoDto> modifyInquiry(
+            final @RequestBody ModifyInquiryRequestDto requestDto) {
+      return inquiryService.modifyInquiry(requestDto);
+    }
 
     // 삭제
     @DeleteMapping("/delete-inquiryId")

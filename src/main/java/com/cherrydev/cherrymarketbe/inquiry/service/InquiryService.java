@@ -2,7 +2,11 @@ package com.cherrydev.cherrymarketbe.inquiry.service;
 
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
+import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
+import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 
 public interface InquiryService {
@@ -14,14 +18,9 @@ public interface InquiryService {
 
     ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode);
 
-//
-//    ResponseEntity<NoticeInfoDto> getNoticeInfo(final Long noticeId);
-//    ResponseEntity<NoticeInfoDto> getNoticeInfoByCode(String noticeCode);
-//
-//    ResponseEntity<List<NoticeInfoDto>> findAll();
-//
-//    ResponseEntity<NoticeInfoDto> modifyNotice(ModifyNoticeInfoRequestDto requestDto, final Long noticeId);
-//    void deleteNotice(Long noticeId);
+    ResponseEntity<List<InquiryInfoDto>> findAll();
+
+    ResponseEntity<InquiryInfoDto> modifyInquiry(ModifyInquiryRequestDto requestDto);
 
 
 }

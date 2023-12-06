@@ -3,6 +3,8 @@ package com.cherrydev.cherrymarketbe.inquiry.repository;
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface InquiryMapper {
     void save(Inquiry inquiry);
@@ -13,17 +15,10 @@ public interface InquiryMapper {
 
     Inquiry findByInquiryCode(String inquiryCode);
 
+    List<Inquiry> findAll();
 
+    void updateStatusByDel(Inquiry inquiry);
 
-//    @Select("SELECT * FROM notice WHERE notice_id = #{noticeId}
-//    Notice findByNoticeId(Long noticeId);
-//    Notice findByNoticeCode(String noticeCode);
-//    List<Notice> findAll();
-//
-//    void delete(Long noticeId);
-//
-//    void update(Notice notice);
-//
-//    void updateStatus(Notice notice);
+    void update(Inquiry inquiry);
 
 }

@@ -2,15 +2,25 @@ package com.cherrydev.cherrymarketbe.inquiry.service;
 
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
+import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
+import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryDetailType;
+import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryType;
 import com.cherrydev.cherrymarketbe.inquiry.repository.InquiryMapper;
+import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
+import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
+import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 
 @Service
 @Slf4j
@@ -29,9 +39,8 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public void deleteInquiryById(final Long inquiryId) {
-       inquiryMapper.deleteById(inquiryId);
+        inquiryMapper.deleteById(inquiryId);
     }
-
 
 
     @Override
@@ -49,52 +58,45 @@ public class InquiryServiceImpl implements InquiryService {
                 .body(new InquiryInfoDto(inquiry));
     }
 
-    //    @Override
-//    @Transactional(readOnly = true)
-//    public ResponseEntity<NoticeInfoDto> getNoticeInfoByCode(String noticeCode) {
-//        Notice notice = noticeMapper.findByNoticeCode(noticeCode);
-//        return ResponseEntity.ok()
-//                .body(new NoticeInfoDto(notice));
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public ResponseEntity<List<NoticeInfoDto>> findAll() {
-//        List<Notice> notices = noticeMapper.findAll();
-//        List<NoticeInfoDto> noticeDtos = NoticeInfoDto.convertToDtoList(notices);
-//        return ResponseEntity.ok()
-//                .body(noticeDtos);
-//    }
-//
+    @Override
+    public ResponseEntity<List<InquiryInfoDto>> findAll() {
+        List<Inquiry> inquiries = inquiryMapper.findAll();
+        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
+        return ResponseEntity.ok()
+                .body(inquiryInfoDtos);
+    }
 
-//
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public ResponseEntity<NoticeInfoDto> modifyNotice(final ModifyNoticeInfoRequestDto modifyDto, final Long noticeId) {
-//
-//        Notice notice = noticeMapper.findByNoticeId(noticeId);
-//
-//        notice.updateStatus(DELETED);
-//        noticeMapper.updateStatus(notice);
-//
-//        Notice newNotice = Notice.builder()
-//                .code(notice.getCode())
-//                .category(NoticeCategory.valueOf(modifyDto.getCategory()))
-//                .subject(modifyDto.getSubject())
-//                .content(modifyDto.getContent())
-//                .status(DisplayStatus.ACTIVE)
-//                .displayDate(Timestamp.valueOf(modifyDto.getDisplayDate()))
-//                .hideDate(Timestamp.valueOf(modifyDto.getHideDate()))
-//                .deleteDate(null)
-//                .build();
-//
-//        noticeMapper.update(newNotice);
-//        NoticeInfoDto resultDto = new NoticeInfoDto(noticeMapper.findByNoticeId(newNotice.getNoticeId()));
-//
-//        return ResponseEntity
-//                .ok()
-//                .body(resultDto);
-//    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<InquiryInfoDto> modifyInquiry(final ModifyInquiryRequestDto modifyDto) {
+
+        Inquiry inquiry = inquiryMapper.findByInquiryId(modifyDto.getInquiryId());
+
+
+        inquiry.updateStatus(DELETED);
+        inquiryMapper.updateStatusByDel(inquiry);
+
+        Inquiry newInquiry = Inquiry.builder()
+//                .inquiryId(inquiry.getInquiryId())
+                .userId(inquiry.getUserId())
+                .code(inquiry.getCode())
+                .type(InquiryType.valueOf(modifyDto.getType()))
+                .detailType(InquiryDetailType.valueOf(modifyDto.getDetailType()))
+                .subject(modifyDto.getSubject())
+                .content(modifyDto.getContent())
+                .status(DisplayStatus.ACTIVE)
+                .phone(inquiry.getPhone())
+                .deleteDate(null)
+                .build();
+
+        inquiryMapper.update(newInquiry);
+        InquiryInfoDto resultDto = new InquiryInfoDto(inquiryMapper.findByInquiryId(newInquiry.getInquiryId()));
+
+        return ResponseEntity
+                .ok()
+                .body(resultDto);
+    }
 
 }
 

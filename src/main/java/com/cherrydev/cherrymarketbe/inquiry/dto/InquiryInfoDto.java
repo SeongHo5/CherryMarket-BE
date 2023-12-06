@@ -17,17 +17,17 @@ import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampT
 
 @Getter
 public class InquiryInfoDto {
-    private final Long inquiryId;
-    private final Long userId;
-    private final String code;
-    private final String type;
-    private final String detailType;
-    private final String subject;
-    private final String content;
-    private final String status;
-    private final String phone;
-    private final String createDate;
-    private final String deleteDate;
+    Long inquiryId;
+    Long userId;
+    String code;
+    String type;
+    String detailType;
+    String subject;
+    String content;
+    String status;
+    String phone;
+    String createDate;
+    String deleteDate;
 
     public InquiryInfoDto(Inquiry inquiry) {
         this.inquiryId = inquiry.getInquiryId();

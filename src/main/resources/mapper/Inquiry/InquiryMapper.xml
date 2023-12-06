@@ -17,14 +17,13 @@
         <result property="deleteDate" column="DELETED_DE"/>
     </resultMap>
 
-
     <!--    INSERT-->
     <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
         <selectKey keyProperty="inquiryId" keyColumn="INQRY_ID" resultType="Long" order="AFTER">
             SELECT MAX(INQRY_ID) FROM INQRY
         </selectKey>
         INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS, INQRY_RECPTN_MOBLPHON_NO)
-        VALUES (#{userId}, #{code}, #{type}, #{detailType}, #{subject},#{content}, #{status}, (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_ID = #{userId}))
+        VALUES (#{userId},(select CONCAT('INQ',nextval('INQRY_SEQ')) from dual),#{type}, #{detailType}, #{subject},#{content}, #{status}, (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_ID = #{userId}))
     </insert>
 
 
@@ -50,5 +49,40 @@
         where INQRY_CODE = #{code} and INQRY.INQRY_STTUS !='DELETED'
     </select>
 
+    <select id="findAll" resultMap="inquiryMap">
+        select INQRY_ID,
+               ACNT_ID,
+               INQRY_CODE,
+               INQRY_TYPE,
+               INQRY_DETAIL_TYPE,
+               INQRY_SJ,
+               INQRY_CN,
+               INQRY_STTUS,
+               INQRY_RECPTN_MOBLPHON_NO,
+               CREAT_DE,
+               DELETED_DE
+        from INQRY
+        WHERE INQRY.INQRY_STTUS !='DELETED'
+        ORDER BY INQRY_ID
+    </select>
+
+    <!--   UPDATE -->
+    <update id="updateStatusByDel" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
+        UPDATE INQRY
+        <set>
+            INQRY_STTUS = 'DELETED',
+            DELETED_DE = now()
+        </set>
+        WHERE INQRY_ID = #{inquiryId}
+    </update>
+
+
+    <insert id="update" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
+        <selectKey keyProperty="inquiryId" keyColumn="INQRY_ID" resultType="Long" order="AFTER">
+            SELECT MAX(INQRY_ID) FROM INQRY
+        </selectKey>
+        INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS, INQRY_RECPTN_MOBLPHON_NO)
+        VALUES (#{userId},#{code},#{type}, #{detailType}, #{subject},#{content}, #{status}, #{phone})
+    </insert>
 
 </mapper>
