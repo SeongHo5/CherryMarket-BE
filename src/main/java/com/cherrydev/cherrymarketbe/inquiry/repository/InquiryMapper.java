@@ -18,10 +18,14 @@ public interface InquiryMapper {
     Inquiry findByInquiryCode(String inquiryCode);
 
     List<Inquiry> findAll();
+    List<Inquiry> findAllByUser(Long userId);
+
+    List<Inquiry> findAllByPhone(String phone);
 
     void updateStatusByDel(Inquiry inquiry);
 
     void update(Inquiry inquiry);
+
 
 
 }

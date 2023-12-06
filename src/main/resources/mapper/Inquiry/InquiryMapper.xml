@@ -73,6 +73,20 @@
         ORDER BY INQRY_ID
     </select>
 
+    <select id="findAllByUser" parameterType="Long" resultMap="inquiryMap">
+        select *
+        from INQRY
+        WHERE INQRY.INQRY_STTUS !='DELETED' and ACNT_ID = #{userId}
+        ORDER BY INQRY_CODE
+    </select>
+
+    <select id="findAllByPhone" parameterType="String" resultMap="inquiryMap">
+        select *
+        from INQRY
+        WHERE INQRY.INQRY_STTUS !='DELETED' and (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_CTTPC = #{phone})
+        ORDER BY INQRY_CODE
+    </select>
+
     <!--   UPDATE -->
     <update id="updateStatusByDel" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
         UPDATE INQRY

@@ -7,11 +7,7 @@ import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryDetailType;
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryType;
 import com.cherrydev.cherrymarketbe.inquiry.repository.InquiryMapper;
-import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
-import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
-import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +60,9 @@ public class InquiryServiceImpl implements InquiryService {
                 .body(new InquiryInfoDto(inquiry));
     }
 
+
+
+
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<List<InquiryInfoDto>> findAll() {
@@ -73,6 +72,23 @@ public class InquiryServiceImpl implements InquiryService {
                 .body(inquiryInfoDtos);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<InquiryInfoDto>> findAllByUser(final Long userId) {
+        List<Inquiry> inquiries = inquiryMapper.findAllByUser(userId);
+        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
+        return ResponseEntity.ok()
+                .body(inquiryInfoDtos);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<InquiryInfoDto>> findAllByPhone(String phone) {
+        List<Inquiry> inquiries = inquiryMapper.findAllByPhone(phone);
+        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
+        return ResponseEntity.ok()
+                .body(inquiryInfoDtos);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
