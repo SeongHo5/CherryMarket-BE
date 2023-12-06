@@ -92,17 +92,30 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: failure()
 
-      - name: Deploy to Naver Cloud Instance
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_KEY }}
-          port: ${{ secrets.SERVER_SSH_PORT }}
-          script: |
-            cd ~/cherrymarket-be
-            git pull
-            ./gradlew clean build -x test
-            bash ./deploy/deploy.sh
-            
+      - name: Build JAR file for deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew clean build -x test
 
+      - name: Make deployable artifact
+        run: |
+          mkdir -p ./deployable
+          cp ./build/libs/*SNAPSHOT.jar ./deployable
+        shell: bash
+
+      - name: Zip deployable artifact
+        run: |
+          cd ./deployable
+          zip -r ./cherry-build.zip ./*
+          pwd
+        shell: bash
+
+      - name: Configure Naver Cloud Platform credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.NAVER_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.NAVER_SECRET_ACCESS_KEY }}
+          aws configure set default.region kr-standard
+          aws configure set default.s3.signature_version s3v4
+
+      - name: Upload to Naver Cloud Platform Object Storage
+        run: aws s3 cp ./deployable/cherry-build.zip s3://cherry-build --endpoint-url https://kr.object.ncloudstorage.com

@@ -1,9 +1,6 @@
 package com.cherrydev.cherrymarketbe.common.advice;
 
-import com.cherrydev.cherrymarketbe.common.exception.AuthException;
-import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
-import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
-import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
+import com.cherrydev.cherrymarketbe.common.exception.*;
 import com.cherrydev.cherrymarketbe.common.exception.dto.ExceptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +89,7 @@ public class ExceptionAdvice {
     protected ResponseEntity<ExceptionDto> myBatisSystemException(MyBatisSystemException ex) {
         log.error(ex.getMessage());
         return ResponseEntity.
-                status(404).
+                status(500).
                 body(new ExceptionDto(500, "DB Error / Please Contact to Admin"));
     }
 }
