@@ -20,7 +20,6 @@ public record CartResponseDto(
         int discountRate
 ) {
 
-    // TODO : Discount entity 불러오기
 
     public static CartResponseDto getCartsList(Cart cart) {
 
@@ -28,7 +27,6 @@ public record CartResponseDto(
         TestDiscount discount = goods.getDiscount();
 
 
-        //Goods에서
         Long discountId = Optional
                 .ofNullable(discount)
                 .map(TestDiscount::getDiscountId)
@@ -43,6 +41,8 @@ public record CartResponseDto(
                 .ofNullable(discount)
                 .map(TestDiscount::getDiscountRate)
                 .orElse(0);
+
+        // TODO: 추후 Discount entity 참조 연결. Goods에서 Discount null 처리 시 아래 코드 삭제 예정
 
         return new CartResponseDto(
                 cart.getCartId(),

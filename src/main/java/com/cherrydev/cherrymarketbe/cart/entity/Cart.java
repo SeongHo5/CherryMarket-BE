@@ -1,6 +1,8 @@
 package com.cherrydev.cherrymarketbe.cart.entity;
 
 import com.cherrydev.cherrymarketbe.goods.entity.Goods;
+import com.cherrydev.cherrymarketbe.goods.enums.SalesStatus;
+import com.cherrydev.cherrymarketbe.order.enums.OrderStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -80,7 +82,7 @@ public class Cart {
 
 
     public boolean isGoodsAvailable() {
-        return this.getGoods().getSalesStatus().equals("ON_SALE");
+        return SalesStatus.ON_SALE.name().equals(this.getGoods().getSalesStatus());
     }
 
 
