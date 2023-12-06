@@ -77,4 +77,9 @@ public class Cart {
         return new CartCreateBuilder();
     }
 
+
+    public boolean isGoodsAvailable() {
+        return this.getGoods().getSalesStatus().equals("ON_SALE");
+    }
+
 }

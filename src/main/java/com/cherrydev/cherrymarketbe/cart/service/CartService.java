@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.cart.service;
 
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.cart.dto.CartRequestDto;
 import com.cherrydev.cherrymarketbe.cart.dto.CartRequestChangeDto;
 import com.cherrydev.cherrymarketbe.cart.dto.CartResponseDto;
@@ -10,9 +11,9 @@ import java.util.Map;
 
 public interface CartService {
 
-    Map<String, List<CartResponseDto>> getAvailableCarts(Long accountId);
-    List<CartResponseDto> getUnAvailableCarts(Long accountId);
-    void addCartItem(CartRequestDto requestDto);
+    Map<String, List<CartResponseDto>> getAvailableCarts(AccountDetails accountDetails);
+    List<CartResponseDto> getUnavailableCarts(AccountDetails accountDetails);
+    void addCartItem(CartRequestDto requestDto, AccountDetails accountDetails);
     void deleteCartItem(CartRequestChangeDto requestChangeDto);
     void updateQuantity(CartRequestChangeDto requestChangeDto);
 

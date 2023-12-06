@@ -9,12 +9,9 @@ import java.util.List;
 public interface CartMapper {
 
    void save(Cart cart);
-
    List<Cart> findCartsByAccountId(Long accountId);
-
-   void updateQuantity(Cart cart);
-
-   void deleteByCartId(Cart cart);
+   void update(Cart cart);
+   void delete(Cart cart);
 
 
 }

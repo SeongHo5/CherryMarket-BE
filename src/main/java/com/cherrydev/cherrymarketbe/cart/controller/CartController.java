@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,43 +26,48 @@ public class CartController {
 
     private AccountDetails accountDetails;
 
-    @PostMapping("/refresh-available")
+    @GetMapping ("/refresh-available")
     //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Map<String, List<CartResponseDto>>> getAvailableCartItems (
-            final @RequestParam Long accountId
-            //final @RequestBody CartRequestDto requestDto
-            //final @AuthenticationPrincipal AccountDetails accountDetails
-    ){  Map<String, List<CartResponseDto>> availableCarts = cartService.getAvailableCarts(accountId);
-        return ResponseEntity.ok(availableCarts);
+    public ResponseEntity<Map<String, List<CartResponseDto>>> getAvailableCarts(
+            final @AuthenticationPrincipal AccountDetails accountDetails){
 
-        //return cartService.getCartItems(accountDetails);
+        Map<String, List<CartResponseDto>> availableCarts = cartService.getAvailableCarts(accountDetails);
+        return ResponseEntity.ok(availableCarts);
     }
 
-    @PostMapping("/refresh-unavailable")
+    @GetMapping("/refresh-unavailable")
+    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<CartResponseDto>> getUnavailableCarts (
-            final @RequestParam Long accountId
-    ){
-        List<CartResponseDto> unavailableCarts = cartService.getUnAvailableCarts(accountId);
+            final @AuthenticationPrincipal AccountDetails accountDetails){
+
+        List<CartResponseDto> unavailableCarts = cartService.getUnavailableCarts(accountDetails);
         return ResponseEntity.ok(unavailableCarts);
     }
 
     @PostMapping("/add")
+    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> addItemToCart (
-            final @RequestBody CartRequestDto cartRequestDto)  {
-        cartService.addCartItem(cartRequestDto);
+            final @RequestBody CartRequestDto cartRequestDto,
+            final @AuthenticationPrincipal AccountDetails accountDetails)  {
+
+        cartService.addCartItem(cartRequestDto, accountDetails);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/update")
+    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateQuantity (
             final @RequestBody CartRequestChangeDto requestChangeDto)  {
+
         cartService.updateQuantity(requestChangeDto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/delete")
+    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCartItem (
             final @RequestBody CartRequestChangeDto requestChangeDto){
+
         cartService.deleteCartItem(requestChangeDto);
         return ResponseEntity.noContent().build();
     }
