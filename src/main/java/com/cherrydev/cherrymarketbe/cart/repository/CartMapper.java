@@ -13,5 +13,4 @@ public interface CartMapper {
    void update(Cart cart);
    void delete(Long cartId);
 
-
 }

@@ -24,11 +24,10 @@ public class CartController {
 
     private final CartServiceImpl cartService;
 
-    private AccountDetails accountDetails;
-
     /**
      * 장바구니 리스트 - 주문 가능한 상품
      */
+
     @GetMapping ("/refresh-available")
     //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Map<String, List<CartResponseDto>>> getAvailableCarts(
@@ -38,10 +37,10 @@ public class CartController {
         return ResponseEntity.ok(availableCarts);
     }
 
-
     /**
      * 장바구니 리스트 - 주문 불가 상품
      */
+
     @GetMapping("/refresh-unavailable")
     //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<CartResponseDto>> getUnavailableCarts (
@@ -50,6 +49,7 @@ public class CartController {
         List<CartResponseDto> unavailableCarts = cartService.getUnavailableCarts(accountDetails);
         return ResponseEntity.ok(unavailableCarts);
     }
+
 
     /**
      * 장바구니 상품 추가
@@ -64,6 +64,7 @@ public class CartController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
     /**
      * 장바구니 상품 수량 변경
      */
@@ -75,6 +76,7 @@ public class CartController {
         cartService.updateQuantity(requestChangeDto);
         return ResponseEntity.noContent().build();
     }
+
 
     /**
      * 장바구니 상품 삭제

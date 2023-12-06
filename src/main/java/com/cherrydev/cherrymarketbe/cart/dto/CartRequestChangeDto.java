@@ -8,6 +8,7 @@ import lombok.Builder;
 public record CartRequestChangeDto(
         @NotNull Long cartId,
         @NotNull int quantity
+
 ) {
 
     public Cart toEntity() {

@@ -26,6 +26,7 @@ public record CartResponseDto(
         Goods goods = cart.getGoods();
         TestDiscount discount = goods.getDiscount();
 
+        // TODO: 추후 Discount entity 참조 연결. Goods에서 Discount null 처리 시 아래 코드 삭제 예정
 
         Long discountId = Optional
                 .ofNullable(discount)
@@ -41,8 +42,6 @@ public record CartResponseDto(
                 .ofNullable(discount)
                 .map(TestDiscount::getDiscountRate)
                 .orElse(0);
-
-        // TODO: 추후 Discount entity 참조 연결. Goods에서 Discount null 처리 시 아래 코드 삭제 예정
 
         return new CartResponseDto(
                 cart.getCartId(),

@@ -8,7 +8,11 @@
         <result property="cartId" column="CART_ID"/>
         <result property="quantity" column="CART_QY"/>
 
+<<<<<<< Updated upstream
         <association property="goods" javaType="com.cherrydev.cherrymarketbe.goods.entity.Goods">
+=======
+        <association property="goods" javaType="com.cherrydev.cherrymarketbe.cart.entity.TestGoods">
+>>>>>>> Stashed changes
             <result property="goodsId" column="GOODS_ID"/>
             <result property="goodsName" column="GOODS_NM"/>
             <result property="price" column="GOODS_PRICE"/>
@@ -54,13 +58,21 @@
         values (#{accountId}, #{goods.goodsId}, #{quantity}, now(), now())
     </insert>
 
+<<<<<<< Updated upstream
     <update id="update" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+=======
+    <update id="updateQuantity" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+>>>>>>> Stashed changes
         update CART
         SET CART_QY = #{quantity}, UPDT_DE = now()
         WHERE CART_ID = #{cartId};
     </update>
 
+<<<<<<< Updated upstream
     <delete id="delete">
+=======
+    <delete id="deleteByCartId">
+>>>>>>> Stashed changes
         delete
         from CART
         where CART_ID = #{cartId}
