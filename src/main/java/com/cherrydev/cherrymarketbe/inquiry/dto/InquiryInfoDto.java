@@ -2,14 +2,7 @@ package com.cherrydev.cherrymarketbe.inquiry.dto;
 
 
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
-import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryDetailType;
-import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryType;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
-import com.cherrydev.cherrymarketbe.notice.entity.Notice;
-import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import lombok.Getter;
-
-import java.sql.Timestamp;
 import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
@@ -25,6 +18,7 @@ public class InquiryInfoDto {
     String subject;
     String content;
     String status;
+    String answerStatus;
     String phone;
     String createDate;
     String deleteDate;
@@ -38,6 +32,7 @@ public class InquiryInfoDto {
         this.subject = inquiry.getSubject();
         this.content = inquiry.getContent();
         this.status = inquiry.getStatus().toString();
+        this.answerStatus = inquiry.getAnswerStatus().toString();
         this.phone = inquiry.getPhone();
         this.createDate = timeStampToString(inquiry.getCreateDate());
         this.deleteDate = inquiry.getDeleteDate() != null ? timeStampToString(inquiry.getDeleteDate()) : null;

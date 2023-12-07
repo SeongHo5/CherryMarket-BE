@@ -12,6 +12,7 @@
         <result property="subject" column="INQRY_SJ"/>
         <result property="content" column="INQRY_CN"/>
         <result property="status" column="INQRY_STTUS"/>
+        <result property="answerStatus" column="INQRY_ANSWER_STTUS"/>
         <result property="phone" column="INQRY_RECPTN_MOBLPHON_NO"/>
         <result property="createDate" column="CREAT_DE"/>
         <result property="deleteDate" column="DELETED_DE"/>
@@ -64,6 +65,7 @@
                INQRY_DETAIL_TYPE,
                INQRY_SJ,
                INQRY_CN,
+               INQRY_ANSWER_STTUS,
                INQRY_STTUS,
                INQRY_RECPTN_MOBLPHON_NO,
                CREAT_DE,

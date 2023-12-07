@@ -4,10 +4,6 @@ import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.service.InquiryServiceImpl;
-import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
-import com.cherrydev.cherrymarketbe.notice.service.NoticeServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +21,14 @@ public class InquiryController {
 
     private final InquiryServiceImpl inquiryService;
 
-    // 등록
+    // ==================== INSERT ==================== //
     @PostMapping("/add-inquiry")
     @ResponseStatus(HttpStatus.CREATED)
     public void addInquiry(final @Valid @RequestBody InquiryRequestDto inquiryRequestDto) {
         inquiryService.createInquiry(inquiryRequestDto);
     }
 
-    // --------조회--------
+    // ==================== SELECT ==================== //
     // By 아이디
     @GetMapping("/info-inquiry/search-id")
     public ResponseEntity<InquiryInfoDto> getNoticeInfoById(@RequestParam Long inquiryId) {
@@ -64,7 +60,7 @@ public class InquiryController {
     }
 
 
-    // -----수정-------
+    // ==================== UPDATE ==================== //
     // By 아이디
     @PatchMapping("/modify-id")
     @ResponseStatus(HttpStatus.OK)
@@ -81,7 +77,8 @@ public class InquiryController {
         return inquiryService.modifyInquiryByCode(requestDto);
     }
 
-    // -----------삭제----------------
+    // ==================== DELETE ==================== //
+
     // By 아이디
     @DeleteMapping("/delete-inquiry-id")
     @ResponseStatus(HttpStatus.OK)

@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.inquiry.entity;
 
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryDetailType;
+import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryStatus;
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryType;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import lombok.Builder;
@@ -20,13 +21,14 @@ public class Inquiry {
     private String subject;
     private String  content;
     private DisplayStatus status;
+    private InquiryStatus answerStatus;
     private String  phone;
     private Timestamp createDate;
     private Timestamp deleteDate;
 
     @Builder
     public Inquiry(Long inquiryId, Long userId, String code, InquiryType type,
-                   InquiryDetailType detailType, String subject, String content,
+                   InquiryDetailType detailType, String subject, String content, InquiryStatus answerStatus,
                    DisplayStatus status, String phone, Timestamp createDate, Timestamp deleteDate) {
 
         this.inquiryId = inquiryId;
@@ -36,6 +38,7 @@ public class Inquiry {
         this.detailType = detailType;
         this.subject = subject;
         this.content = content;
+        this.answerStatus =  answerStatus;
         this.status = status;
         this.phone = phone;
         this.createDate = createDate;
@@ -58,5 +61,8 @@ public class Inquiry {
 
     public void updateStatus(DisplayStatus status) {
         this.status = status;
+    }
+    public void updateAnswerStatus(InquiryStatus answerStatus) {
+        this.answerStatus = answerStatus;
     }
 }
