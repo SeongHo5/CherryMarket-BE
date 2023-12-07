@@ -16,25 +16,19 @@ public interface InquiryService {
 
     void deleteInquiryByCode(String inquiryCode);
 
-    @Transactional(readOnly = true)
     ResponseEntity<InquiryInfoDto> getInquiryInfoById(Long inquiryId);
 
-    @Transactional(readOnly = true)
     ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode);
 
-    @Transactional(readOnly = true)
     ResponseEntity<List<InquiryInfoDto>> findAll();
 
-    @Transactional(readOnly = true)
     ResponseEntity<List<InquiryInfoDto>> findAllByUser(Long userId);
 
-    @Transactional(readOnly = true)
     ResponseEntity<List<InquiryInfoDto>> findAllByPhone(String phone);
 
     ResponseEntity<InquiryInfoDto> modifyInquiryById(ModifyInquiryRequestDto requestDto);
 
     ResponseEntity<InquiryInfoDto> modifyInquiryByCode(ModifyInquiryRequestDto requestDto);
-
 
 
 }

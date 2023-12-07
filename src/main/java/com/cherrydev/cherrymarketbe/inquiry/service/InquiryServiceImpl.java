@@ -45,70 +45,41 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<InquiryInfoDto> getInquiryInfoById(final Long inquiryId) {
         Inquiry inquiry = inquiryMapper.findByInquiryId(inquiryId);
-        if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
-            inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
-        }
-        return ResponseEntity.ok()
-                .body(new InquiryInfoDto(inquiry));
+        return getExistAnswer(inquiry);
     }
 
+
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode) {
         Inquiry inquiry = inquiryMapper.findByInquiryCode(inquiryCode);
-        if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
-            inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
-        }
-        return ResponseEntity.ok()
-                .body(new InquiryInfoDto(inquiry));
+        return getExistAnswer(inquiry);
     }
 
 
-
-
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<List<InquiryInfoDto>> findAll() {
         List<Inquiry> inquiries = inquiryMapper.findAll();
-        for (Inquiry inquiry : inquiries) {
-            if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
-                inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
-            }
-        }
-        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
-        return ResponseEntity.ok()
-                .body(inquiryInfoDtos);
+        return getListCheckAnswer(inquiries);
     }
 
+
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<List<InquiryInfoDto>> findAllByUser(final Long userId) {
         List<Inquiry> inquiries = inquiryMapper.findAllByUser(userId);
-        for (Inquiry inquiry : inquiries) {
-            if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
-                inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
-            }
-        }
-        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
-        return ResponseEntity.ok()
-                .body(inquiryInfoDtos);
+        return getListCheckAnswer(inquiries);
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseEntity<List<InquiryInfoDto>> findAllByPhone(String phone) {
         List<Inquiry> inquiries = inquiryMapper.findAllByPhone(phone);
-        for (Inquiry inquiry : inquiries) {
-            if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
-                inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
-            }
-        }
-        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
-        return ResponseEntity.ok()
-                .body(inquiryInfoDtos);
+        return getListCheckAnswer(inquiries);
     }
 
     @Override
@@ -176,9 +147,31 @@ public class InquiryServiceImpl implements InquiryService {
     /**
      * 1:1문의 사항의 답변이 작성되어 있는지 확인한다.
      */
+    private ResponseEntity<InquiryInfoDto> getExistAnswer(Inquiry inquiry) {
+        if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())) {
+            inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
+            inquiryMapper.updateAnswerStatus(inquiry);
+        } else {
+            inquiry.updateAnswerStatus(InquiryStatus.ACCEPTING);
+            inquiryMapper.updateAnswerStatus(inquiry);
+        }
+        return ResponseEntity.ok()
+                .body(new InquiryInfoDto(inquiry));
+    }
 
-    private boolean checkAnswerInquiryExist(final Long inquiryId) {
-         return inquiryMapper.existAnswerInquiry(inquiryId);
+    private ResponseEntity<List<InquiryInfoDto>> getListCheckAnswer(List<Inquiry> inquiries) {
+        for (Inquiry inquiry : inquiries) {
+            if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())) {
+                inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
+                inquiryMapper.updateAnswerStatus(inquiry);
+            } else {
+                inquiry.updateAnswerStatus(InquiryStatus.ACCEPTING);
+                inquiryMapper.updateAnswerStatus(inquiry);
+            }
+        }
+        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
+        return ResponseEntity.ok()
+                .body(inquiryInfoDtos);
     }
 }
 

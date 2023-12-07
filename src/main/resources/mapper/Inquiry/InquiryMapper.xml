@@ -23,8 +23,10 @@
         <selectKey keyProperty="inquiryId" keyColumn="INQRY_ID" resultType="Long" order="AFTER">
             SELECT MAX(INQRY_ID) FROM INQRY
         </selectKey>
-        INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS, INQRY_RECPTN_MOBLPHON_NO)
-        VALUES (#{userId},(select CONCAT('INQ',nextval('INQRY_SEQ')) from dual),#{type}, #{detailType}, #{subject},#{content}, #{status}, (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_ID = #{userId}))
+        INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS,
+        INQRY_RECPTN_MOBLPHON_NO)
+        VALUES (#{userId},(select CONCAT('INQ',nextval('INQRY_SEQ')) from dual),#{type}, #{detailType},
+        #{subject},#{content}, #{status}, (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_ID = #{userId}))
     </insert>
 
 
@@ -32,15 +34,16 @@
     <delete id="deleteById" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
         UPDATE INQRY
         SET INQRY_STTUS = 'DELETED',
-            DELETED_DE = now()
+            DELETED_DE  = now()
         WHERE INQRY_ID = #{noticeId}
     </delete>
 
     <delete id="deleteByCode" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
         UPDATE INQRY
         SET INQRY_STTUS = 'DELETED',
-            DELETED_DE = now()
-        WHERE INQRY_CODE = #{noticeId} and INQRY_STTUS !='DELETED'
+            DELETED_DE  = now()
+        WHERE INQRY_CODE = #{noticeId}
+          and INQRY_STTUS != 'DELETED'
     </delete>
 
 
@@ -54,7 +57,8 @@
     <select id="findByInquiryCode" parameterType="String" resultMap="inquiryMap">
         select *
         from INQRY
-        where INQRY_CODE = #{code} and INQRY.INQRY_STTUS !='DELETED'
+        where INQRY_CODE = #{code}
+          and INQRY.INQRY_STTUS != 'DELETED'
     </select>
 
     <select id="findAll" resultMap="inquiryMap">
@@ -71,25 +75,31 @@
                CREAT_DE,
                DELETED_DE
         from INQRY
-        WHERE INQRY.INQRY_STTUS !='DELETED'
+        WHERE INQRY.INQRY_STTUS != 'DELETED'
         ORDER BY INQRY_ID
     </select>
 
     <select id="findAllByUser" parameterType="Long" resultMap="inquiryMap">
         select *
         from INQRY
-        WHERE INQRY.INQRY_STTUS !='DELETED' and ACNT_ID = #{userId}
+        WHERE INQRY.INQRY_STTUS != 'DELETED'
+          and ACNT_ID = #{userId}
         ORDER BY INQRY_CODE
     </select>
 
     <select id="findAllByPhone" parameterType="String" resultMap="inquiryMap">
         select *
         from INQRY
-        WHERE INQRY.INQRY_STTUS !='DELETED' and (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_CTTPC = #{phone})
+        WHERE INQRY.INQRY_STTUS != 'DELETED'
+          and (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_CTTPC = #{phone})
         ORDER BY INQRY_CODE
     </select>
 
-
+    <select id="existAnswerInquiry" resultType="java.lang.Boolean">
+        select count(*)
+        from INQRY_ANSWER
+        WHERE (SELECT INQRY_ID FROM INQRY_ANSWER WHERE INQRY_ID = #{inquiryId})
+    </select>
 
     <!--   UPDATE -->
     <update id="updateStatusByDel" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
@@ -101,12 +111,21 @@
         WHERE INQRY_ID = #{inquiryId}
     </update>
 
+    <update id="updateAnswerStatus" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
+        UPDATE INQRY
+        <set>
+            INQRY_ANSWER_STTUS = #{answerStatus},
+        </set>
+        WHERE INQRY_ID = #{inquiryId}
+    </update>
+
 
     <insert id="update" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
         <selectKey keyProperty="inquiryId" keyColumn="INQRY_ID" resultType="Long" order="AFTER">
             SELECT MAX(INQRY_ID) FROM INQRY
         </selectKey>
-        INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS, INQRY_RECPTN_MOBLPHON_NO)
+        INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS,
+        INQRY_RECPTN_MOBLPHON_NO)
         VALUES (#{userId},#{code},#{type}, #{detailType}, #{subject},#{content}, #{status}, #{phone})
     </insert>
 
