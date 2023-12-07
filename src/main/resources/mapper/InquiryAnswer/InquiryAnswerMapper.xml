@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.inquiryAnswer.repository.InquiryAnswerMapper">
+    <resultMap id="inquiryAnswerMap" type="com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer">
+        <result property="answerId" column="INQRY_ANSWER_ID"/>
+        <result property="inquiryId" column="INQRY_ID"/>
+        <result property="memo" column="INQRY_ANSWER_STTUS"/>
+        <result property="content" column="INQRY_ANSWER_CN"/>
+        <result property="createDate" column="CREAT_DE"/>
+    </resultMap>
+
+    <!--    INSERT-->
+    <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer">
+        <selectKey keyProperty="answerId" keyColumn="INQRY_ANSWER_ID" resultType="Long" order="AFTER">
+             SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO INQRY_ANSWER (INQRY_ID, INQRY_ANSWER_STTUS, INQRY_ANSWER_CN)
+        VALUES (#{inquiryId},#{memo},#{content})
+    </insert>
+
+
+    <update id="updateStatue" parameterType="com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer">
+        UPDATE INQRY
+        <set>
+            INQRY_ANSWER_STTUS = 'COMPLETE',
+        </set>
+        WHERE INQRY_ID = #{inquiryId}
+    </update>
+<!--    &lt;!&ndash;   DELETE &ndash;&gt;-->
+<!--    <delete id="deleteById" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">-->
+<!--        UPDATE INQRY-->
+<!--        SET INQRY_STTUS = 'DELETED',-->
+<!--            DELETED_DE = now()-->
+<!--        WHERE INQRY_ID = #{noticeId}-->
+<!--    </delete>-->
+
+<!--    <delete id="deleteByCode" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">-->
+<!--        UPDATE INQRY-->
+<!--        SET INQRY_STTUS = 'DELETED',-->
+<!--            DELETED_DE = now()-->
+<!--        WHERE INQRY_CODE = #{noticeId} and INQRY_STTUS !='DELETED'-->
+<!--    </delete>-->
+
+
+<!--    &lt;!&ndash;   SELECT &ndash;&gt;-->
+<!--    <select id="findByInquiryId" parameterType="Long" resultMap="inquiryMap">-->
+<!--        select *-->
+<!--        from INQRY-->
+<!--        where INQRY_ID = #{inquiryId}-->
+<!--    </select>-->
+
+<!--    <select id="findByInquiryCode" parameterType="String" resultMap="inquiryMap">-->
+<!--        select *-->
+<!--        from INQRY-->
+<!--        where INQRY_CODE = #{code} and INQRY.INQRY_STTUS !='DELETED'-->
+<!--    </select>-->
+
+<!--    <select id="findAll" resultMap="inquiryMap">-->
+<!--        select INQRY_ID,-->
+<!--               ACNT_ID,-->
+<!--               INQRY_CODE,-->
+<!--               INQRY_TYPE,-->
+<!--               INQRY_DETAIL_TYPE,-->
+<!--               INQRY_SJ,-->
+<!--               INQRY_CN,-->
+<!--               INQRY_ANSWER_STTUS,-->
+<!--               INQRY_STTUS,-->
+<!--               INQRY_RECPTN_MOBLPHON_NO,-->
+<!--               CREAT_DE,-->
+<!--               DELETED_DE-->
+<!--        from INQRY-->
+<!--        WHERE INQRY.INQRY_STTUS !='DELETED'-->
+<!--        ORDER BY INQRY_ID-->
+<!--    </select>-->
+
+<!--    <select id="findAllByUser" parameterType="Long" resultMap="inquiryMap">-->
+<!--        select *-->
+<!--        from INQRY-->
+<!--        WHERE INQRY.INQRY_STTUS !='DELETED' and ACNT_ID = #{userId}-->
+<!--        ORDER BY INQRY_CODE-->
+<!--    </select>-->
+
+<!--    <select id="findAllByPhone" parameterType="String" resultMap="inquiryMap">-->
+<!--        select *-->
+<!--        from INQRY-->
+<!--        WHERE INQRY.INQRY_STTUS !='DELETED' and (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_CTTPC = #{phone})-->
+<!--        ORDER BY INQRY_CODE-->
+<!--    </select>-->
+
+
+
+<!--    &lt;!&ndash;   UPDATE &ndash;&gt;-->
+<!--    <update id="updateStatusByDel" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">-->
+<!--        UPDATE INQRY-->
+<!--        <set>-->
+<!--            INQRY_STTUS = 'DELETED',-->
+<!--            DELETED_DE = now()-->
+<!--        </set>-->
+<!--        WHERE INQRY_ID = #{inquiryId}-->
+<!--    </update>-->
+
+
+<!--    <insert id="update" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">-->
+<!--        <selectKey keyProperty="inquiryId" keyColumn="INQRY_ID" resultType="Long" order="AFTER">-->
+<!--            SELECT MAX(INQRY_ID) FROM INQRY-->
+<!--        </selectKey>-->
+<!--        INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS, INQRY_RECPTN_MOBLPHON_NO)-->
+<!--        VALUES (#{userId},#{code},#{type}, #{detailType}, #{subject},#{content}, #{status}, #{phone})-->
+<!--    </insert>-->
+
+</mapper>
