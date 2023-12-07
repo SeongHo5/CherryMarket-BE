@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum DisplayStatus {
 
     ACTIVE("게시"),
-    DELETED("비 게시"),
-    BLINDED ("신고 누적");
+    DELETED("비게시"),
+    BLINDED ("신고누적");
 
 
     private final String status;

@@ -22,7 +22,7 @@ public class InquiryController {
     private final InquiryServiceImpl inquiryService;
 
     // ==================== INSERT ==================== //
-    @PostMapping("/add-inquiry")
+    @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public void addInquiry(final @Valid @RequestBody InquiryRequestDto inquiryRequestDto) {
         inquiryService.createInquiry(inquiryRequestDto);
@@ -30,31 +30,31 @@ public class InquiryController {
 
     // ==================== SELECT ==================== //
     // By 아이디
-    @GetMapping("/info-inquiry/search-id")
+    @GetMapping("/info/search-id")
     public ResponseEntity<InquiryInfoDto> getNoticeInfoById(@RequestParam Long inquiryId) {
         return inquiryService.getInquiryInfoById(inquiryId);
     }
 
     // By 코드
-    @GetMapping("/info-inquiry/search-code")
+    @GetMapping("/info/search-code")
     public ResponseEntity<InquiryInfoDto> getNoticeInfoByCode(@RequestParam String inquiryCode) {
 
         return inquiryService.getInquiryInfoByCode(inquiryCode);
     }
 
      //By 회원 아이디
-    @GetMapping("/inquiry-list/user")
+    @GetMapping("/list/user")
     public ResponseEntity<List<InquiryInfoDto>> getInquiryListByUser(@RequestParam Long userId) {
         return inquiryService.findAllByUser(userId);
     }
 
     //By 회원 핸드폰 번호
-    @GetMapping("/inquiry-list/phone")
+    @GetMapping("/list/phone")
     public ResponseEntity<List<InquiryInfoDto>> getInquiryListByPhone(@RequestParam String phone) {
         return inquiryService.findAllByPhone(phone);
     }
     // 전체 조회
-    @GetMapping("/inquiry-list")
+    @GetMapping("/list")
     public ResponseEntity<List<InquiryInfoDto>> getInquiryList() {
         return inquiryService.findAll();
     }
@@ -80,14 +80,14 @@ public class InquiryController {
     // ==================== DELETE ==================== //
 
     // By 아이디
-    @DeleteMapping("/delete-inquiry-id")
+    @DeleteMapping("/delete/id")
     @ResponseStatus(HttpStatus.OK)
     public void deleteInquiryById(@RequestParam Long inquiryId) {
         inquiryService.deleteInquiryById(inquiryId);
     }
 
     // By 코드
-    @DeleteMapping("/delete-inquiry-code")
+    @DeleteMapping("/delete/code")
     @ResponseStatus(HttpStatus.OK)
     public void deleteInquiryById(@RequestParam String  inquiryCode) {
         inquiryService.deleteInquiryByCode(inquiryCode);

@@ -23,7 +23,6 @@ import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 @Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-
 public class InquiryServiceImpl implements InquiryService {
     private final InquiryMapper inquiryMapper;
 
@@ -117,7 +116,6 @@ public class InquiryServiceImpl implements InquiryService {
     public ResponseEntity<InquiryInfoDto> modifyInquiryById(final ModifyInquiryRequestDto modifyDto) {
 
         Inquiry inquiry = inquiryMapper.findByInquiryId(modifyDto.getInquiryId());
-
 
         inquiry.updateStatus(DELETED);
         inquiryMapper.updateStatusByDel(inquiry);
