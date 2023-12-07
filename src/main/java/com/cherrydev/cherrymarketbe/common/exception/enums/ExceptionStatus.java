@@ -10,6 +10,7 @@ public enum ExceptionStatus {
     // 400 - Bad Request : 잘못된 요청
     INVALID_INPUT_VALUE(400, "입력 값이 잘못되었습니다."),
     INVALID_TYPE_VALUE(400, "요청 타입이 잘못되었습니다."),
+    INVALID_OAUTH_TYPE(400, "소셜 로그인 제공자가 일치하지 않습니다."),
     INVALID_USER_ROLE(400, "존재하지 않는 권한입니다."),
     BLACKLISTED_IP(400, "차단된 IP입니다."),
     INVALID_USER_STATUS(400, "존재하지 않는 상태입니다."),
