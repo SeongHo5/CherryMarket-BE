@@ -28,6 +28,7 @@
         </set>
         WHERE INQRY_ID = #{inquiryId}
     </update>
+
 <!--    &lt;!&ndash;   DELETE &ndash;&gt;-->
 <!--    <delete id="deleteById" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">-->
 <!--        UPDATE INQRY-->
@@ -44,12 +45,35 @@
 <!--    </delete>-->
 
 
-<!--    &lt;!&ndash;   SELECT &ndash;&gt;-->
-<!--    <select id="findByInquiryId" parameterType="Long" resultMap="inquiryMap">-->
-<!--        select *-->
-<!--        from INQRY-->
-<!--        where INQRY_ID = #{inquiryId}-->
-<!--    </select>-->
+    <!--   SELECT -->
+    <select id="findById" parameterType="Long" resultMap="inquiryAnswerMap">
+        select *
+        from INQRY_ANSWER
+        where INQRY_ID = #{inquiryId}
+    </select>
+
+    <select id="findByUserId" parameterType="Long" resultMap="inquiryAnswerMap">
+        select *
+        from INQRY_ANSWER
+        where INQRY_ID IN (SELECT INQRY.INQRY_ID FROM INQRY WHERE INQRY.ACNT_ID  = #{userId} )
+    </select>
+
+    <select id="findAll" resultMap="inquiryAnswerMap">
+        select *
+        from INQRY_ANSWER
+        order by INQRY_ANSWER_ID = #{answerId}
+    </select>
+
+    <select id="findByEmail" parameterType="String" resultMap="inquiryAnswerMap">
+        select *
+        from INQRY_ANSWER
+        where INQRY_ID IN (SELECT INQRY.INQRY_ID
+                           FROM INQRY
+                           JOIN ACNT ON INQRY.ACNT_ID = ACNT.ACNT_ID
+                           WHERE ACNT_EMAIL = #{email})
+    </select>
+
+
 
 <!--    <select id="findByInquiryCode" parameterType="String" resultMap="inquiryMap">-->
 <!--        select *-->
@@ -89,25 +113,5 @@
 <!--        ORDER BY INQRY_CODE-->
 <!--    </select>-->
 
-
-
-<!--    &lt;!&ndash;   UPDATE &ndash;&gt;-->
-<!--    <update id="updateStatusByDel" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">-->
-<!--        UPDATE INQRY-->
-<!--        <set>-->
-<!--            INQRY_STTUS = 'DELETED',-->
-<!--            DELETED_DE = now()-->
-<!--        </set>-->
-<!--        WHERE INQRY_ID = #{inquiryId}-->
-<!--    </update>-->
-
-
-<!--    <insert id="update" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">-->
-<!--        <selectKey keyProperty="inquiryId" keyColumn="INQRY_ID" resultType="Long" order="AFTER">-->
-<!--            SELECT MAX(INQRY_ID) FROM INQRY-->
-<!--        </selectKey>-->
-<!--        INSERT INTO INQRY (ACNT_ID, INQRY_CODE, INQRY_TYPE, INQRY_DETAIL_TYPE, INQRY_SJ, INQRY_CN, INQRY_STTUS, INQRY_RECPTN_MOBLPHON_NO)-->
-<!--        VALUES (#{userId},#{code},#{type}, #{detailType}, #{subject},#{content}, #{status}, #{phone})-->
-<!--    </insert>-->
 
 </mapper>
