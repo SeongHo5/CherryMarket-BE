@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.factory;
 
+import com.cherrydev.cherrymarketbe.admin.dto.IssueCouponRequestDto;
 import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserRoleRequestDto;
 import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserStatusByAdminDto;
 import com.cherrydev.cherrymarketbe.customer.dto.reward.AddRewardRequestDto;
@@ -55,6 +56,28 @@ public class AdminFactory {
                 .amounts(1000)
                 .earnedAt("2023-01-01")
                 .expiredAt("2024-12-31")
+                .build();
+    }
+
+    public static IssueCouponRequestDto createIssueCouponRequestDtoA() {
+        return IssueCouponRequestDto.builder()
+                .code("TEST00")
+                .type("OTHER")
+                .minimumOrderAmount(10000)
+                .discountRate(10)
+                .startDate("2021-01-01")
+                .endDate("2024-12-31")
+                .build();
+    }
+
+    public static IssueCouponRequestDto createIssueCouponRequestDtoB() {
+        return IssueCouponRequestDto.builder()
+                .code("WELC00")
+                .type("OTHER")
+                .minimumOrderAmount(10000)
+                .discountRate(10)
+                .startDate("2021-01-01")
+                .endDate("2024-12-31")
                 .build();
     }
 }

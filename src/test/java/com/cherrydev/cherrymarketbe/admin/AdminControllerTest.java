@@ -30,7 +30,7 @@ import static com.cherrydev.cherrymarketbe.factory.AdminFactory.*;
 @Rollback
 @AutoConfigureMockMvc
 @SpringBootTest
-public class AdminControllerTest {
+class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -67,7 +67,6 @@ public class AdminControllerTest {
         // When & Then
         // OK를 반환하고, 페이징 처리된 계정 목록을 반환한다.
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/account-list")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -86,9 +85,7 @@ public class AdminControllerTest {
         String requestBody = Jackson.toJsonString(modifyUserRoleRequestDto);
 
         // When & Then
-        // OK를 반환한다.
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/role")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -104,9 +101,7 @@ public class AdminControllerTest {
         String requestBody = Jackson.toJsonString(modifyUserStatusByAdminDto);
 
         // When & Then
-        // OK를 반환한다.
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -123,7 +118,6 @@ public class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -140,7 +134,6 @@ public class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -156,7 +149,6 @@ public class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -171,12 +163,57 @@ public class AdminControllerTest {
         String requestBody = Jackson.toJsonString(createAddRewardRequestDtoB());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 쿠폰_발급_성공() throws Exception {
+        // Given
+        String requestBody = Jackson.toJsonString(createIssueCouponRequestDtoA());
+
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/issue-coupon")
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 쿠폰_발급_실패_코드_중복() throws Exception {
+        // Given
+        String requestBody = Jackson.toJsonString(createIssueCouponRequestDtoB());
+
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/issue-coupon")
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 쿠폰_목록_조회_성공() throws Exception {
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/coupon-list")
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.last").exists());
+    }
+
 
     @Test
     @Transactional
@@ -187,7 +224,6 @@ public class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -203,7 +239,6 @@ public class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
-                        .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());

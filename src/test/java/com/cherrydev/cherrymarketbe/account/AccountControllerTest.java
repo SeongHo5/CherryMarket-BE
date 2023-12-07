@@ -72,7 +72,6 @@ class AccountControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/account/sign-up")
-                        .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
@@ -86,7 +85,6 @@ class AccountControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/account/my-info")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(account.getName()))
@@ -96,14 +94,13 @@ class AccountControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "ogja39@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "ubag@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 내정보_수정_성공() throws Exception {
         // Given
         ModifyAccountInfoRequestDto modifyAccountInfoRequestDto = createModifyAccountInfoRequestDtoA();
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/account/my-info/modify")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Jackson.toJsonString(modifyAccountInfoRequestDto)))
@@ -121,7 +118,6 @@ class AccountControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/account/drop-out")
-                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }

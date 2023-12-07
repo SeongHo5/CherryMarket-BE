@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.customer.controller;
+package com.cherrydev.cherrymarketbe.customer;
 
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
@@ -63,7 +63,6 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/customer/reward/summary")
-                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -80,7 +79,6 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/customer/address/my-list")
-                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -100,7 +98,6 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/customer/address/add")
-                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -118,13 +115,11 @@ class CustomerControllerTest {
         String requestBody = Jackson.toJsonString(requestDto);
 
         // When & Then
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/customer/address/add")
-                                .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                                .contentType("application/json")
-                                .accept("application/json")
-                                .content(requestBody)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/customer/address/add")
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .contentType("application/json")
+                        .accept("application/json")
+                        .content(requestBody)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -140,13 +135,66 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/customer/address/add")
-                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .content(requestBody)
                 )
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "ocoe@example.net", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 쿠폰_등록_성공() throws Exception {
+        // Given
+        String couponCode = "FODR00";
+
+        // When & Then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/customer/register-coupon")
+                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .contentType("application/json")
+                                .accept("application/json")
+                                .param("couponCode", couponCode)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "hseong@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 쿠폰_등록_실패_이미_보유() throws Exception {
+        // Given
+        String couponCode = "WELC00";
+
+        // When & Then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/customer/register-coupon")
+                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .contentType("application/json")
+                                .accept("application/json")
+                                .param("couponCode", couponCode)
+                )
+                .andExpect(MockMvcResultMatchers.status().isConflict());
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "ocoe@example.net", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 쿠폰_등록_없는_코드() throws Exception {
+        // Given
+        String couponCode = "NONE15";
+
+        // When & Then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/customer/register-coupon")
+                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .contentType("application/json")
+                                .accept("application/json")
+                                .param("couponCode", couponCode)
+                )
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 
