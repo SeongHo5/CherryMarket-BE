@@ -40,10 +40,9 @@
         where G.GOODS_ID = #{goodsId}
     </select>
 
-    <!--
         <delete id = "deleteById" parameterType = "Long">
             delete
             from GOODS
             where GOODS_ID = #{goodsId};
-        </delete>-->
+        </delete>
 </mapper>

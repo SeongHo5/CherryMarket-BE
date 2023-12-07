@@ -46,4 +46,9 @@ public class GoodsService {
                        .build();
     }
 
+    @Transactional
+    public void deleteById(Long goodId){
+        goodsMapper.deleteById(goodId);
+    }
+
 }

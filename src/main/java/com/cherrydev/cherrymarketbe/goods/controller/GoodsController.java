@@ -33,7 +33,7 @@ public class GoodsController {
     }
 
     @GetMapping("basicInfo")
-    public ResponseEntity<DiscountCalcDto> getBasicInfo(@RequestParam Long goodsId){
+    public ResponseEntity<DiscountCalcDto> getBasicInfo(@RequestParam Long goodsId) {
         return ResponseEntity.ok(goodsService.findBasicInfo(goodsId));
     }
 
@@ -42,11 +42,10 @@ public class GoodsController {
     //     return goodsService.findAll();
     // }
     //
-    // /* Delete */
-    // @DeleteMapping("/delgoods")
-    // @ResponseStatus(HttpStatus.CREATED)
-    // public void delete(Long goodsId) {
-    //     goodsService.deleteById(goodsId);
-    // }
+    /* Delete */
+    @DeleteMapping("/delete")
+    public ResponseEntity<List<GoodsRegistrationDto>> delete(Long goodsId) {
+        return ResponseEntity.ok(goodsService.findAll());
+    }
 
 }

@@ -15,4 +15,6 @@ public interface GoodsMapper {
 
     GoodsBasicInfoDto findBasicInfo(Long goodsId);
 
+    void deleteById(Long goodId);
+
 }
