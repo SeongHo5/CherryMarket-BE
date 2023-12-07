@@ -5,6 +5,7 @@ import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryDetailType;
+import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryStatus;
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryType;
 import com.cherrydev.cherrymarketbe.inquiry.repository.InquiryMapper;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
@@ -48,6 +49,9 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional(readOnly = true)
     public ResponseEntity<InquiryInfoDto> getInquiryInfoById(final Long inquiryId) {
         Inquiry inquiry = inquiryMapper.findByInquiryId(inquiryId);
+        if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
+            inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
+        }
         return ResponseEntity.ok()
                 .body(new InquiryInfoDto(inquiry));
     }
@@ -56,6 +60,9 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional(readOnly = true)
     public ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode) {
         Inquiry inquiry = inquiryMapper.findByInquiryCode(inquiryCode);
+        if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
+            inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
+        }
         return ResponseEntity.ok()
                 .body(new InquiryInfoDto(inquiry));
     }
@@ -67,6 +74,11 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<InquiryInfoDto>> findAll() {
         List<Inquiry> inquiries = inquiryMapper.findAll();
+        for (Inquiry inquiry : inquiries) {
+            if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
+                inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
+            }
+        }
         List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
         return ResponseEntity.ok()
                 .body(inquiryInfoDtos);
@@ -76,6 +88,11 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<InquiryInfoDto>> findAllByUser(final Long userId) {
         List<Inquiry> inquiries = inquiryMapper.findAllByUser(userId);
+        for (Inquiry inquiry : inquiries) {
+            if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
+                inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
+            }
+        }
         List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
         return ResponseEntity.ok()
                 .body(inquiryInfoDtos);
@@ -85,6 +102,11 @@ public class InquiryServiceImpl implements InquiryService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<InquiryInfoDto>> findAllByPhone(String phone) {
         List<Inquiry> inquiries = inquiryMapper.findAllByPhone(phone);
+        for (Inquiry inquiry : inquiries) {
+            if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())){
+                inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
+            }
+        }
         List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
         return ResponseEntity.ok()
                 .body(inquiryInfoDtos);
@@ -157,8 +179,8 @@ public class InquiryServiceImpl implements InquiryService {
      * 1:1문의 사항의 답변이 작성되어 있는지 확인한다.
      */
 
-    private void checkAnswerInquiryExist(final Long inquiryId) {
-        inquiryMapper.existAnswerInquiry(inquiryId);
+    private boolean checkAnswerInquiryExist(final Long inquiryId) {
+         return inquiryMapper.existAnswerInquiry(inquiryId);
     }
 }
 

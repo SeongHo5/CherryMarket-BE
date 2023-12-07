@@ -26,5 +26,5 @@ public interface InquiryMapper {
 
     void update(Inquiry inquiry);
 
-    void existAnswerInquiry(Long inquiryId);
+    boolean existAnswerInquiry(Long inquiryId);
 }
