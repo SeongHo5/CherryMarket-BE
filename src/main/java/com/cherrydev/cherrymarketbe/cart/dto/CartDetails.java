@@ -6,7 +6,7 @@ import com.cherrydev.cherrymarketbe.goods.entity.Goods;
 
 import java.util.Optional;
 
-public record CartResponseDto(
+public record CartDetails(
         Long cartId,
         Long goodsId,
         String salesStatus,
@@ -20,8 +20,7 @@ public record CartResponseDto(
         int discountRate
 ) {
 
-
-    public static CartResponseDto getCartsList(Cart cart) {
+    public static CartDetails getCarts(Cart cart) {
 
         Goods goods = cart.getGoods();
         TestDiscount discount = goods.getDiscount();
@@ -43,7 +42,7 @@ public record CartResponseDto(
                 .map(TestDiscount::getDiscountRate)
                 .orElse(0);
 
-        return new CartResponseDto(
+        return new CartDetails(
                 cart.getCartId(),
                 goods.getGoodsId(),
                 goods.getSalesStatus(),

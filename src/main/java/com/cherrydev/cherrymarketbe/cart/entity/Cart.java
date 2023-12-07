@@ -46,19 +46,15 @@ public class Cart {
         private Integer quantity;
         private Goods goods;
 
-
-
         public CartCreateBuilder accountId(Long accountId) {
             this.accountId = accountId;
             return this;
         }
 
-
         public CartCreateBuilder quantity(int quantity) {
             this.quantity = quantity;
             return this;
         }
-
 
         public CartCreateBuilder goods(Goods goods) {
             this.goods = goods;
@@ -75,11 +71,11 @@ public class Cart {
         }
     }
 
-    public static CartUpdateBuilder builderUpdate(){
+    public static CartUpdateBuilder builderUpdate() {
         return new CartUpdateBuilder();
     }
 
-    public static CartCreateBuilder builderCreate(){
+    public static CartCreateBuilder builderCreate() {
         return new CartCreateBuilder();
     }
 

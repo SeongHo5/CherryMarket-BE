@@ -2,20 +2,16 @@ package com.cherrydev.cherrymarketbe.cart.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.cart.dto.CartRequestDto;
-import com.cherrydev.cherrymarketbe.cart.dto.CartRequestChangeDto;
-import com.cherrydev.cherrymarketbe.cart.dto.CartResponseDto;
+import com.cherrydev.cherrymarketbe.cart.dto.*;
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.cart.repository.CartMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 
 @Service
 @Slf4j
@@ -27,38 +23,38 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public Map<String, List<CartResponseDto>> getAvailableCarts(AccountDetails accountDetails) {
-        List<Cart> cartItems = cartMapper.findCartsByAccountId(getAccountId(accountDetails));
-
-        return cartItems.stream()
-                .filter(Cart::isGoodsAvailable)
-                .map(CartResponseDto::getCartsList)
-                .collect(Collectors.groupingBy(CartResponseDto::storageType));
-    }
-    @Transactional
-    @Override
-    public List<CartResponseDto> getUnavailableCarts(AccountDetails accountDetails) {
-        List<Cart> cartItems = cartMapper.findCartsByAccountId(getAccountId(accountDetails));
-
-        return cartItems.stream()
-                .filter(cart -> !cart.isGoodsAvailable())
-                .map(CartResponseDto::getCartsList)
-                .toList();
+    public ResponseEntity<CartsByStorageType> getAvailableCarts(AccountDetails accountDetails) {
+        List<Cart> cartItems = cartMapper.findCartsByAccountId(accountDetails.getAccount().getAccountId());
+        return ResponseEntity
+                .ok()
+                .body(
+                        new CartsByStorageType(cartItems)
+                );
     }
 
     @Transactional
     @Override
-    public void addCartItem(CartRequestDto requestDto, AccountDetails accountDetails) {
-        Cart cart = requestDto.addCart(getAccount(accountDetails));
+    public ResponseEntity<UnavailableCarts> getUnavailableCarts(AccountDetails accountDetails) {
+        List<Cart> cartItems = cartMapper.findCartsByAccountId(accountDetails.getAccount().getAccountId());
+        return ResponseEntity
+                .ok()
+                .body(
+                        UnavailableCartsFactory.create(cartItems)
+                );
+    }
+
+    @Transactional
+    @Override
+    public void addCartItem(AddCart requestDto, AccountDetails accountDetails) {
+        Cart cart = requestDto.addCart(accountDetails.getAccount());
         cartMapper.save(cart);
     }
 
     @Transactional
     @Override
-    public void updateQuantity(CartRequestChangeDto requestChangeDto) {
+    public void updateQuantity(ChangeCart requestChangeDto) {
         Cart cart = requestChangeDto.toEntity();
         cartMapper.update(cart);
-
     }
 
     @Transactional
@@ -66,14 +62,5 @@ public class CartServiceImpl implements CartService {
     public void deleteCartItem(Long cartId) {
         cartMapper.delete(cartId);
     }
-
-    public Long getAccountId(AccountDetails accountDetails){
-        return accountDetails.getAccount().getAccountId();
-    }
-
-    public Account getAccount(AccountDetails accountDetails){
-        return accountDetails.getAccount();
-    }
-
 
 }

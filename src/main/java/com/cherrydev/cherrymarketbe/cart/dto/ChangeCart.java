@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record CartRequestChangeDto(
+public record ChangeCart(
         @NotNull Long cartId,
         @NotNull int quantity
 

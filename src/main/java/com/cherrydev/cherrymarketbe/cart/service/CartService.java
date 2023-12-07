@@ -1,20 +1,15 @@
 package com.cherrydev.cherrymarketbe.cart.service;
 
-
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.cart.dto.CartRequestDto;
-import com.cherrydev.cherrymarketbe.cart.dto.CartRequestChangeDto;
-import com.cherrydev.cherrymarketbe.cart.dto.CartResponseDto;
-
-import java.util.List;
-import java.util.Map;
+import com.cherrydev.cherrymarketbe.cart.dto.*;
+import org.springframework.http.ResponseEntity;
 
 public interface CartService {
 
-    Map<String, List<CartResponseDto>> getAvailableCarts(AccountDetails accountDetails);
-    List<CartResponseDto> getUnavailableCarts(AccountDetails accountDetails);
-    void addCartItem(CartRequestDto requestDto, AccountDetails accountDetails);
+    ResponseEntity<CartsByStorageType> getAvailableCarts(AccountDetails accountDetails);
+    ResponseEntity<UnavailableCarts> getUnavailableCarts(AccountDetails accountDetails);
+    void addCartItem(AddCart requestDto, AccountDetails accountDetails);
     void deleteCartItem(Long cartId);
-    void updateQuantity(CartRequestChangeDto requestChangeDto);
+    void updateQuantity(ChangeCart requestChangeDto);
 
 }
