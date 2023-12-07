@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.notice.repository.NoticeMapper">
+    <resultMap id="noticeMap" type="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        <result property="noticeId" column="NOTICE_ID"/>
+        <result property="code" column="NOTICE_CODE"/>
+        <result property="category" column="NOTICE_CTGRY"/>
+        <result property="subject" column="NOTICE_SJ"/>
+        <result property="content" column="NOTICE_CN"/>
+        <result property="status" column="NOTICE_STTUS"/>
+        <result property="displayDate" column="NOTICE_BGNDE"/>
+        <result property="hideDate" column="NOTICE_ENDDE"/>
+        <result property="createDate" column="CREAT_DE"/>
+        <result property="deleteDate" column="DELETED_DE"/>
+    </resultMap>
+
+
+    <!--    INSERT-->
+    <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        <selectKey keyProperty="noticeId" keyColumn="Notice_ID" resultType="Long" order="AFTER">
+            SELECT MAX(NOTICE_ID) FROM NOTICE
+        </selectKey>
+        insert into NOTICE (NOTICE_CODE, NOTICE_CTGRY, NOTICE_SJ, NOTICE_CN, NOTICE_STTUS, NOTICE_BGNDE, NOTICE_ENDDE)
+        values ((select CONCAT('NT',nextval('NOTICE_SEQ')) from dual), #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
+    </insert>
+
+
+    <!--   SELECT -->
+    <select id="findByNoticeId" parameterType="Long" resultMap="noticeMap">
+        select *
+        from NOTICE
+        where NOTICE_ID = #{noticeId}
+    </select>
+
+    <select id="findByNoticeCode" parameterType="String" resultMap="noticeMap">
+        select *
+        from NOTICE
+        where NOTICE_CODE = #{code} and NOTICE_STTUS !='DELETED'
+    </select>
+
+    <select id="findAll" resultMap="noticeMap">
+        select NOTICE_ID,
+               NOTICE_CODE,
+               NOTICE_CTGRY,
+               NOTICE_SJ,
+               NOTICE_CN,
+               NOTICE_STTUS,
+               NOTICE_BGNDE,
+               NOTICE_ENDDE,
+               CREAT_DE
+        from NOTICE
+        WHERE NOTICE_STTUS !='DELETED'
+        ORDER BY NOTICE_ID
+    </select>
+
+
+    <!--   DELETE -->
+    <delete id="deleteById" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        UPDATE NOTICE
+        SET NOTICE_STTUS = 'DELETED',
+            DELETED_DE = now()
+        WHERE NOTICE_ID = #{noticeId}
+    </delete>
+
+    <delete id="deleteByCode" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        UPDATE NOTICE
+        SET NOTICE_STTUS = 'DELETED',
+            DELETED_DE = now()
+        WHERE NOTICE_CODE = #{CODE} AND  NOTICE_STTUS != 'DELETED'
+    </delete>
+
+    <!--   UPDATE -->
+
+    <update id="updateStatus" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        UPDATE NOTICE
+        <set>
+            NOTICE_STTUS = 'DELETED',
+            DELETED_DE = now()
+        </set>
+        WHERE NOTICE_ID = #{noticeId}
+    </update>
+
+    <insert id="update" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
+        <selectKey keyProperty="noticeId" keyColumn="Notice_ID" resultType="Long" order="AFTER">
+            SELECT MAX(NOTICE_ID) FROM NOTICE
+        </selectKey>
+        insert into NOTICE (NOTICE_CODE, NOTICE_CTGRY, NOTICE_SJ, NOTICE_CN, NOTICE_STTUS, NOTICE_BGNDE, NOTICE_ENDDE)
+        values (#{code}, #{category}, #{subject}, #{content}, #{status}, #{displayDate}, #{hideDate})
+    </insert>
+
+</mapper>

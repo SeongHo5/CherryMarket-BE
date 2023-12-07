@@ -10,9 +10,16 @@ import java.util.Optional;
 
 @Mapper
 public interface AccountMapper {
+
+    // ==================== INSERT ==================== //
+
     void save(Account account);
 
+    // ==================== DELETE ==================== //
+
     void delete(Account account);
+
+    // ==================== UPDATE ==================== //
 
     void updateAccountInfo(Account account);
 
@@ -20,16 +27,24 @@ public interface AccountMapper {
 
     void updateAccountStatus(Account account);
 
-    void updateAccountPassword(Account account);
+    // ==================== SELECT ==================== //
+
+    List<AdminUserInfoDto> findAll();
 
     Optional<Account> findByaccountId(Long id);
 
     Optional<Account> findByEmail(String email);
 
-    List<AdminUserInfoDto> findAll();
+    RegisterType getRegisterTypeByEmail(String email);
 
-    boolean existByEmailAndRegistType(String email, RegisterType registType);
+    boolean existByEmailAndRegisterType(String email, RegisterType registType);
 
     boolean existByEmail(String email);
+
+    // ==================== PROCEDURE ==================== //
+
+    void deleteInactiveAccount();
+
+    void releaseRestrictedAccount();
 
 }

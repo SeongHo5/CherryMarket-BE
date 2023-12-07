@@ -1,7 +1,8 @@
 package com.cherrydev.cherrymarketbe.account.controller;
 
 import com.cherrydev.cherrymarketbe.account.dto.*;
-import com.cherrydev.cherrymarketbe.account.service.AccountServiceImpl;
+import com.cherrydev.cherrymarketbe.account.service.AccountService;
+import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
