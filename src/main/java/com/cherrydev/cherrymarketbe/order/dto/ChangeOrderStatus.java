@@ -1,13 +1,12 @@
 package com.cherrydev.cherrymarketbe.order.dto;
 
-
 import com.cherrydev.cherrymarketbe.order.entity.Order;
 import com.cherrydev.cherrymarketbe.order.enums.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record OrderRequestChangeDto(
+public record ChangeOrderStatus(
         @NotNull Long accoungId,
         @NotNull String orderCode,
         @NotNull String orderStatus
