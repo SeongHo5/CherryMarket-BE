@@ -1,19 +1,17 @@
 package com.cherrydev.cherrymarketbe.order.dto;
 
-
 import com.cherrydev.cherrymarketbe.order.entity.Order;
 import com.cherrydev.cherrymarketbe.order.enums.OrderStatus;
 
-
-public record OrderResponseDto(
+public record OrderDetails(
         Long orderId,
         String orderCode,
         OrderStatus orderStatus
 ) {
 
-    public static OrderResponseDto getOrdersList(Order order) {
+    public static OrderDetails getOrdersList(Order order) {
 
-        return new OrderResponseDto(
+        return new OrderDetails(
                 order.getOrderId(),
                 order.getOrderCode(),
                 order.getOrderStatus()
