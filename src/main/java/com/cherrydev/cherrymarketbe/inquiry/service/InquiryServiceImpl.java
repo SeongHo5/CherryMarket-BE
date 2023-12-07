@@ -151,5 +151,14 @@ public class InquiryServiceImpl implements InquiryService {
                 .body(resultDto);
     }
 
+    // =============== PRIVATE METHODS =============== //
+
+    /**
+     * 1:1문의 사항의 답변이 작성되어 있는지 확인한다.
+     */
+
+    private void checkAnswerInquiryExist(final Long inquiryId) {
+        inquiryMapper.existAnswerInquiry(inquiryId);
+    }
 }
 

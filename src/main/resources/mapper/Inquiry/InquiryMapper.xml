@@ -89,6 +89,8 @@
         ORDER BY INQRY_CODE
     </select>
 
+
+
     <!--   UPDATE -->
     <update id="updateStatusByDel" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
         UPDATE INQRY
