@@ -17,4 +17,8 @@ public interface InquiryAnswerMapper {
 
     List<InquiryAnswer> findByEmail(String email);
 
+    void delete(Long answerId);
+
+    void updateStatusAccepting(Long answerId);
+
 }

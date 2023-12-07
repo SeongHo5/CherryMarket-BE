@@ -25,7 +25,7 @@ public class InquiryController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public void addInquiry(final @Valid @RequestBody InquiryRequestDto inquiryRequestDto) {
-        inquiryService.createInquiry(inquiryRequestDto);
+            inquiryService.createInquiry(inquiryRequestDto);
     }
 
     // ==================== SELECT ==================== //

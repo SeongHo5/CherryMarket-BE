@@ -1,4 +1,5 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.service;
+
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnswerInfoDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
 import org.springframework.http.ResponseEntity;
@@ -17,5 +18,8 @@ public interface InquiryAnswerService {
     ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByUserId(Long userId);
 
     ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByEmail(String email);
+
     ResponseEntity<List<InquiryAnswerInfoDto>> findAll();
+
+    void deleteAndSetStatusAccepting(Long answerId);
 }

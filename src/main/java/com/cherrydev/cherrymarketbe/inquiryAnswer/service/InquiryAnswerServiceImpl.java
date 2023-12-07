@@ -1,4 +1,5 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.service;
+
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnswerInfoDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer;
@@ -15,8 +16,8 @@ import java.util.List;
 @Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class InquiryAnswerServiceImpl implements InquiryAnswerService{
-    private final InquiryAnswerMapper  inquiryAnswerMapper;
+public class InquiryAnswerServiceImpl implements InquiryAnswerService {
+    private final InquiryAnswerMapper inquiryAnswerMapper;
 
     @Override
     @Transactional
@@ -26,7 +27,7 @@ public class InquiryAnswerServiceImpl implements InquiryAnswerService{
 
     @Override
     @Transactional
-    public void updateInquirStatus(final InquiryAnwerRequestDto inquiryAnwerRequestDto){
+    public void updateInquirStatus(final InquiryAnwerRequestDto inquiryAnwerRequestDto) {
         inquiryAnswerMapper.updateStatue(inquiryAnwerRequestDto.getInquiryId());
     }
 
@@ -65,7 +66,16 @@ public class InquiryAnswerServiceImpl implements InquiryAnswerService{
                 .body(inquiryAnswerInfoDtos);
     }
 
-
+    @Override
+    @Transactional
+    public void deleteAndSetStatusAccepting(Long answerId) {
+        try {
+            inquiryAnswerMapper.updateStatusAccepting(answerId);
+            inquiryAnswerMapper.delete(answerId);
+        } catch (Exception e) {
+            throw new RuntimeException("DeleteAndSetStatusAccepting Transaction failed", e);
+        }
+    }
 
 
 }

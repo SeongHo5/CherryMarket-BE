@@ -1,4 +1,5 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.dto;
+
 import com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer;
 import lombok.Getter;
 

@@ -34,33 +34,29 @@ public class InquiryAnswerController {
     public ResponseEntity<InquiryAnswerInfoDto> getAnswerById(@RequestParam Long inquiryId) {
         return inquiryAnswerService.getInquiryAnswerById(inquiryId);
     }
+
     @GetMapping("/search-list")
     public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerList() {
         return inquiryAnswerService.findAll();
     }
-     @GetMapping("/search-userId")
+
+    @GetMapping("/search-userId")
     public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByUserId(@RequestParam Long userId) {
         return inquiryAnswerService.getAnswerByUserId(userId);
     }
+
     //유저 이메일로 검색
-     @GetMapping("/search-email")
+    @GetMapping("/search-email")
     public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByEmail(@RequestParam String email) {
         return inquiryAnswerService.getAnswerByEmail(email);
     }
 
+    // ==================== DELETE ==================== //
 
-
-    //전체 조회
-
-
-
-//
-//    // ==================== DELETE ==================== //
-//
-//    // By 아이디
-//    @DeleteMapping("/delete-InquiryAnswer-id")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void deleteInquiryById(@RequestParam Long inquiryId) {
-//        inquiryAnswerService.deleteInquiryAnswerById(inquiryId);
-//    }
+    // By 아이디
+    @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAndSetStatusAccepting(@RequestParam Long answerId) {
+        inquiryAnswerService.deleteAndSetStatusAccepting(answerId);
+    }
 }
