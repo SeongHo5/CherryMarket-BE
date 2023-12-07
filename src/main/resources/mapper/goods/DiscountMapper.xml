@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.cherrydev.cherrymarketbe.discount.repository.DiscountMapper">
+    <resultMap id = "discountMap" type = "com.cherrydev.cherrymarketbe.discount.dto.DiscountDto">
+        <result property = "discountId" column = "DSCNT_ID"/>
+        <result property = "discountCode" column = "DSCNT_CODE"/>
+        <result property = "discountType" column = "DSCNT_TY"/>
+        <result property = "discountRate" column = "DSCNT_RATE"/>
+        <result property = "discountBeginDate" column = "DSCNT_BGNDE"/>
+        <result property = "discountEndDate" column = "DSCNT_ENDDE"/>
+        <result property = "createDate" column = "CREAT_DE"/>
+        <result property = "updateDate" column = "UPDT_DE"/>
+    </resultMap>
+
+    <select id = "findAll" resultMap = "discountMap">
+        select *
+        from DSCNT
+        order by DSCNT_ENDDE DESC, DSCNT_BGNDE ASC
+    </select>
+
+    <select id = "findById" resultMap="discountMap">
+        select *
+        from DSCNT
+        where DSCNT_ID = #{discountId}
+    </select>
+
+    <select id = "findByCode" resultMap="discountMap">
+        select *
+        from DSCNT
+        where DSCNT_CODE = #{discountCode}
+    </select>
+
+    <insert id = "save" parameterType="com.cherrydev.cherrymarketbe.discount.dto.DiscountDto">
+        insert into DSCNT ()
+        values (NULL, #{discountCode}, #{discountType}, #{discountRate}, #{discountBeginDate}, #{discountEndDate}, now(), now())
+    </insert>
+    
+    <update id = "updateById" parameterType="com.cherrydev.cherrymarketbe.discount.dto.DiscountDto">
+        update DSCNT
+        <set>
+            <if test = "discountCode != null">DSCNT_CODE = #{discountCode},</if>
+            <if test = "discountType != null">DSCNT_TY = #{discountType},</if>
+            <if test = "discountRate != null">DSCNT_RATE = #{discountRate},</if>
+            <if test = "discountBeginDate != null">DSCNT_BGNDE = #{discountBeginDate},</if>
+            <if test = "discountEndDate != null">DSCNT_ENDDE = #{discountEndDate},</if>
+            <if test = "updateDate != null">UPDT_DE = now(),</if>
+        </set>
+        where DSCNT_ID = #{discountId}
+    </update>
+
+    <delete id = "deleteById" parameterType="com.cherrydev.cherrymarketbe.discount.dto.DiscountDto">
+        delete
+        from DSCNT
+        where DSCNT_ID = #{discountId}
+    </delete>
+
+</mapper>
