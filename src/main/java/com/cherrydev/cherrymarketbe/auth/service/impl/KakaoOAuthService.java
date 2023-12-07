@@ -1,15 +1,12 @@
 package com.cherrydev.cherrymarketbe.auth.service.impl;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
-import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInResponseDto;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.*;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.kakao.KakaoAccountResponse;
 import com.cherrydev.cherrymarketbe.auth.service.OAuthService;
-import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.common.exception.AuthException;
+import com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus;
 import com.cherrydev.cherrymarketbe.common.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +19,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Objects;
 
-import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.LOCAL;
-import static com.cherrydev.cherrymarketbe.account.enums.UserRole.ROLE_CUSTOMER;
+import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.KAKAO;
 import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.FAILED_HTTP_ACTION;
+import static com.cherrydev.cherrymarketbe.common.utils.HttpEntityUtils.createHttpEntity;
 
 
 @Slf4j
@@ -40,10 +37,8 @@ public class KakaoOAuthService implements OAuthService {
     @Value("${oauth.kakao.clientSecret}")
     private String kakaoClientSecret;
 
-    private final AccountMapper accountMapper;
-    private final AccountServiceImpl accountService;
+    private final CommonOAuthService commonOAuthService;
     private final RestTemplate restTemplate;
-    private final JwtProvider jwtProvider;
     private final RedisService redisService;
 
     /**
@@ -57,22 +52,17 @@ public class KakaoOAuthService implements OAuthService {
             final OAuthRequestDto oAuthRequestDto
     ) {
         String authCode = oAuthRequestDto.getAuthCode();
+
         OAuthTokenResponseDto tokenResponse = getOAuthToken(authCode);
 
-        OAuthAccountInfoDto accountInfo = getAccountInfo(tokenResponse.getAccessToken());
-        String email = accountInfo.getEmail();
-        String userName = accountInfo.getName();
+        String accessToken = commonOAuthService.getAcessTokenIfExist(tokenResponse);
+        OAuthAccountInfoDto accountInfo = getAccountInfo(accessToken);
 
-        checkIfAccountLocallyRegistered(accountInfo);
-
-        redisService.saveTokenToRedis(tokenResponse, email);
-        JwtResponseDto jwtResponseDto = issueJwtToken(email);
-
-        return createSignInResponse(jwtResponseDto, userName);
+        redisService.saveKakaoTokenToRedis(tokenResponse, accountInfo.getEmail());
+        return commonOAuthService.processSignIn(accountInfo, KAKAO.name());
     }
 
     @Override
-    @Transactional
     public ResponseEntity<Void> signOut(
             final AccountDetails accountDetails
     ) {
@@ -85,23 +75,10 @@ public class KakaoOAuthService implements OAuthService {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 사용자가 로컬 계정으로 이미 가입되어 있는지 확인하고, 가입되어 있지 않다면 가입한다.
-     */
-    public void checkIfAccountLocallyRegistered(final OAuthAccountInfoDto accountInfo) {
-        String email = accountInfo.getEmail();
-        if (accountMapper.existByEmailAndRegistType(email, LOCAL)) {
-            throw new DuplicatedException(LOCAL_ACCOUNT_ALREADY_EXIST);
-        }
-        if (!accountMapper.existByEmail(email)) {
-            accountService.createAccountByOAuth(accountInfo);
-        }
-    }
-
     // =============== PRIVATE METHODS =============== //
 
     /**
-     * OAuth 인가 코드를 이용해 토큰을 발급받는다.
+     * [KAKAO]OAuth 인가 코드를 이용해 토큰을 발급받는다.
      * @param authCode OAuth 인가 코드
      * @return OAuth 토큰
      */
@@ -122,7 +99,7 @@ public class KakaoOAuthService implements OAuthService {
     }
 
     /**
-     * OAuth 인증이 완료된 사용자의 정보를 가져온다.
+     * [KAKAO]OAuth 인증이 완료된 사용자의 정보를 가져온다.
      * @param accessToken OAuth 인증 토큰
      * @return 사용자 정보
      */
@@ -141,41 +118,8 @@ public class KakaoOAuthService implements OAuthService {
     }
 
     /**
-     * OAuth 인증이 완료된 사용자에게 토큰을 발급한다.
-     */
-    private JwtResponseDto issueJwtToken(final String email) {
-        JwtResponseDto jwtResponseDto = jwtProvider.createJwtToken(email);
-        redisService.setDataExpire(email, jwtResponseDto.getRefreshToken(),
-                REFRESH_TOKEN_EXPIRE_TIME);
-        return jwtResponseDto;
-    }
-
-    /**
-     * 소셜 로그인 응답을 생성한다.
-     * <p>
-     * 소셜 로그인은 고객만 가능하므로, 응답 DTO의 userRole은 ROLE_CUSTOMER로 고정
-     */
-    private ResponseEntity<SignInResponseDto> createSignInResponse(
-            final JwtResponseDto jwtResponseDto,
-            final String userName
-    ) {
-        return ResponseEntity.ok()
-                .body(
-                        SignInResponseDto.builder()
-                                .userName(userName)
-                                .userRole(ROLE_CUSTOMER)
-                                .grantType(jwtResponseDto.getGrantType())
-                                .accessToken(jwtResponseDto.getAccessToken())
-                                .refreshToken(jwtResponseDto.getRefreshToken())
-                                .expiresIn(jwtResponseDto.getAccessTokenExpiresIn())
-                                .build()
-                );
-    }
-
-    /**
      * OAuth 사용자의 로그아웃 요청을 처리한다.
      * @param accessToken OAuth 인증 토큰
-     * @return 로그아웃 처리된 사용자의 OAuth ID
      */
     private void sendLogoutRequest(final String accessToken) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(KAKAO_USER_LOGOUT_URL);
@@ -183,23 +127,6 @@ public class KakaoOAuthService implements OAuthService {
         HttpEntity<String> entity = createHttpEntity(accessToken);
 
         restTemplate.exchange(builder.toUriString(), HttpMethod.POST, entity, String.class);
-    }
-
-    /**
-     * Kakao API의 요청 형식에 맞게 미리 정의된 HttpEntity를 생성한다.
-     * @return HttpEntity
-     */
-    private HttpEntity<String> createHttpEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return new HttpEntity<>("parameters", headers);
-    }
-
-    private HttpEntity<String> createHttpEntity(final String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
-        return new HttpEntity<>("parameters", headers);
     }
 
 }

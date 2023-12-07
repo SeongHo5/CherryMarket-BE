@@ -22,7 +22,17 @@ jacoco {
 jacocoTestReport {
     dependsOn test
     reports {
+        html.required.set(true)
         xml.required.set(true)
+    }
+
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            includes = ['com.cherrydev.*']
+        }
     }
 }
 

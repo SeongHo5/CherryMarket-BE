@@ -5,6 +5,7 @@ import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
 import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 import com.cherrydev.cherrymarketbe.account.entity.Agreement;
 import com.cherrydev.cherrymarketbe.account.enums.ForbiddenUserName;
+import com.cherrydev.cherrymarketbe.account.enums.RegisterType;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
 import com.cherrydev.cherrymarketbe.account.repository.AgreementMapper;
 import com.cherrydev.cherrymarketbe.account.service.AccountService;
@@ -65,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void createAccountByOAuth(final OAuthAccountInfoDto oAuthAccountInfoDto) {
+    public void createAccountByOAuth(final OAuthAccountInfoDto oAuthAccountInfoDto, final String provider) {
         String email = oAuthAccountInfoDto.getEmail();
         String name = oAuthAccountInfoDto.getName();
         String encodedPassword = passwordEncoder.encode(generateRandomCode(10));
@@ -81,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
                 .contact(oAuthAccountInfoDto.getContact())
                 .userStatus(ACTIVE)
                 .userRole(ROLE_CUSTOMER)
-                .registerType(KAKAO)
+                .registerType(RegisterType.valueOf(provider.toUpperCase()))
                 .build();
 
         accountMapper.save(account);

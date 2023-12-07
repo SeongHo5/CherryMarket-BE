@@ -14,7 +14,7 @@ public interface AccountService {
 
     void createAccount(final SignUpRequestDto signUpRequestDto);
 
-    void createAccountByOAuth(final OAuthAccountInfoDto oAuthAccountInfoDto);
+    void createAccountByOAuth(final OAuthAccountInfoDto oAuthAccountInfoDto, final String provider);
 
     ResponseEntity<AccountInfoDto> modifyAccount(final @AuthenticationPrincipal AccountDetails accountDetails, final ModifyAccountInfoRequestDto requestDto);
 

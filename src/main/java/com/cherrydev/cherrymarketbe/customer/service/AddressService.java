@@ -21,11 +21,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.KAKAO;
 import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
-import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.BEARER_PREFIX;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
+import static com.cherrydev.cherrymarketbe.common.utils.HttpEntityUtils.createHttpEntity;
 
 @Slf4j
 @Service
@@ -78,32 +79,6 @@ public class AddressService {
 
     // ==================== PRIVATE METHODS ==================== //
 
-    /**
-     * 요청 계정이 소셜 계정인지 확인
-     *
-     * @param accountDetails 계정 정보
-     */
-    private void checkAccountRegisterType(
-            final AccountDetails accountDetails
-    ) {
-        boolean isSocialAccount = accountMapper.existByEmailAndRegistType(accountDetails.getUsername(), KAKAO);
-        if (!isSocialAccount) {
-            throw new AuthException(NOT_SOCIAL_ACCOUNT);
-        }
-    }
-    private void checkDefaultAddressAlreadyExists(final CustomerAddress customerAddress) {
-        boolean isExist = addressMapper.existByAccountIdAndIsDefault(customerAddress);
-        if (isExist) {
-            throw new ServiceFailedException(DEFAULT_ADDRESS_ALREADY_EXISTS);
-        }
-    }
-    private void checkAddressCount(final Account account) {
-        int addressCount = addressMapper.countAllByAccountId(account);
-        if (addressCount >= MAX_ADDRESS_COUNT) {
-            throw new ServiceFailedException(ADDRESS_COUNT_EXCEEDED);
-        }
-    }
-
     private String getOAuthAccessToken(final AccountDetails accountDetails) {
         Account account = accountDetails.getAccount();
         String oAuthAccessToken = redisService.getData(OAUTH_KAKAO_PREFIX + account.getEmail());
@@ -117,6 +92,7 @@ public class AddressService {
 
     /**
      * 카카오 API 를 통해 사용자의 주소 정보를 가져온다.
+     *
      * @param oAuthAccessToken 카카오 액세스 토큰
      * @return 사용자의 주소 정보
      */
@@ -128,16 +104,42 @@ public class AddressService {
                 builder.toUriString(), HttpMethod.GET, entity, KakaoAddressInfoDto.class
         );
 
-        return KakaoAddressInfoDto.builder()
-                .id(Objects.requireNonNull(response.getBody()).getId())
-                .kakaoAddress(response.getBody().getKakaoAddress())
-                .build();
+        return Optional.ofNullable(response.getBody())
+                .map(body -> KakaoAddressInfoDto.builder()
+                        .id(body.getId())
+                        .kakaoAddress(body.getKakaoAddress())
+                        .build()
+                ).orElseThrow(() -> new ServiceFailedException(FAILED_HTTP_ACTION));
     }
 
-    private HttpEntity<String> createHttpEntity(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set(AUTHORIZATION_HEADER, BEARER_PREFIX + accessToken);
-        return new HttpEntity<>("parameters", headers);
+    // ==================== VALIDATION METHODS ==================== //
+
+    /**
+     * 요청 계정이 소셜 계정인지 확인
+     *
+     * @param accountDetails 계정 정보
+     */
+    private void checkAccountRegisterType(
+            final AccountDetails accountDetails
+    ) {
+        boolean isSocialAccount = accountMapper.existByEmailAndRegisterType(accountDetails.getUsername(), KAKAO);
+        if (!isSocialAccount) {
+            throw new AuthException(NOT_SOCIAL_ACCOUNT);
+        }
     }
+
+    private void checkDefaultAddressAlreadyExists(final CustomerAddress customerAddress) {
+        boolean isExist = addressMapper.existByAccountIdAndIsDefault(customerAddress);
+        if (isExist) {
+            throw new ServiceFailedException(DEFAULT_ADDRESS_ALREADY_EXISTS);
+        }
+    }
+
+    private void checkAddressCount(final Account account) {
+        int addressCount = addressMapper.countAllByAccountId(account);
+        if (addressCount >= MAX_ADDRESS_COUNT) {
+            throw new ServiceFailedException(ADDRESS_COUNT_EXCEEDED);
+        }
+    }
+
 }
