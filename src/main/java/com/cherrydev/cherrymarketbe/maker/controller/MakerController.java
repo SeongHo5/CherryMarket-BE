@@ -35,7 +35,7 @@ public class MakerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(makerDto);
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<List<MakerDto>> delMaker(@RequestParam Long makerId) {
         makerService.deleteById(makerId);
         return ResponseEntity.ok(makerService.findAll());
