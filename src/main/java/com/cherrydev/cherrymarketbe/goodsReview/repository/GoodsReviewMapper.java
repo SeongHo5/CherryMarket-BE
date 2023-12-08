@@ -1,7 +1,9 @@
 package com.cherrydev.cherrymarketbe.goodsReview.repository;
 
 import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface GoodsReviewMapper {
     //저장
     void save(GoodsReview goodsReview);
@@ -10,7 +12,7 @@ public interface GoodsReviewMapper {
     //삭제
     void delete();
     //조회
-    void getReview();
+    GoodsReview findReivew(Long ordersId, Long goodsId);
     //전체조회
     void getReviewList();
     //전체조회 - 상품별
@@ -19,4 +21,5 @@ public interface GoodsReviewMapper {
     void getGoodsReviewListByUserId();
 
     boolean existReview(GoodsReview goodsReview);
+    boolean checkDeliveryStatus(GoodsReview goodsReview);
 }

@@ -1,6 +1,8 @@
 package com.cherrydev.cherrymarketbe.goodsReview.service;
 
+import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
+import org.springframework.http.ResponseEntity;
 
 public interface GoodsReviewService {
     //저장
@@ -10,7 +12,7 @@ public interface GoodsReviewService {
     //삭제
     void delete();
     //조회
-    void getReview();
+    ResponseEntity<GoodsReviewInfoDto> getReview(final Long ordersId, final Long goodsId);
     //전체조회
     void getReviewList();
     //전체조회 - 상품별

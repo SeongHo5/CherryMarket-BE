@@ -20,6 +20,7 @@ public enum ExceptionStatus {
     ADDRESS_COUNT_EXCEEDED(400, "주소는 최대 3개까지 등록할 수 있습니다."),
     DEFAULT_ADDRESS_ALREADY_EXISTS(400, "이미 등록된 기본 주소가 있습니다."),
 
+
     // 401 - Unauthorized : 비인증(인증 수단이 없음)
     NO_AUTHORIZATION(401, "인증 정보가 없습니다."),
     INVALID_ID_OR_PW(401, "아이디 혹은 비밀번호가 틀렸습니다."),
@@ -37,6 +38,8 @@ public enum ExceptionStatus {
     EXPIRED_TOKEN(403, "만료된 토큰"),
     EXPIRED_REFRESH_TOKEN(403, "리프레시 토큰 만료"),
     CHANGE_ROLE_FORBIDDEN(403, "소셜 가입 계정은 권한을 변경할 수 없습니다."),
+    REVIEW_NOT_ALLOWED_BEFORE_DELIVERY(403, "배송이 완료된 후 리뷰를 작성해주세요."),
+
 
     // 404 - Not Found : 잘못된 리소스 접근
     NOT_FOUND_ACCOUNT(404, "존재하지 않는 계정입니다."),

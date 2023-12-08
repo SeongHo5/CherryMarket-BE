@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cherrydev.cherrymarketbe.goodsReview.repository.GoodsReviewMapper">
-    <resultMap id="inquiryMap" type="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
+    <resultMap id="GoodsReviewMapper" type="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
         <result property="reviewId" column="GOODS_REVW_ID"/>
         <result property="ordersId" column="ORDERS_ID"/>
         <result property="goodsId" column="GOODS_ID"/>
@@ -15,7 +15,7 @@
         <result property="createDate" column="CREAT_DE"/>
         <result property="deleteDate" column="DELETED_DE"/>
     </resultMap>
-    <!--    INSERT-->
+    <!--    INSERT   -->
     <insert id="save" useGeneratedKeys="true"
             parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
         <selectKey keyProperty="reviewId" keyColumn="GOODS_REVW_ID" resultType="Long" order="AFTER">
@@ -25,11 +25,26 @@
         (ORDERS_ID,GOODS_ID,GOODS_REVW_CODE,GOODS_REVW_BEST_YN,GOODS_REVW_SJ,GOODS_REVW_CN,GOODS_REVW_STTUS)
         VALUES (#{ordersId},#{goodsId},#{code},#{isBest},#{subject},#{content},#{status})
     </insert>
-
+    <!--    SELECT   -->
     <select id="existReview" resultType="java.lang.Boolean">
         select count(*)
         from GOODS_REVW
         WHERE (SELECT GOODS_REVW_ID FROM GOODS_REVW WHERE ORDERS_ID = #{ordersId} AND GOODS_ID = #{goodsId})
     </select>
+
+    <select id="checkDeliveryStatus" resultType="java.lang.Boolean">
+        select count(*)
+        from DLVY_DETAIL
+        WHERE DLVY_STTUS = 'DELIVERED' AND ORDERS_ID = #{ordersId}
+    </select>
+
+    <select id="findReivew" parameterType="Long" resultMap="GoodsReviewMapper">
+        SELECT *
+        FROM GOODS_REVW
+        WHERE ORDERS_ID = #{ordersId}
+          AND GOODS_ID = #{goodsId}
+          AND GOODS_REVW_STTUS != 'DELETED'
+    </select>
+
 
 </mapper>
