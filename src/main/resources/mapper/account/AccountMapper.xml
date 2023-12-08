@@ -65,7 +65,13 @@
         where ACNT_EMAIL = #{email}
     </select>
 
-    <select id="existByEmailAndRegistType" resultType="java.lang.Boolean">
+    <select id="getRegisterTypeByEmail" parameterType="String" resultType="com.cherrydev.cherrymarketbe.account.enums.RegisterType">
+        select ACNT_REGIST_TYPE
+        from ACNT
+        where ACNT_EMAIL = #{email}
+    </select>
+
+    <select id="existByEmailAndRegisterType" resultType="java.lang.Boolean">
         select count(*)
         from ACNT
         where ACNT_EMAIL = #{email}

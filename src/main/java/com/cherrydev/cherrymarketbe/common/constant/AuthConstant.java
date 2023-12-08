@@ -23,8 +23,10 @@ public final class AuthConstant {
     public static final String GRANT_TYPE_AUTHORIZATION = "authorization_code";
 
     // OAuth Constants - NAVER
-
+    public static final String OAUTH_NAVER_PREFIX = "OAUTH::NAVER::";
+    public static final String OAUTH_NAVER_REFRESH_PREFIX = "OAUTH::NAVER::REFRESH::";
     public static final String NAVER_AUTH_URL = "https://nid.naver.com/oauth2.0/token";
+    public static final String NAVER_USER_INFO_URL = "https://openapi.naver.com/v1/nid/me";
 
 
 

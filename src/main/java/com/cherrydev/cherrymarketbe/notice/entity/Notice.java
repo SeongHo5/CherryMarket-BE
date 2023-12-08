@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.notice.entity;
 
 import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
-import com.cherrydev.cherrymarketbe.notice.enums.NoticeStatus;
+import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,18 +12,19 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Notice {
     private Long noticeId;
-    private int code;
+    private String code;
     private NoticeCategory category;
     private String subject;
     private String content;
-    private NoticeStatus status;
+    private DisplayStatus status;
     private Timestamp displayDate;
     private Timestamp hideDate;
-    private Timestamp createNt;
+    private Timestamp createDate;
+    private Timestamp deleteDate;
 
     @Builder
-    public Notice(Long noticeId, int code, NoticeCategory category, String subject, String content,
-                  NoticeStatus status, Timestamp displayDate, Timestamp hideDate
+    public Notice(Long noticeId, String code, NoticeCategory category, String subject, String content,
+                  DisplayStatus status, Timestamp displayDate, Timestamp hideDate,Timestamp createDate, Timestamp deleteDate
                  ) {
         this.noticeId = noticeId;
         this.code = code;
@@ -33,6 +34,23 @@ public class Notice {
         this.status = status;
         this.displayDate = displayDate;
         this.hideDate = hideDate;
-//        this.createNt = createNt;
+        this.createDate = createDate;
+        this.deleteDate = deleteDate;
+    }
+
+    public void updateCategory(NoticeCategory category) {
+        this.category = category;
+    }
+
+    public void updateSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateStatus(DisplayStatus status) {
+        this.status = status;
     }
 }

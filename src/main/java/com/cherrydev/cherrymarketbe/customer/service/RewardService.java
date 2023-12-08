@@ -52,9 +52,7 @@ public class RewardService {
                 .build());
     }
 
-    private RewardInfoDto.RewardSummaryDto generateRewardSummary(
-            final List<CustomerReward> rewards
-    ) {
+    private RewardInfoDto.RewardSummaryDto generateRewardSummary(final List<CustomerReward> rewards) {
         Integer totalReward = rewards.stream()
                 .mapToInt(CustomerReward::getAmounts)
                 .sum();
@@ -82,9 +80,7 @@ public class RewardService {
                 .build();
     }
 
-    private RewardInfoDto.RewardItemDto generateRewardItem(
-            final CustomerReward reward
-    ) {
+    private RewardInfoDto.RewardItemDto generateRewardItem(final CustomerReward reward) {
         return RewardInfoDto.RewardItemDto.builder()
                 .rewardGrantType(reward.getRewardGrantType().toString())
                 .amounts(reward.getAmounts())

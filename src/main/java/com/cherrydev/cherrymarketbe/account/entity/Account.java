@@ -24,7 +24,7 @@ public class Account {
 
     private RegisterType registType;
 
-    private Long oauthId;
+    private String oauthId;
 
     private String name;
 
@@ -52,7 +52,7 @@ public class Account {
     private Timestamp deletedAt;
 
     @Builder
-    public Account(Long oauthId, String name, String email, String password,
+    public Account(String oauthId, String name, String email, String password,
                    String contact, Gender gender, LocalDate birthdate,
                    RegisterType registerType, UserRole userRole, UserStatus userStatus) {
         this.oauthId = oauthId;
