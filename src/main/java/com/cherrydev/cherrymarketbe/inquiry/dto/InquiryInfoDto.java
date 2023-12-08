@@ -3,6 +3,7 @@ package com.cherrydev.cherrymarketbe.inquiry.dto;
 
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
 import lombok.Getter;
+
 import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;

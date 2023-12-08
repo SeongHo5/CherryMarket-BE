@@ -18,7 +18,8 @@ public class ModifyInquiryRequestDto {
     String phone;
 
 
-    public ModifyInquiryRequestDto(Long userId, Long inquiryId, String code, String type, String detailType, String subject, String content, String phone) {
+    public ModifyInquiryRequestDto(Long userId, Long inquiryId, String code, String type,
+                                   String detailType, String subject, String content, String phone) {
         this.userId = userId;
         this.inquiryId = inquiryId;
         this.code = code;

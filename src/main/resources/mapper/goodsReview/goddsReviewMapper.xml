@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.goodsReview.repository.GoodsReviewMapper">
+    <resultMap id="inquiryMap" type="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
+        <result property="reviewId" column="GOODS_REVW_ID"/>
+        <result property="ordersId" column="ORDERS_ID"/>
+        <result property="code" column="GOODS_REVW_CODE"/>
+        <result property="isBest" column="GOODS_REVW_BEST_YN"/>
+        <result property="subject" column="GOODS_REVW_SJ"/>
+        <result property="content" column="GOODS_REVW_CN"/>
+        <result property="status" column="GOODS_REVW_STTUS"/>
+        <result property="createDate" column="CREAT_DE"/>
+        <result property="deleteDate" column="DELETED_DE"/>
+    </resultMap>
+    <!--    INSERT-->
+    <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
+        <selectKey keyProperty="reviewId" keyColumn="GOODS_REVW_ID" resultType="Long" order="AFTER">
+            SELECT MAX(GOODS_REVW_ID) FROM GOODS_REVW
+        </selectKey>
+        INSERT INTO GOODS_REVW (ORDERS_ID,GOODS_REVW_CODE,GOODS_REVW_BEST_YN,GOODS_REVW_SJ,GOODS_REVW_CN,GOODS_REVW_STTUS)
+        VALUES (#{ordersId},#{code},#{isBest},#{subject},#{content},#{status})
+    </insert>
+
+</mapper>
