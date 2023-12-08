@@ -35,6 +35,16 @@ public class FileService {
     private static final String DIRECTORY_SEPARATOR = "/";
 
     /**
+     * 파일 URL 가져오기
+     *
+     * @param fileName 파일 이름(확장자 포함)
+     * @param dirName  파일이 있는 디렉토리 이름
+     */
+    public String getUrl(String fileName, String dirName) {
+        return objectStorageClient.getResourceUrl(BUCKET_NAME, dirName + DIRECTORY_SEPARATOR + fileName);
+    }
+
+    /**
      * 단일 파일 업로드
      *
      * @param multipartFile 업로드할 파일(이미지만 가능)

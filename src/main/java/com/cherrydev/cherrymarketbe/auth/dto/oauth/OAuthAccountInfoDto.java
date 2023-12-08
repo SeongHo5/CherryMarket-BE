@@ -34,7 +34,7 @@ public class OAuthAccountInfoDto {
 
     @Builder
     public OAuthAccountInfoDto(KakaoAccountResponse kakaoResponse, KakaoAccountResponse.KakaoAccount kakaoAccount) {
-        this.id = kakaoResponse.getId();
+        this.id = kakaoResponse.getId().toString();
         this.name = kakaoAccount.getName();
         this.email = kakaoAccount.getEmail();
         this.contact = kakaoAccount.getPhoneNumber();
