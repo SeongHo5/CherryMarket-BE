@@ -6,7 +6,7 @@ import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.customer.dto.reward.AddRewardRequestDto;
 import com.cherrydev.cherrymarketbe.customer.dto.reward.RewardInfoDto;
 import com.cherrydev.cherrymarketbe.customer.entity.CustomerReward;
-import com.cherrydev.cherrymarketbe.customer.repository.RewardMapper;
+import com.cherrydev.cherrymarketbe.customer.repository.CustomerRewardMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import java.util.List;
 public class RewardService {
 
     private final AccountServiceImpl accountService;
-    private final RewardMapper rewardMapper;
+    private final CustomerRewardMapper customerRewardMapper;
 
     @Transactional
     public void grantReward(
@@ -30,7 +30,7 @@ public class RewardService {
     ) {
         Account account = accountService.findAccountByEmail(addRewardRequestDto.getEmail());
 
-        rewardMapper.save(addRewardRequestDto.toEntity(account));
+        customerRewardMapper.save(addRewardRequestDto.toEntity(account));
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +38,7 @@ public class RewardService {
             final AccountDetails accountDetails
     ) {
         Account account = accountService.findAccountByEmail(accountDetails.getUsername());
-        List<CustomerReward> rewards = rewardMapper.findAllByAccount(account);
+        List<CustomerReward> rewards = customerRewardMapper.findAllByAccount(account);
 
         List<RewardInfoDto.RewardItemDto> rewardItems = rewards.stream()
                 .map(this::generateRewardItem)

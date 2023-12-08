@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.AddressMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.CustomerAddressMapper">
     <resultMap id="addressMap" type="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
         <result property="addressId" column="CSTMR_ADRES_ID"/>
         <result property="accountId" column="ACNT_ID"/>
@@ -15,6 +15,7 @@
         <result property="deletedAt" column="DELETED_DE"/>
     </resultMap>
     <resultMap id="addressInfoDtoMap" type="com.cherrydev.cherrymarketbe.customer.dto.address.AddressInfoDto">
+        <result property="addressId" column="CSTMR_ADRES_ID"/>
         <result property="isDefault" column="CSTMR_ADRES_BASS_YN"/>
         <result property="name" column="CSTMR_ADRES_NM"/>
         <result property="zipcode" column="CSTMR_ADRES_ZIP"/>
@@ -65,6 +66,7 @@
         DELETE
         FROM CSTMR_ADRES
         WHERE CSTMR_ADRES_ID = #{addressId}
+          AND ACNT_ID = #{accountId}
     </delete>
 
     <delete id="deleteAllByAccountId" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
@@ -85,11 +87,18 @@
         WHERE ACNT_ID = #{accountId}
     </select>
 
+    <select id="findByIdAndAccountId" resultMap="addressMap">
+        SELECT *
+        FROM CSTMR_ADRES
+        WHERE ACNT_ID = #{accountId}
+          AND CSTMR_ADRES_ID = #{addressId}
+    </select>
+
     <select id="existByAccountIdAndIsDefault" resultType="java.lang.Boolean"
             parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
         SELECT EXISTS(SELECT 1
                       FROM CSTMR_ADRES
                       WHERE ACNT_ID = #{accountId}
-                        AND CSTMR_ADRES_BASS_YN = #{isDefault})
+                        AND CSTMR_ADRES_BASS_YN = TRUE)
     </select>
 </mapper>

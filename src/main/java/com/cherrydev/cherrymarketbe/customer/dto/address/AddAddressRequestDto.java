@@ -2,7 +2,6 @@ package com.cherrydev.cherrymarketbe.customer.dto.address;
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress;
-import jakarta.validation.constraints.Pattern;
 
 public record AddAddressRequestDto(
         Boolean isDefault,
