@@ -9,7 +9,7 @@ public record OrderDetails(
         OrderStatus orderStatus
 ) {
 
-    public static OrderDetails getOrdersList(Order order) {
+    public static OrderDetails getOrder(Order order) {
 
         return new OrderDetails(
                 order.getOrderId(),

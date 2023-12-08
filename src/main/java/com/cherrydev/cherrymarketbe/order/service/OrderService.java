@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface OrderService {
 
-    ResponseEntity<AllUserOrderList> findAllOrders();
+    ResponseEntity<AllUserOrderList> findAllUserOrders();
     ResponseEntity<UserOrderList> findOrdersByAccountId(AccountDetails accountDetails);
     void createOrder(AccountDetails accountDetails);
     void updateOrderStatus(ChangeOrderStatus requestChangeDto);

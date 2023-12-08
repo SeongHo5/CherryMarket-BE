@@ -23,7 +23,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public ResponseEntity<AllUserOrderList> findAllOrders() {
+    public ResponseEntity<AllUserOrderList> findAllUserOrders() {
         List<Order> orders = orderMapper.findAllOrders();
         return ResponseEntity
                 .ok()
@@ -35,18 +35,19 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public ResponseEntity<UserOrderList> findOrdersByAccountId(AccountDetails accountDetails) {
-        List<Order> orders = orderMapper.findOrdersByAccountId(accountDetails.getAccount().getAccountId());
+        List<Order> orders =
+                orderMapper.findOrdersByAccountId(accountDetails.getAccount().getAccountId());
         return ResponseEntity
                 .ok()
                 .body(
-                        UserOrderListFactory.create(orders)
+                        UserOrderListFactory.find(orders)
                 );
     }
 
     @Transactional
     @Override
     public void createOrder(AccountDetails accountDetails) {
-        Order order  = new CreateOrder().createOrder(accountDetails.getAccount());
+        Order order  = new CreateOrder().create(accountDetails.getAccount());
         orderMapper.save(order);
     }
 
