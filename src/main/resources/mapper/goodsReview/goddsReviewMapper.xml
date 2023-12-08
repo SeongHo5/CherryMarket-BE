@@ -7,6 +7,7 @@
         <result property="reviewId" column="GOODS_REVW_ID"/>
         <result property="ordersId" column="ORDERS_ID"/>
         <result property="goodsId" column="GOODS_ID"/>
+        <result property="userId" column="USER_ID"/>
         <result property="code" column="GOODS_REVW_CODE"/>
         <result property="isBest" column="GOODS_REVW_BEST_YN"/>
         <result property="subject" column="GOODS_REVW_SJ"/>
@@ -15,6 +16,7 @@
         <result property="createDate" column="CREAT_DE"/>
         <result property="deleteDate" column="DELETED_DE"/>
     </resultMap>
+
     <!--    INSERT   -->
     <insert id="save" useGeneratedKeys="true"
             parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
@@ -23,19 +25,27 @@
         </selectKey>
         INSERT INTO GOODS_REVW
         (ORDERS_ID,GOODS_ID,GOODS_REVW_CODE,GOODS_REVW_BEST_YN,GOODS_REVW_SJ,GOODS_REVW_CN,GOODS_REVW_STTUS)
-        VALUES (#{ordersId},#{goodsId},#{code},#{isBest},#{subject},#{content},#{status})
+        VALUES (#{ordersId},#{goodsId},(select CONCAT('GRV',nextval('GOODS_REVIEW_SEQ')) from
+        dual),#{isBest},#{subject},#{content},#{status})
     </insert>
+
+
     <!--    SELECT   -->
     <select id="existReview" resultType="java.lang.Boolean">
         select count(*)
         from GOODS_REVW
-        WHERE (SELECT GOODS_REVW_ID FROM GOODS_REVW WHERE ORDERS_ID = #{ordersId} AND GOODS_ID = #{goodsId})
+        where GOODS_REVW_ID in (select GOODS_REVW_ID
+                                from GOODS_REVW
+                                where ORDERS_ID = #{ordersId}
+                                  AND GOODS_ID = #{goodsId})
+          and GOODS_REVW_STTUS != 'DELETED'
     </select>
 
     <select id="checkDeliveryStatus" resultType="java.lang.Boolean">
         select count(*)
         from DLVY_DETAIL
-        WHERE DLVY_STTUS = 'DELIVERED' AND ORDERS_ID = #{ordersId}
+        WHERE DLVY_STTUS = 'DELIVERED'
+          AND ORDERS_ID = #{ordersId}
     </select>
 
     <select id="findReivew" parameterType="Long" resultMap="GoodsReviewMapper">
@@ -46,5 +56,51 @@
           AND GOODS_REVW_STTUS != 'DELETED'
     </select>
 
+    <select id="findAll" resultMap="GoodsReviewMapper">
+        select *
+        from GOODS_REVW
+        WHERE GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
+        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
+    </select>
 
+    <select id="findAllByGoodsId" resultMap="GoodsReviewMapper">
+        select *
+        from GOODS_REVW
+        WHERE GOODS_ID = #{goodsId} AND GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
+        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
+    </select>
+
+    <select id="findAllByOrderId" resultMap="GoodsReviewMapper">
+        select *
+        from GOODS_REVW
+        WHERE ORDERS_ID = #{ordersId} AND GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
+        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
+    </select>
+
+    <select id="findAllByUserId" resultMap="GoodsReviewMapper">
+        select *
+        from GOODS_REVW
+        WHERE ORDERS_ID IN (SELECT ORDERS_ID FROM ORDER_DETAIL WHERE ACNT_ID = #{userId}) AND GOODS_REVW_STTUS != 'DELETED'
+        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
+    </select>
+
+    <!--    DELETE   -->
+    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
+        UPDATE GOODS_REVW
+        SET GOODS_REVW_STTUS = 'DELETED',
+            DELETED_DE       = now()
+        WHERE ORDERS_ID = #{ordersId}
+          AND GOODS_ID = #{goodsId}
+    </delete>
+
+    <!--    UPDATE   -->
+    <insert id="update" useGeneratedKeys="true"
+            parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
+        <selectKey keyProperty="reviewId" keyColumn="GOODS_REVW_ID" resultType="Long" order="AFTER">
+            SELECT MAX(GOODS_REVW_ID) FROM GOODS_REVW
+        </selectKey>
+        INSERT INTO GOODS_REVW
+        (ORDERS_ID,GOODS_ID,GOODS_REVW_CODE,GOODS_REVW_BEST_YN,GOODS_REVW_SJ,GOODS_REVW_CN,GOODS_REVW_STTUS)
+        VALUES (#{ordersId},#{goodsId},#{code},#{isBest},#{subject},#{content},#{status})
+    </insert>
 </mapper>

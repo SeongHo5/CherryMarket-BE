@@ -1,16 +1,17 @@
 package com.cherrydev.cherrymarketbe.goodsReview.controller;
 
-import com.cherrydev.cherrymarketbe.goods.service.GoodsServiceImpl;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
+import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
 import com.cherrydev.cherrymarketbe.goodsReview.service.GoodsReviewServiceImpl;
-import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -32,8 +33,40 @@ public class GoodsReviewController {
         return goodsReviewService.getReview(ordersId, goodsId);
     }
 
-    // ==================== UPDATE ==================== //
+    @GetMapping("/list")
+    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewList() {
+        return goodsReviewService.findAll();
+    }
 
+    @GetMapping("/list-goods")
+    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewListByGoods(@RequestParam Long goodsId) {
+        return goodsReviewService.findAllByGoodsId(goodsId);
+    }
+
+    @GetMapping("/list-user")
+    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewListByUser(@RequestParam Long userId) {
+        return goodsReviewService.findAllByUser(userId);
+    }
+
+    @GetMapping("/list-order")
+    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewListByOrder(@RequestParam Long ordersId) {
+        return goodsReviewService.findAllByOrderId(ordersId);
+    }
+
+
+    // ==================== UPDATE ==================== //
+    @PatchMapping("/modify")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<GoodsReviewInfoDto> modify(
+            final @RequestBody GoodsReviewModifyDto modifyDto) {
+        return goodsReviewService.update(modifyDto);
+    }
 
     // ==================== DELETE ==================== //
+    @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteInquiryById(@RequestParam Long ordersId, @RequestParam Long goodsId) {
+        goodsReviewService.delete(ordersId, goodsId);
+    }
+
 }

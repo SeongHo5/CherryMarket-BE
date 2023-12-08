@@ -1,25 +1,42 @@
 package com.cherrydev.cherrymarketbe.goodsReview.repository;
 
+import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
+import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @Mapper
 public interface GoodsReviewMapper {
     //저장
     void save(GoodsReview goodsReview);
+
     //업데이트
-    void update();
+    void update(GoodsReview goodsReview);
+
     //삭제
-    void delete();
+    void delete(Long ordersId, Long goodsId);
+
     //조회
     GoodsReview findReivew(Long ordersId, Long goodsId);
+
     //전체조회
-    void getReviewList();
+    List<GoodsReview> findAll();
+
     //전체조회 - 상품별
-    void getGoodsReviewListByGoodsId();
-    // 전체조회 - 좋아요수
-    void getGoodsReviewListByUserId();
+    List<GoodsReview> findAllByGoodsId(Long goodsId);
+
+    // 전체조회 - 주문별
+    List<GoodsReview> findAllByOrderId(Long ordersId);
+
+    // 전체조회 - 유저
+    List<GoodsReview> findAllByUserId(Long userId);
 
     boolean existReview(GoodsReview goodsReview);
+
     boolean checkDeliveryStatus(GoodsReview goodsReview);
+
+
 }
