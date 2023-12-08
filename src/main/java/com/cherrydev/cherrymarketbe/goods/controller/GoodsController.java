@@ -1,8 +1,9 @@
 package com.cherrydev.cherrymarketbe.goods.controller;
 
 import com.cherrydev.cherrymarketbe.goods.dto.DiscountCalcDto;
-import com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto;
+import com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsRegistrationDto;
+import com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto;
 import com.cherrydev.cherrymarketbe.goods.service.GoodsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,21 +28,26 @@ public class GoodsController {
     }
     /* Select */
 
-    @GetMapping("listAll")
+    @GetMapping("/listAll")
     public ResponseEntity<List<GoodsRegistrationDto>> getListAll() {
         return ResponseEntity.ok(goodsService.findAll());
     }
 
-    @GetMapping("basicInfo")
+    @GetMapping("/basicInfo")
     public ResponseEntity<DiscountCalcDto> getBasicInfo(@RequestParam Long goodsId) {
         return ResponseEntity.ok(goodsService.findBasicInfo(goodsId));
     }
 
-    // @GetMapping("/list")
-    // public List<GoodsListDto> getList(){
-    //     return goodsService.findAll();
-    // }
-    //
+    @GetMapping("/toCart")
+    public ResponseEntity<ToCartResponseDto> getToCart(@RequestParam Long goodsId) {
+        return ResponseEntity.ok(goodsService.findToCart(goodsId));
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<GoodsDetailResponseDto> getDetail(@RequestParam Long goodsId) {
+        return ResponseEntity.ok(goodsService.findDetail(goodsId));
+    }
+
     /* Delete */
     @DeleteMapping("/delete")
     public ResponseEntity<List<GoodsRegistrationDto>> delete(Long goodsId) {

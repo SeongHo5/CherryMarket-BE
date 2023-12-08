@@ -9,7 +9,6 @@ import java.sql.Date;
 @Value
 public class GoodsRegistrationDto {
 
-
     Long goodsId;
 
     @NotNull
