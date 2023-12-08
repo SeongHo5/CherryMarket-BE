@@ -2,25 +2,46 @@ package com.cherrydev.cherrymarketbe.cart.dto;
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
+import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
+import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
+import com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus;
 import com.cherrydev.cherrymarketbe.goods.entity.Goods;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import net.sf.jsqlparser.util.validation.ValidationException;
 
 @Builder
 public record AddCart(
         @NotNull Long accountId,
         @NotNull Long goodsId,
-        @NotNull int quantity
+        @NotNull Integer quantity
 ) {
 
     public Cart addCart(Account account) {
 
+        // accountId, goodsId, quantity의 유효성 검사
+        validateFields();
+
+        // Goods 객체 생성 및 검증
         Goods goods = Goods.fromGoodsId(this.goodsId);
 
-        return Cart.builderCreate()
+        return Cart.builder()
                 .accountId(account.getAccountId())
                 .quantity(this.quantity)
                 .goods(goods)
                 .build();
     }
+
+    private void validateFields() {
+        if (this.accountId == null) {
+            throw new NotFoundException(ExceptionStatus.NOT_FOUND_ACCOUNT);
+        }
+        if (this.goodsId == null) {
+            throw new NotFoundException(ExceptionStatus.NOT_FOUND_GOODS);
+        }
+        if (this.quantity == null || this.quantity <= 0) {
+            throw new ServiceFailedException(ExceptionStatus.INVALID_INPUT_VALUE);
+        }
+    }
+
 }
