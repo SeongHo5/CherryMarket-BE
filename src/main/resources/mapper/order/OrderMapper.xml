@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.order.repository.OrderMapper">
+
+    <resultMap id="orderResultMap" type="com.cherrydev.cherrymarketbe.order.entity.Order">
+        <result property="orderId" column="ORDERS_ID"/>
+        <result property="orderCode" column="ORDERS_CODE"/>
+        <result property="orderStatus" column="ORDERS_STTUS"/>
+    </resultMap>
+
+    <select id="findAllOrders" parameterType="Long" resultMap="orderResultMap">
+        select
+            ORDERS_ID,
+            ORDERS_CODE,
+            ORDERS_STTUS
+        from  ORDERS
+    </select>
+
+    <select id="findOrdersByAccountId" parameterType="Long" resultMap="orderResultMap">
+        select
+            ORDERS_ID,
+            ORDERS_CODE,
+            ORDERS_STTUS
+        from  ORDERS
+        where ACNT_ID = #{accountId};
+    </select>
+
+    <insert id="save">
+        insert into
+            ORDERS (ACNT_ID, ORDERS_ID, ORDERS_CODE, ORDERS_STTUS, CREAT_DE)
+        values
+            (#{accountId}, #{orderId}, #{orderCode}, #{orderStatus}, now())
+    </insert>
+
+    <parameterMap id="orderParamMap" type="com.cherrydev.cherrymarketbe.order.entity.Order">
+        <parameter property="accountId" />
+        <parameter property="orderCode" />
+        <parameter property="orderStatus" />
+    </parameterMap>
+
+    <update id="updateOrderStatus" parameterMap="orderParamMap">
+        update ORDERS
+        <set>
+            <if test="orderStatus.name() == 'DELETED'">
+                ORDERS_STTUS = #{orderStatus},
+                DELETED_DE = now()
+            </if>
+            <if test="orderStatus.name() != 'DELETED'">
+                ORDERS_STTUS = #{orderStatus},
+                UPDT_DE = now()
+            </if>
+        </set>
+        WHERE ORDERS_CODE = #{orderCode};
+    </update>
+
+</mapper>
