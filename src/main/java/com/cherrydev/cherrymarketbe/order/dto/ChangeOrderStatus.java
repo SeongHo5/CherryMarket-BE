@@ -1,5 +1,7 @@
 package com.cherrydev.cherrymarketbe.order.dto;
 
+import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
+import com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus;
 import com.cherrydev.cherrymarketbe.order.entity.Order;
 import com.cherrydev.cherrymarketbe.order.enums.OrderStatus;
 import jakarta.validation.constraints.NotNull;
@@ -14,10 +16,27 @@ public record ChangeOrderStatus(
 
     public Order changeOrderStatus() {
 
+        validateFields();
+
         return Order.builder()
                 .accountId(this.accoungId)
                 .orderCode(this.orderCode)
                 .orderStatus(OrderStatus.valueOf(orderStatus))
                 .build();
+    }
+
+    private void validateFields() {
+        if (this.orderCode == null) {
+            throw new NotFoundException(ExceptionStatus.INVALID_INPUT_VALUE);
+        }
+        if (this.orderStatus == null) {
+            throw new NotFoundException(ExceptionStatus.INVALID_USER_STATUS);
+        }
+
+        try {
+            OrderStatus.valueOf(orderStatus.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new NotFoundException(ExceptionStatus.INVALID_USER_STATUS);
+        }
     }
 }

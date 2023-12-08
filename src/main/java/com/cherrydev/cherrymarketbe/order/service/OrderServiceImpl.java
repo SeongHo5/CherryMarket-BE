@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.order.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
+import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.order.dto.*;
 import com.cherrydev.cherrymarketbe.order.entity.Order;
 import com.cherrydev.cherrymarketbe.order.repository.OrderMapper;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_FOUND_ACCOUNT;
 
 @Service
 @Slf4j
@@ -35,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public ResponseEntity<UserOrderList> findOrdersByAccountId(AccountDetails accountDetails) {
+        validateAccount(accountDetails);
         List<Order> orders =
                 orderMapper.findOrdersByAccountId(accountDetails.getAccount().getAccountId());
         return ResponseEntity
@@ -47,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void createOrder(AccountDetails accountDetails) {
+        validateAccount(accountDetails);
         Order order  = new CreateOrder().create(accountDetails.getAccount());
         orderMapper.save(order);
     }
@@ -56,6 +61,15 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrderStatus(ChangeOrderStatus requestChangeDto) {
         Order order = requestChangeDto.changeOrderStatus();
         orderMapper.updateOrderStatus(order);
+    }
+
+    private void validateAccount(AccountDetails accountDetails) {
+        if (accountDetails == null
+                || accountDetails.getAccount() == null
+                || accountDetails.getAccount().getAccountId() == null
+        ) {
+            throw new NotFoundException(NOT_FOUND_ACCOUNT);
+        }
     }
 
 }
