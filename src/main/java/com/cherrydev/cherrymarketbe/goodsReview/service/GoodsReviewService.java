@@ -36,5 +36,4 @@ public interface GoodsReviewService {
     void findAllByLike();
 
 
-
 }

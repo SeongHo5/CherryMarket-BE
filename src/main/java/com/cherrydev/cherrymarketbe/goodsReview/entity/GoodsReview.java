@@ -25,9 +25,8 @@ public class GoodsReview {
 
     @Builder
     public GoodsReview(Long reviewId, Long ordersId, Long goodsId, Long userId,
-                       String code,
-                       GoodsReviewBest isBest, String subject, String content,
-                       DisplayStatus status, Timestamp createDate,
+                       String code, GoodsReviewBest isBest, String subject,
+                       String content, DisplayStatus status, Timestamp createDate,
                        Timestamp deleteDate) {
         this.reviewId = reviewId;
         this.goodsId = goodsId;

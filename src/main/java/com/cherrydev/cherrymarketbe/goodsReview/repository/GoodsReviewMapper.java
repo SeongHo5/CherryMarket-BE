@@ -1,10 +1,7 @@
 package com.cherrydev.cherrymarketbe.goodsReview.repository;
 
-import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
-import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
