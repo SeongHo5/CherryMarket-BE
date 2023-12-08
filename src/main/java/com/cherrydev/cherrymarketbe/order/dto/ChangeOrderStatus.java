@@ -30,13 +30,13 @@ public record ChangeOrderStatus(
             throw new NotFoundException(ExceptionStatus.INVALID_INPUT_VALUE);
         }
         if (this.orderStatus == null) {
-            throw new NotFoundException(ExceptionStatus.INVALID_USER_STATUS);
+            throw new NotFoundException(ExceptionStatus.INVALID_INPUT_VALUE);
         }
 
         try {
             OrderStatus.valueOf(orderStatus.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new NotFoundException(ExceptionStatus.INVALID_USER_STATUS);
+            throw new NotFoundException(ExceptionStatus.INVALID_INPUT_VALUE);
         }
     }
 }
