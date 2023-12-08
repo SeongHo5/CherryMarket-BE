@@ -1,7 +1,5 @@
 package com.cherrydev.cherrymarketbe.customer.entity;
 
-
-import com.cherrydev.cherrymarketbe.account.entity.Account;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

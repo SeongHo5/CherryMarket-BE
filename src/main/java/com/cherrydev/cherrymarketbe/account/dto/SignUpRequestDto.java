@@ -46,6 +46,7 @@ public class SignUpRequestDto {
 
     public Account toEntity(final String encodedPassword) {
         return Account.builder()
+                .oauthId(null)
                 .name(this.getName())
                 .email(this.getEmail())
                 .password(encodedPassword)
