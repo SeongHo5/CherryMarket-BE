@@ -65,7 +65,8 @@
         where ACNT_EMAIL = #{email}
     </select>
 
-    <select id="getRegisterTypeByEmail" parameterType="String" resultType="com.cherrydev.cherrymarketbe.account.enums.RegisterType">
+    <select id="getRegisterTypeByEmail" parameterType="String"
+            resultType="com.cherrydev.cherrymarketbe.account.enums.RegisterType">
         select ACNT_REGIST_TYPE
         from ACNT
         where ACNT_EMAIL = #{email}
@@ -83,9 +84,11 @@
         <selectKey keyProperty="accountId" keyColumn="ACNT_ID" resultType="Long" order="AFTER">
             select last_insert_id()
         </selectKey>
-        insert into ACNT (ACNT_EMAIL, ACNT_PASSWORD, ACNT_NM, ACNT_CTTPC, ACNT_SEXDSTN, ACNT_BRTH, ACNT_REGIST_TYPE,
+        insert into ACNT (ACNT_EMAIL, ACNT.ACNT_OAUTH_ID, ACNT_PASSWORD, ACNT_NM, ACNT_CTTPC, ACNT_SEXDSTN, ACNT_BRTH,
+        ACNT_REGIST_TYPE,
         ACNT_ROLE, ACNT_STTUS)
-        values (#{email}, #{password}, #{name}, #{contact}, #{gender}, #{birthdate}, #{registType}, #{userRole},
+        values (#{email}, #{oauthId}, #{password}, #{name}, #{contact}, #{gender}, #{birthdate}, #{registType},
+        #{userRole},
         #{userStatus})
     </insert>
 

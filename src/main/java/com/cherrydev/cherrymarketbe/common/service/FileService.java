@@ -28,7 +28,7 @@ public class FileService {
 
     private final AmazonS3Client objectStorageClient;
 
-    private static final String BUCKET_NAME = "myvelog";
+    private static final String BUCKET_NAME = "cherry-resource";
     private static final String[] SUPPORTED_IMAGE_FORMAT = {"jpg", "jpeg", "png"};
     private static final int FILE_LIMIT_MAX_COUNT = 3;
     private static final long FILE_LIMIT_MAX_SIZE = 3L * 1024 * 1024; // 3MB
@@ -74,7 +74,7 @@ public class FileService {
      * @param multipartFiles 업로드할 파일(이미지만 가능)
      * @param dirName        업로드할 디렉토리 이름
      */
-    public String uploadMultipleFiles(List<MultipartFile> multipartFiles, String dirName) {
+    public void uploadMultipleFiles(List<MultipartFile> multipartFiles, String dirName) {
 
         checkFileExist(multipartFiles);
 
@@ -96,12 +96,12 @@ public class FileService {
 
             String fileName = dirName + DIRECTORY_SEPARATOR + multipartFile.getOriginalFilename();
             try {
-                return putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
+                log.info("Upload Image to Object Storage : " + fileName);
+                putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
             } catch (IOException e) {
                 throw new ServiceFailedException(FAILED_TO_UPLOAD_FILE);
             }
         }
-        return null;
     }
 
     /**

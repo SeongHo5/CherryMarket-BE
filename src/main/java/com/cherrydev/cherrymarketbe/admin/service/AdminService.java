@@ -2,24 +2,21 @@ package com.cherrydev.cherrymarketbe.admin.service;
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
-import com.cherrydev.cherrymarketbe.admin.dto.AdminUserInfoDto;
-import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserRoleRequestDto;
-import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserStatusByAdminDto;
+import com.cherrydev.cherrymarketbe.admin.dto.*;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDate;
 
 import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.LOCAL;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.CHANGE_ROLE_FORBIDDEN;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_FOUND_ACCOUNT;
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 
@@ -29,11 +26,7 @@ import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 @RequiredArgsConstructor
 public class AdminService {
 
-    @Value("${oauth.kakao.adminKey}")
-    private String kakaoAdminKey;
-
     private final AccountMapper accountMapper;
-    private final RestTemplate restTemplate;
 
     @Transactional(readOnly = true)
     public ResponseEntity<MyPage<AdminUserInfoDto>> getAllAcounts(
@@ -47,8 +40,9 @@ public class AdminService {
     }
 
     @Transactional
-    public void modifyAccountRole(final ModifyUserRoleRequestDto roleRequestDto) {
-        Account account = getAccountByEmail(roleRequestDto.getEmail());
+    public void modifyAccountRole(final ModifyUserRoleDto roleRequestDto) {
+        Account account = accountMapper.findByEmail(roleRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
 
         checkAccountRegisterType(account);
 
@@ -57,27 +51,34 @@ public class AdminService {
     }
 
     @Transactional
-    public void modifyAccountStatus(final ModifyUserStatusByAdminDto statusRequestDto) {
-        Account account = getAccountByEmail(statusRequestDto.getEmail());
+    public void modifyAccountStatus(final ModifyUserStatusDto statusRequestDto) {
+        Account account = accountMapper.findByEmail(statusRequestDto.getEmail())
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
+        LocalDate restrictionEndDate = LocalDate.parse(statusRequestDto.getRestrictedUntil());
+        checkAccountRestrictionEndDate(restrictionEndDate);
 
         account.updateAccountStatus(statusRequestDto.getNewStatus());
-        account.updateRestrictedUntil(statusRequestDto.getRestrictedUntil());
+        account.updateRestrictedUntil(restrictionEndDate);
 
         accountMapper.updateAccountStatus(account);
     }
 
-    // 공지사항 작성 //
 
     // =============== PRIVATE METHODS =============== //
-
-    private Account getAccountByEmail(String email) {
-        return accountMapper.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
-    }
 
     private void checkAccountRegisterType(final Account account) {
         if (!account.getRegistType().equals(LOCAL)) {
             throw new ServiceFailedException(CHANGE_ROLE_FORBIDDEN);
         }
     }
+
+    private void checkAccountRestrictionEndDate(final LocalDate restrictionEndDate) {
+        if (restrictionEndDate == null) {
+            throw new ServiceFailedException(INVALID_INPUT_VALUE);
+        }
+        if (restrictionEndDate.isBefore(LocalDate.now())) {
+            throw new ServiceFailedException(INVALID_INPUT_VALUE);
+        }
+    }
+
 }
