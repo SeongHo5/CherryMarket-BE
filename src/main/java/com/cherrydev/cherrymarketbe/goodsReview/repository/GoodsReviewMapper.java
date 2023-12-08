@@ -17,4 +17,6 @@ public interface GoodsReviewMapper {
     void getGoodsReviewListByGoodsId();
     // 전체조회 - 좋아요수
     void getGoodsReviewListByUserId();
+
+    boolean existReview(GoodsReview goodsReview);
 }

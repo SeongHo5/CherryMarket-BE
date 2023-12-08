@@ -6,6 +6,7 @@
     <resultMap id="inquiryMap" type="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
         <result property="reviewId" column="GOODS_REVW_ID"/>
         <result property="ordersId" column="ORDERS_ID"/>
+        <result property="goodsId" column="GOODS_ID"/>
         <result property="code" column="GOODS_REVW_CODE"/>
         <result property="isBest" column="GOODS_REVW_BEST_YN"/>
         <result property="subject" column="GOODS_REVW_SJ"/>
@@ -19,8 +20,14 @@
         <selectKey keyProperty="reviewId" keyColumn="GOODS_REVW_ID" resultType="Long" order="AFTER">
             SELECT MAX(GOODS_REVW_ID) FROM GOODS_REVW
         </selectKey>
-        INSERT INTO GOODS_REVW (ORDERS_ID,GOODS_REVW_CODE,GOODS_REVW_BEST_YN,GOODS_REVW_SJ,GOODS_REVW_CN,GOODS_REVW_STTUS)
-        VALUES (#{ordersId},#{code},#{isBest},#{subject},#{content},#{status})
+        INSERT INTO GOODS_REVW (ORDERS_ID,GOODS_ID,GOODS_REVW_CODE,GOODS_REVW_BEST_YN,GOODS_REVW_SJ,GOODS_REVW_CN,GOODS_REVW_STTUS)
+        VALUES (#{ordersId},#{goodsId},#{code},#{isBest},#{subject},#{content},#{status})
     </insert>
+
+    <select id="existReview" resultType="java.lang.Boolean">
+        select count(*)
+        from GOODS_REVW
+        WHERE (SELECT GOODS_REVW_ID FROM GOODS_REVW WHERE ORDERS_ID = #{ordersId} )
+    </select>
 
 </mapper>

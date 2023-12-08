@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 public class GoodsReview {
     private Long reviewId;
     private Long ordersId;
+    private Long goodsId;
     private String code;
     private GoodsReviewBest isBest;
     private String subject;
@@ -22,11 +23,12 @@ public class GoodsReview {
     private Timestamp deleteDate;
 
     @Builder
-    public GoodsReview(Long reviewId, Long ordersId, String code,
+    public GoodsReview(Long reviewId, Long ordersId, Long goodsId, String code,
                        GoodsReviewBest isBest, String subject, String content,
                        DisplayStatus status, Timestamp createDate,
                        Timestamp deleteDate) {
         this.reviewId = reviewId;
+        this.goodsId = goodsId;
         this.ordersId = ordersId;
         this.code = code;
         this.isBest = isBest;

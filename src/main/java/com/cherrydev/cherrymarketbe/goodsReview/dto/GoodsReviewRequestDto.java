@@ -11,6 +11,7 @@ import lombok.Value;
 public class GoodsReviewRequestDto {
 
     Long ordersId;
+    Long goodsId;
     String code;
     String isBest;
     String subject;
@@ -20,8 +21,8 @@ public class GoodsReviewRequestDto {
     public GoodsReview toEntity() {
         return GoodsReview.builder()
                 .ordersId(this.getOrdersId())
+                .goodsId(this.getGoodsId())
                 .code("1")
-//                .isBest(GoodsReviewBest.valueOf(this.getIsBest()))
                 .isBest(GoodsReviewBest.NORMAL)
                 .subject(this.getSubject())
                 .content(this.getContent())
