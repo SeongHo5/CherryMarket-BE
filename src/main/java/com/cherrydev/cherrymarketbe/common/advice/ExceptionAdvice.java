@@ -66,7 +66,7 @@ public class ExceptionAdvice {
         log.error(ex.getMessage());
         return ResponseEntity.
                 status(400).
-                body(new ExceptionDto(400, "Constraint Failed"));
+                body(new ExceptionDto(400, "Parameter Condition Not Satisfied"));
     }
 
     @ExceptionHandler({HttpClientErrorException.class})
@@ -85,11 +85,11 @@ public class ExceptionAdvice {
                 body(new ExceptionDto(404, "Not Found / Please Contact to Admin"));
     }
 
-    @ExceptionHandler({MyBatisSystemException.class})
-    protected ResponseEntity<ExceptionDto> myBatisSystemException(MyBatisSystemException ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity.
-                status(500).
-                body(new ExceptionDto(500, "DB Error / Please Contact to Admin"));
-    }
+//    @ExceptionHandler({MyBatisSystemException.class})
+//    protected ResponseEntity<ExceptionDto> myBatisSystemException(MyBatisSystemException ex) {
+//        log.error(ex.getMessage());
+//        return ResponseEntity.
+//                status(500).
+//                body(new ExceptionDto(500, "DB Error / Please Contact to Admin"));
+//    }
 }
