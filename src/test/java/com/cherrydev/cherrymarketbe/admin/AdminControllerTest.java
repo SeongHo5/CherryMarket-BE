@@ -2,8 +2,8 @@ package com.cherrydev.cherrymarketbe.admin;
 
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserRoleRequestDto;
-import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserStatusByAdminDto;
+import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserRoleDto;
+import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserStatusDto;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,8 +81,8 @@ class AdminControllerTest {
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 계정_권한_변경_성공() throws Exception {
         // Given
-        ModifyUserRoleRequestDto modifyUserRoleRequestDto = createModifyUserRoleRequestDtoA();
-        String requestBody = Jackson.toJsonString(modifyUserRoleRequestDto);
+        ModifyUserRoleDto modifyUserRoleDto = createModifyUserRoleRequestDtoA();
+        String requestBody = Jackson.toJsonString(modifyUserRoleDto);
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/role")
@@ -97,8 +97,8 @@ class AdminControllerTest {
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 계정_상태_변경_성공() throws Exception {
         // Given
-        ModifyUserStatusByAdminDto modifyUserStatusByAdminDto = createModifyUserStatusByAdminDtoA();
-        String requestBody = Jackson.toJsonString(modifyUserStatusByAdminDto);
+        ModifyUserStatusDto modifyUserStatusDto = createModifyUserStatusByAdminDtoA();
+        String requestBody = Jackson.toJsonString(modifyUserStatusDto);
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
@@ -113,8 +113,8 @@ class AdminControllerTest {
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 계정_상태_변경_실패_날짜_누락() throws Exception {
         // Given
-        ModifyUserStatusByAdminDto modifyUserStatusByAdminDto = createModifyUserStatusByAdminDtoB();
-        String requestBody = Jackson.toJsonString(modifyUserStatusByAdminDto);
+        ModifyUserStatusDto modifyUserStatusDto = createModifyUserStatusByAdminDtoB();
+        String requestBody = Jackson.toJsonString(modifyUserStatusDto);
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
@@ -129,8 +129,8 @@ class AdminControllerTest {
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 계정_상태_변경_실패_날짜_오류() throws Exception {
         // Given
-        ModifyUserStatusByAdminDto modifyUserStatusByAdminDto = createModifyUserStatusByAdminDtoC();
-        String requestBody = Jackson.toJsonString(modifyUserStatusByAdminDto);
+        ModifyUserStatusDto modifyUserStatusDto = createModifyUserStatusByAdminDtoC();
+        String requestBody = Jackson.toJsonString(modifyUserStatusDto);
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")

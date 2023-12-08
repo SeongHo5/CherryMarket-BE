@@ -5,6 +5,7 @@ import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
 import com.cherrydev.cherrymarketbe.customer.dto.address.AddAddressRequestDto;
+import com.cherrydev.cherrymarketbe.customer.dto.address.ModifyAddressRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static com.cherrydev.cherrymarketbe.factory.CustomerFactory.createAddAddressRequestDtoA;
+import static com.cherrydev.cherrymarketbe.factory.CustomerFactory.createModifyAddressRequestDtoA;
 
 @Rollback
 @AutoConfigureMockMvc
@@ -145,10 +147,46 @@ class CustomerControllerTest {
 
     @Test
     @Transactional
+    @WithUserDetails(value = "bagsunja@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 배송지_삭제_성공() throws Exception {
+        // Given
+        Long addressId = 1L;
+
+        // When & Then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/api/customer/address/drop")
+                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .contentType("application/json")
+                                .accept("application/json")
+                                .param("addressId", String.valueOf(addressId))
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "bagsunja@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 배송지_수정_성공() throws Exception {
+        // Given
+        ModifyAddressRequestDto requestDto = createModifyAddressRequestDtoA();
+        String requestBody = Jackson.toJsonString(requestDto);
+
+        // When & Then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.patch("/api/customer/address/modify")
+                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .contentType("application/json")
+                                .accept("application/json")
+                                .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @Transactional
     @WithUserDetails(value = "ocoe@example.net", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 쿠폰_등록_성공() throws Exception {
         // Given
-        String couponCode = "FODR00";
+        String couponCode = "FIRORD00";
 
         // When & Then
         mockMvc.perform(
@@ -166,7 +204,7 @@ class CustomerControllerTest {
     @WithUserDetails(value = "hseong@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 쿠폰_등록_실패_이미_보유() throws Exception {
         // Given
-        String couponCode = "WELC00";
+        String couponCode = "WELCO0ME";
 
         // When & Then
         mockMvc.perform(
@@ -184,7 +222,7 @@ class CustomerControllerTest {
     @WithUserDetails(value = "ocoe@example.net", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 쿠폰_등록_없는_코드() throws Exception {
         // Given
-        String couponCode = "NONE15";
+        String couponCode = "NONE1515";
 
         // When & Then
         mockMvc.perform(

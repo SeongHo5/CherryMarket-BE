@@ -1,38 +1,36 @@
 package com.cherrydev.cherrymarketbe.factory;
 
-import com.cherrydev.cherrymarketbe.admin.dto.IssueCouponRequestDto;
-import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserRoleRequestDto;
-import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserStatusByAdminDto;
+import com.cherrydev.cherrymarketbe.admin.dto.IssueCouponDto;
+import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserRoleDto;
+import com.cherrydev.cherrymarketbe.admin.dto.ModifyUserStatusDto;
 import com.cherrydev.cherrymarketbe.customer.dto.reward.AddRewardRequestDto;
-
-import java.time.LocalDate;
 
 public class AdminFactory {
 
-    public static ModifyUserRoleRequestDto createModifyUserRoleRequestDtoA() {
-        return ModifyUserRoleRequestDto.builder()
+    public static ModifyUserRoleDto createModifyUserRoleRequestDtoA() {
+        return ModifyUserRoleDto.builder()
                 .email("jeongnamgim@example.org")
                 .newRole("ROLE_SELLER")
                 .build();
     }
 
-    public static ModifyUserStatusByAdminDto createModifyUserStatusByAdminDtoA() {
-        return ModifyUserStatusByAdminDto.builder()
+    public static ModifyUserStatusDto createModifyUserStatusByAdminDtoA() {
+        return ModifyUserStatusDto.builder()
                 .email("kgim@example.net")
                 .newStatus("RESTRICTED")
                 .restrictedUntil("2025-12-31")
                 .build();
     }
 
-    public static ModifyUserStatusByAdminDto createModifyUserStatusByAdminDtoB() {
-        return ModifyUserStatusByAdminDto.builder()
+    public static ModifyUserStatusDto createModifyUserStatusByAdminDtoB() {
+        return ModifyUserStatusDto.builder()
                 .email("kgim@example.net")
                 .newStatus("RESTRICTED")
                 .build();
     }
 
-    public static ModifyUserStatusByAdminDto createModifyUserStatusByAdminDtoC() {
-        return ModifyUserStatusByAdminDto.builder()
+    public static ModifyUserStatusDto createModifyUserStatusByAdminDtoC() {
+        return ModifyUserStatusDto.builder()
                 .email("kgim@example.net")
                 .newStatus("RESTRICTED")
                 .restrictedUntil("2020-12-31")
@@ -59,8 +57,8 @@ public class AdminFactory {
                 .build();
     }
 
-    public static IssueCouponRequestDto createIssueCouponRequestDtoA() {
-        return IssueCouponRequestDto.builder()
+    public static IssueCouponDto createIssueCouponRequestDtoA() {
+        return IssueCouponDto.builder()
                 .code("TEST00")
                 .type("OTHER")
                 .minimumOrderAmount(10000)
@@ -70,9 +68,9 @@ public class AdminFactory {
                 .build();
     }
 
-    public static IssueCouponRequestDto createIssueCouponRequestDtoB() {
-        return IssueCouponRequestDto.builder()
-                .code("WELC00")
+    public static IssueCouponDto createIssueCouponRequestDtoB() {
+        return IssueCouponDto.builder()
+                .code("WELCO0ME")
                 .type("OTHER")
                 .minimumOrderAmount(10000)
                 .discountRate(10)
