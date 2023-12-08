@@ -8,7 +8,7 @@ import lombok.Builder;
 @Builder
 public record CreateOrder() {
 
-    public Order createOrder(Account account) {
+    public Order create(Account account) {
 
         return Order.builder()
                 .accountId(account.getAccountId())
@@ -16,6 +16,5 @@ public record CreateOrder() {
                 .orderStatus(OrderStatus.PROCESSING)
                 .build();
     }
-
 
 }

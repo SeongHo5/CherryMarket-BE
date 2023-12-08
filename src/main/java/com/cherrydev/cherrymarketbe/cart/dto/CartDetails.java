@@ -12,7 +12,7 @@ public record CartDetails(
         String salesStatus,
         String storageType,
         String goodsName,
-        int quantity,
+        Integer quantity,
         int price,
         Integer inventory,
         Long discountId,
@@ -20,7 +20,7 @@ public record CartDetails(
         int discountRate
 ) {
 
-    public static CartDetails getCarts(Cart cart) {
+    public static CartDetails addGoods(Cart cart) {
 
         Goods goods = cart.getGoods();
         TestDiscount discount = goods.getDiscount();

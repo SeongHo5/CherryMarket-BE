@@ -6,11 +6,11 @@ import java.util.List;
 
 public class UserOrderListFactory {
 
-    public static UserOrderList create(List<Order> orders) {
+    public static UserOrderList find(List<Order> orders) {
 
         return new UserOrderList(
                 orders.stream()
-                        .map(OrderDetails::getOrdersList)
+                        .map(OrderDetails::getOrder)
                         .toList()
         );
     }

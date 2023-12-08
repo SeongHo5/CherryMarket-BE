@@ -7,13 +7,13 @@ import lombok.Builder;
 @Builder
 public record ChangeCart(
         @NotNull Long cartId,
-        @NotNull int quantity
+        @NotNull Integer quantity
 
 ) {
 
     public Cart toEntity() {
 
-        return Cart.builderUpdate()
+        return Cart.builder()
                 .cartId(this.cartId)
                 .quantity(this.quantity)
                 .build();

@@ -13,7 +13,7 @@ public record AllUserOrderList(
     public AllUserOrderList(List<Order> orders) {
         this(
                 orders.stream()
-                        .map(OrderDetails::getOrdersList)
+                        .map(OrderDetails::getOrder)
                         .collect(Collectors.groupingBy(OrderDetails::orderStatus))
         );
     }

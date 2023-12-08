@@ -27,7 +27,7 @@ public class OrderController {
     @GetMapping("/list-allUsers")
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<AllUserOrderList> getOrders() {
-        return orderServiceImpl.findAllOrders();
+        return orderServiceImpl.findAllUserOrders();
     }
 
     /**

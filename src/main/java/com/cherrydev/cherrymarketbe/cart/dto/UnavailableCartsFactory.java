@@ -11,7 +11,7 @@ public class UnavailableCartsFactory {
         return new UnavailableCarts(
                 carts.stream()
                 .filter(cart -> !cart.isGoodsAvailable())
-                .map(CartDetails::getCarts)
+                .map(CartDetails::addGoods)
                 .toList()
         );
     }
