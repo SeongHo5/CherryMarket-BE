@@ -1,7 +1,6 @@
 package com.cherrydev.cherrymarketbe.customer.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.admin.repository.CouponMapper;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
