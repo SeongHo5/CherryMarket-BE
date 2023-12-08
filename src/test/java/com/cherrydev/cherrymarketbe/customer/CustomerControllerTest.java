@@ -217,6 +217,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/customer/register-coupon")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -235,6 +236,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/customer/register-coupon")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
