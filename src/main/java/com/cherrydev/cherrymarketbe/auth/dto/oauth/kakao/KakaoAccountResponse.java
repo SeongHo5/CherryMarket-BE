@@ -8,7 +8,7 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class KakaoAccountResponse {
 
-    Long id;
+    String id;
     String connectedAt;
     String synchedAt;
 

@@ -69,12 +69,7 @@ public class CommonOAuthService {
         String email = accountInfo.getEmail();
         RegisterType type = accountMapper.getRegisterTypeByEmail(email);
 
-        if (type.equals(LOCAL)) {
-            throw new DuplicatedException(LOCAL_ACCOUNT_ALREADY_EXIST);
-        }
-        if (!type.equals(RegisterType.valueOf(provider))) {
-            throw new ServiceFailedException(INVALID_OAUTH_TYPE);
-        }
+        checkOAuthAccountType(type, provider);
 
         if (!accountMapper.existByEmail(email)) {
             accountService.createAccountByOAuth(accountInfo, provider);
@@ -102,5 +97,14 @@ public class CommonOAuthService {
             throw new AuthException(FAILED_HTTP_ACTION);
         }
         return accessToken;
+    }
+
+    private void checkOAuthAccountType(RegisterType type, String provider) {
+        if (type != null && type.equals(LOCAL)){
+            throw new DuplicatedException(LOCAL_ACCOUNT_ALREADY_EXIST);
+        }
+        if (type != null && !type.equals(RegisterType.valueOf(provider))) {
+            throw new ServiceFailedException(INVALID_OAUTH_TYPE);
+        }
     }
 }

@@ -5,10 +5,9 @@ import com.cherrydev.cherrymarketbe.customer.entity.CustomerReward;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper
-public interface RewardMapper {
+public interface CustomerRewardMapper {
 
     void save(final CustomerReward customerReward);
 

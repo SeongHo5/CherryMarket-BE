@@ -2,41 +2,31 @@ package com.cherrydev.cherrymarketbe.customer.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
+import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.customer.dto.address.AddAddressRequestDto;
 import com.cherrydev.cherrymarketbe.customer.dto.address.AddressInfoDto;
+import com.cherrydev.cherrymarketbe.customer.dto.address.ModifyAddressRequestDto;
 import com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress;
-import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
-import com.cherrydev.cherrymarketbe.customer.repository.AddressMapper;
-import com.cherrydev.cherrymarketbe.auth.dto.oauth.kakao.KakaoAddressInfoDto;
-import com.cherrydev.cherrymarketbe.common.exception.AuthException;
-import com.cherrydev.cherrymarketbe.common.service.RedisService;
+import com.cherrydev.cherrymarketbe.customer.repository.CustomerAddressMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.stream.Stream;
 
-import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.KAKAO;
-import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.*;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
-import static com.cherrydev.cherrymarketbe.common.utils.HttpEntityUtils.createHttpEntity;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AddressService {
 
-    private final AddressMapper addressMapper;
-    private final AccountMapper accountMapper;
-    private final RedisService redisService;
-    private final RestTemplate restTemplate;
+    private final CustomerAddressMapper customerAddressMapper;
 
     private static final int MAX_ADDRESS_COUNT = 3;
 
@@ -51,7 +41,7 @@ public class AddressService {
         checkAddressCount(account);
         checkDefaultAddressAlreadyExists(customerAddress);
 
-        addressMapper.save(customerAddress);
+        customerAddressMapper.save(customerAddress);
     }
 
     @Transactional(readOnly = true)
@@ -59,87 +49,89 @@ public class AddressService {
             final AccountDetails accountDetails
     ) {
         Account account = accountDetails.getAccount();
-        return ResponseEntity.ok(addressMapper.findAllByAccountId(account));
+        return ResponseEntity.ok()
+                .body(customerAddressMapper.findAllByAccountId(account));
     }
 
-    public int addAddressFromKakao(final AccountDetails accountDetails) {
-        checkAccountRegisterType(accountDetails);
-        String oAuthAccessToken = getOAuthAccessToken(accountDetails);
+    @Transactional
+    public void deleteAddress(
+            final AccountDetails accountDetails,
+            final Long addressId
+    ) {
+        Long accountId = accountDetails.getAccount().getAccountId();
 
-        KakaoAddressInfoDto kakaoAddressInfoDto = getAddressesFromKakao(oAuthAccessToken);
-        List<KakaoAddressInfoDto.KakaoAddress> kakaoAddress = kakaoAddressInfoDto.getKakaoAddress();
+        CustomerAddress customerAddress = getCustomerAddress(accountId, addressId);
 
-        for (KakaoAddressInfoDto.KakaoAddress address : kakaoAddress) {
-            CustomerAddress customerAddress = kakaoAddressInfoDto.toEntity(accountDetails.getAccount(), address);
-            addressMapper.save(customerAddress);
+        customerAddressMapper.delete(customerAddress);
+
+    }
+
+    @Transactional
+    public ResponseEntity<AddressInfoDto> modifyAddress(
+            final AccountDetails accountDetails,
+            final ModifyAddressRequestDto modifyAddressRequestDto
+    ) {
+        Long accountId = accountDetails.getAccount().getAccountId();
+        Long addressId = modifyAddressRequestDto.getAddressId();
+        boolean isSetAsDefault = modifyAddressRequestDto.getIsDefault();
+
+        checkIfRequestBodyIsNull(modifyAddressRequestDto);
+
+        CustomerAddress customerAddress = getCustomerAddress(accountId, addressId);
+        if (isSetAsDefault) {
+            checkDefaultAddressAlreadyExists(customerAddress);
         }
 
-        return kakaoAddress.size();
+        customerAddressMapper.update(customerAddress);
+        return ResponseEntity.ok()
+                .body(buildResponseBody(customerAddress));
     }
 
     // ==================== PRIVATE METHODS ==================== //
 
-    private String getOAuthAccessToken(final AccountDetails accountDetails) {
-        Account account = accountDetails.getAccount();
-        String oAuthAccessToken = redisService.getData(OAUTH_KAKAO_PREFIX + account.getEmail());
-
-        if (oAuthAccessToken == null) {
-            throw new AuthException(NO_AUTHORIZATION);
-        }
-
-        return oAuthAccessToken;
-    }
-
-    /**
-     * 카카오 API 를 통해 사용자의 주소 정보를 가져온다.
-     *
-     * @param oAuthAccessToken 카카오 액세스 토큰
-     * @return 사용자의 주소 정보
-     */
-    private KakaoAddressInfoDto getAddressesFromKakao(final String oAuthAccessToken) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(KAKAO_USER_ADDRESS_URL);
-
-        HttpEntity<String> entity = createHttpEntity(oAuthAccessToken);
-        ResponseEntity<KakaoAddressInfoDto> response = restTemplate.exchange(
-                builder.toUriString(), HttpMethod.GET, entity, KakaoAddressInfoDto.class
-        );
-
-        return Optional.ofNullable(response.getBody())
-                .map(body -> KakaoAddressInfoDto.builder()
-                        .id(body.getId())
-                        .kakaoAddress(body.getKakaoAddress())
-                        .build()
-                ).orElseThrow(() -> new ServiceFailedException(FAILED_HTTP_ACTION));
-    }
-
-    // ==================== VALIDATION METHODS ==================== //
-
-    /**
-     * 요청 계정이 소셜 계정인지 확인
-     *
-     * @param accountDetails 계정 정보
-     */
-    private void checkAccountRegisterType(
-            final AccountDetails accountDetails
-    ) {
-        boolean isSocialAccount = accountMapper.existByEmailAndRegisterType(accountDetails.getUsername(), KAKAO);
-        if (!isSocialAccount) {
-            throw new AuthException(NOT_SOCIAL_ACCOUNT);
-        }
+    private CustomerAddress getCustomerAddress(final Long accountId, final Long addressId) {
+        return customerAddressMapper.findByIdAndAccountId(accountId, addressId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ADDRESS));
     }
 
     private void checkDefaultAddressAlreadyExists(final CustomerAddress customerAddress) {
-        boolean isExist = addressMapper.existByAccountIdAndIsDefault(customerAddress);
+        boolean isExist = customerAddressMapper.existByAccountIdAndIsDefault(customerAddress);
         if (isExist) {
             throw new ServiceFailedException(DEFAULT_ADDRESS_ALREADY_EXISTS);
         }
     }
 
     private void checkAddressCount(final Account account) {
-        int addressCount = addressMapper.countAllByAccountId(account);
+        int addressCount = customerAddressMapper.countAllByAccountId(account);
         if (addressCount >= MAX_ADDRESS_COUNT) {
             throw new ServiceFailedException(ADDRESS_COUNT_EXCEEDED);
         }
+    }
+
+    private void checkIfRequestBodyIsNull(final ModifyAddressRequestDto modifyAddressRequestDto) {
+        boolean isAllNull = Stream.of(
+                modifyAddressRequestDto.getIsDefault(),
+                modifyAddressRequestDto.getName(),
+                modifyAddressRequestDto.getZipcode(),
+                modifyAddressRequestDto.getAddress(),
+                modifyAddressRequestDto.getAddressDetail()
+        ).allMatch(Objects::isNull);
+
+        if (isAllNull) {
+            throw new ServiceFailedException(INVALID_INPUT_VALUE);
+        }
+
+    }
+
+    private AddressInfoDto buildResponseBody(final CustomerAddress customerAddress) {
+        return AddressInfoDto.builder()
+                .addressId(customerAddress.getAddressId())
+                .isDefault(customerAddress.getIsDefault())
+                .name(customerAddress.getName())
+                .zipcode(customerAddress.getZipCode())
+                .address(customerAddress.getAddress())
+                .addressDetail(customerAddress.getAddressDetail())
+                .build();
     }
 
 }

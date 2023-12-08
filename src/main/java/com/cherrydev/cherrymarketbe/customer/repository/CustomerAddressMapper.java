@@ -6,9 +6,10 @@ import com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
-public interface AddressMapper {
+public interface CustomerAddressMapper {
 
     // ==================== INSERT ==================== //
 
@@ -20,6 +21,7 @@ public interface AddressMapper {
 
     void deleteAllByAccountId(Account account);
 
+
     // ==================== UPDATE ==================== //
 
     void update(CustomerAddress customerAddress);
@@ -27,6 +29,8 @@ public interface AddressMapper {
     // ==================== SELECT ==================== //
 
     List<AddressInfoDto> findAllByAccountId(Account account);
+
+    Optional<CustomerAddress> findByIdAndAccountId(Long accountId, Long addressId);
 
     int countAllByAccountId(Account account);
 
