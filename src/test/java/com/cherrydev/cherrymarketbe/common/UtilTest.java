@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.common;
 
+import com.cherrydev.cherrymarketbe.common.utils.TimeFormatter;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -10,6 +11,7 @@ import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.VERIFIC
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.*;
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class UtilTest {
@@ -39,4 +41,5 @@ class UtilTest {
         assertThat(result1).isEqualTo(case1.toString());
         assertThat(result2).isEqualTo("2021-10-10 10:10:10");
     }
+
 }
