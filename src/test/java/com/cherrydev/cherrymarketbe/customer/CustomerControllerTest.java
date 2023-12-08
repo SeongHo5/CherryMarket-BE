@@ -65,6 +65,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/customer/reward/summary")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -81,6 +82,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/api/customer/address/my-list")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -100,6 +102,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/customer/address/add")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -118,6 +121,7 @@ class CustomerControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/customer/address/add")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType("application/json")
                         .accept("application/json")
@@ -137,6 +141,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/customer/address/add")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -155,6 +160,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.delete("/api/customer/address/drop")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -174,6 +180,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.patch("/api/customer/address/modify")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
@@ -191,6 +198,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/customer/register-coupon")
+                                .secure(true)
                                 .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                                 .contentType("application/json")
                                 .accept("application/json")

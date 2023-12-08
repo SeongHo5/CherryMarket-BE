@@ -67,6 +67,7 @@ class AdminControllerTest {
         // When & Then
         // OK를 반환하고, 페이징 처리된 계정 목록을 반환한다.
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/account-list")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -86,6 +87,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/role")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -102,6 +104,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -118,6 +121,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -134,6 +138,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.patch("/api/admin/modify/account/status")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -149,6 +154,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -163,6 +169,7 @@ class AdminControllerTest {
         String requestBody = Jackson.toJsonString(createAddRewardRequestDtoB());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -178,6 +185,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/issue-coupon")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -193,6 +201,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/issue-coupon")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -205,6 +214,7 @@ class AdminControllerTest {
     void 쿠폰_목록_조회_성공() throws Exception {
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.get("/api/admin/coupon-list")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -224,6 +234,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
+                        .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -239,6 +250,7 @@ class AdminControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/admin/grant-reward")
+                        .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());

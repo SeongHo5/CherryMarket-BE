@@ -77,8 +77,9 @@ class AuthControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/sign-in")
-                .contentType("application/json")
-                .content(requestBody))
+                        .secure(true)
+                        .contentType("application/json")
+                        .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userName").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userRole").value("ROLE_CUSTOMER"))
@@ -94,8 +95,9 @@ class AuthControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/sign-in")
-                .contentType("application/json")
-                .content(requestBody))
+                        .secure(true)
+                        .contentType("application/json")
+                        .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
@@ -108,8 +110,9 @@ class AuthControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/sign-in")
-                .contentType("application/json")
-                .content(requestBody))
+                        .secure(true)
+                        .contentType("application/json")
+                        .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
@@ -122,8 +125,9 @@ class AuthControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/sign-in")
-                .contentType("application/json")
-                .content(requestBody))
+                        .secure(true)
+                        .contentType("application/json")
+                        .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
@@ -136,6 +140,7 @@ class AuthControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/sign-in")
+                        .secure(true)
                         .contentType("application/json")
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
@@ -150,6 +155,7 @@ class AuthControllerTest {
 
         // When & Then
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/auth/sign-out")
+                        .secure(true)
                         .contentType("application/json")
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk());
