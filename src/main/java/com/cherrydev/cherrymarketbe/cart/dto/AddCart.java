@@ -19,10 +19,8 @@ public record AddCart(
 
     public Cart addCart(Account account) {
 
-        // accountId, goodsId, quantity의 유효성 검사
         validateFields();
 
-        // Goods 객체 생성 및 검증
         Goods goods = Goods.fromGoodsId(this.goodsId);
 
         return Cart.builder()
