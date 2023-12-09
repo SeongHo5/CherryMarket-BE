@@ -22,7 +22,6 @@ public class ReviewReport {
     private Timestamp createDate;
 
     @Builder
-
     public ReviewReport(Long reportId, Long reviewId, Long userId,
                         ReviewReportType reportType, String content,
                         String answerContent, ReviewReportAnswer answerStatus,

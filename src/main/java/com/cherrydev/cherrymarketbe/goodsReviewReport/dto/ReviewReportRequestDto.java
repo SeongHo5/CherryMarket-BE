@@ -24,7 +24,7 @@ public class ReviewReportRequestDto {
                 .reportType(ReviewReportType.valueOf(this.getReportType()))
                 .content(this.getContent())
                 .answerStatus(ReviewReportAnswer.NOT_EXIST)
-                .answerContent(null)
+                .answerContent("")
                 .build();
     }
 }

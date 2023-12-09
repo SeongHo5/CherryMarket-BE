@@ -65,6 +65,7 @@ public enum ExceptionStatus {
     DELETED_ACCOUNT(409, "이미 탈퇴한 계정입니다."),
     ALREADY_EXIST_COUPON(409, "이미 등록된 쿠폰입니다."),
     ALREADY_EXIST_REVIEW(409, "이미 등록된 리뷰입니다."),
+    ALREADY_EXIST_REPORT(409, "이미 등록된 신고입니다."),
 
     // 413 - Payload Too Large
     TOO_MANY_FILES(413, "파일은 최대 3개만 업로드 할 수 있습니다."),

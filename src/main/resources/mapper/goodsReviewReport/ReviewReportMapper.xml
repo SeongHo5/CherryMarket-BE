@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cherrydev.cherrymarketbe.goodsReviewReport.repository.ReviewReportMapper">
-    <resultMap id="GoodsReviewMapper" type="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
+    <resultMap id="ReviewReportMapper" type="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
         <result property="reportId" column="GOODS_REVW_STTEMNT_ID"/>
         <result property="reviewId" column="GOODS_REVW_ID"/>
         <result property="userId" column="ACNT_ID"/>
@@ -14,7 +14,7 @@
         <result property="createDate" column="CREAT_DE"/>
     </resultMap>
 
-    <!--    INSERT   -->
+    <!-- ==================== INSERT ==================== -->
     <insert id="save" useGeneratedKeys="true"
             parameterType="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
         <selectKey keyProperty="reviewId" keyColumn="GOODS_REVW_STTEMNT_ID" resultType="Long" order="AFTER">
@@ -26,80 +26,40 @@
     </insert>
 
 
-    <!--    SELECT   -->
-    <select id="existReview" resultType="java.lang.Boolean">
+    <!-- ==================== SELECT ==================== -->
+    <select id="checkDupulicateReport" resultType="java.lang.Boolean">
         select count(*)
-        from GOODS_REVW
-        where GOODS_REVW_ID in (select GOODS_REVW_ID
-                                from GOODS_REVW
-                                where ORDERS_ID = #{ordersId}
-                                  AND GOODS_ID = #{goodsId})
-          and GOODS_REVW_STTUS != 'DELETED'
+        from GOODS_REVW_STTEMNT
+        where GOODS_REVW_STTEMNT_ID in (select GOODS_REVW_STTEMNT_ID
+                                        from GOODS_REVW_STTEMNT
+                                        where GOODS_REVW_ID = #{reviewId}
+                                          AND ACNT_ID = #{userId})
     </select>
 
-    <select id="checkDeliveryStatus" resultType="java.lang.Boolean">
-        select count(*)
-        from DLVY_DETAIL
-        WHERE DLVY_STTUS = 'DELIVERED'
-          AND ORDERS_ID = #{ordersId}
-    </select>
-
-    <select id="findReivew" parameterType="Long" resultMap="GoodsReviewMapper">
+    <select id="findReport" parameterType="Long" resultMap="ReviewReportMapper">
         SELECT *
-        FROM GOODS_REVW
-        WHERE ORDERS_ID = #{ordersId}
-          AND GOODS_ID = #{goodsId}
-          AND GOODS_REVW_STTUS != 'DELETED'
+        FROM GOODS_REVW_STTEMNT
+        WHERE GOODS_REVW_STTEMNT_ID = #{reportId}
     </select>
 
-    <select id="findAll" resultMap="GoodsReviewMapper">
+    <select id="findAll" resultMap="ReviewReportMapper">
         select *
-        from GOODS_REVW
-        WHERE GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
-        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
+        from GOODS_REVW_STTEMNT
+        ORDER BY GOODS_REVW_STTEMNT_ID DESC
     </select>
 
-    <select id="findAllByGoodsId" resultMap="GoodsReviewMapper">
+    <select id="findAllByStatus" resultMap="ReviewReportMapper">
         select *
-        from GOODS_REVW
-        WHERE GOODS_ID = #{goodsId}
-          AND GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
-        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
+        from GOODS_REVW_STTEMNT
+        WHERE GOODS_REVW_STTEMNT_STTUS = 'NOT_EXIST'
     </select>
 
-    <select id="findAllByOrderId" resultMap="GoodsReviewMapper">
-        select *
-        from GOODS_REVW
-        WHERE ORDERS_ID = #{ordersId}
-          AND GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
-        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
-    </select>
 
-    <select id="findAllByUserId" resultMap="GoodsReviewMapper">
-        select *
-        from GOODS_REVW
-        WHERE ORDERS_ID IN (SELECT ORDERS_ID FROM ORDER_DETAIL WHERE ACNT_ID = #{userId})
-          AND GOODS_REVW_STTUS != 'DELETED'
-        ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
-    </select>
-
-    <!--    DELETE   -->
-    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
-        UPDATE GOODS_REVW
-        SET GOODS_REVW_STTUS = 'DELETED',
-            DELETED_DE       = now()
-        WHERE ORDERS_ID = #{ordersId}
-          AND GOODS_ID = #{goodsId}
-    </delete>
-
-    <!--    UPDATE   -->
-    <insert id="update" useGeneratedKeys="true"
-            parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">
-        <selectKey keyProperty="reviewId" keyColumn="GOODS_REVW_ID" resultType="Long" order="AFTER">
-            SELECT MAX(GOODS_REVW_ID) FROM GOODS_REVW
-        </selectKey>
-        INSERT INTO GOODS_REVW
-        (ORDERS_ID,GOODS_ID,GOODS_REVW_CODE,GOODS_REVW_BEST_YN,GOODS_REVW_SJ,GOODS_REVW_CN,GOODS_REVW_STTUS)
-        VALUES (#{ordersId},#{goodsId},#{code},#{isBest},#{subject},#{content},#{status})
-    </insert>
+    <!-- ==================== UPDATE ==================== -->
+    <update id="update" parameterType="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
+        UPDATE GOODS_REVW_STTEMNT
+        SET GOODS_REVW_STTEMNT_ANSWER = #{answerContent},
+            GOODS_REVW_STTEMNT_STTUS  = #{answerStatus}
+        WHERE GOODS_REVW_STTEMNT_ID = #{reportId}
+    </update>
 </mapper>
