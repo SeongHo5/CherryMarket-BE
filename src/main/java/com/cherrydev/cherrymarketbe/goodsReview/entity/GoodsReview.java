@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Getter
 @NoArgsConstructor
 public class GoodsReview {
+
     private Long reviewId;
     private Long ordersId;
     private Long goodsId;

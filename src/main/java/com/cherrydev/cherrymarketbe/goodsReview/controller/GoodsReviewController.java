@@ -23,7 +23,7 @@ public class GoodsReviewController {
     // ==================== INSERT ==================== //
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addInquiry(final @Valid @RequestBody GoodsReviewRequestDto goodsReviewRequestDto) {
+    public void addReivew(final @Valid @RequestBody GoodsReviewRequestDto goodsReviewRequestDto) {
         goodsReviewService.save(goodsReviewRequestDto);
     }
 
@@ -65,7 +65,7 @@ public class GoodsReviewController {
     // ==================== DELETE ==================== //
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteInquiryById(@RequestParam Long ordersId, @RequestParam Long goodsId) {
+    public void deleteGoodsReviewById(@RequestParam Long ordersId, @RequestParam Long goodsId) {
         goodsReviewService.delete(ordersId, goodsId);
     }
 
