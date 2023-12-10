@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReview.repository;
 
+import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,16 +21,16 @@ public interface GoodsReviewMapper {
     GoodsReview findReivew(Long ordersId, Long goodsId);
 
     //전체조회
-    List<GoodsReview> findAll();
+    List<GoodsReviewInfoDto> findAll();
 
     //전체조회 - 상품별
-    List<GoodsReview> findAllByGoodsId(Long goodsId);
+    List<GoodsReviewInfoDto> findAllByGoodsId(Long goodsId);
 
     // 전체조회 - 주문별
-    List<GoodsReview> findAllByOrderId(Long ordersId);
+    List<GoodsReviewInfoDto> findAllByOrderId(Long ordersId);
 
     // 전체조회 - 유저
-    List<GoodsReview> findAllByUserId(Long userId);
+    List<GoodsReviewInfoDto> findAllByUserId(Long userId);
 
     boolean existReview(GoodsReview goodsReview);
 

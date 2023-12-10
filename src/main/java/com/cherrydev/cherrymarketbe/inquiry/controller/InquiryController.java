@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiry.controller;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
@@ -7,11 +8,10 @@ import com.cherrydev.cherrymarketbe.inquiry.service.InquiryServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,38 +25,39 @@ public class InquiryController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public void addInquiry(final @Valid @RequestBody InquiryRequestDto inquiryRequestDto) {
-            inquiryService.createInquiry(inquiryRequestDto);
+        inquiryService.createInquiry(inquiryRequestDto);
     }
 
     // ==================== SELECT ==================== //
     // By 아이디
-    @GetMapping("/info/search-id")
+    @GetMapping("/search-id")
     public ResponseEntity<InquiryInfoDto> getNoticeInfoById(@RequestParam Long inquiryId) {
         return inquiryService.getInquiryInfoById(inquiryId);
     }
 
     // By 코드
-    @GetMapping("/info/search-code")
+    @GetMapping("/search-code")
     public ResponseEntity<InquiryInfoDto> getNoticeInfoByCode(@RequestParam String inquiryCode) {
-
         return inquiryService.getInquiryInfoByCode(inquiryCode);
     }
 
-     //By 회원 아이디
+    //By 회원 아이디
     @GetMapping("/list/user")
-    public ResponseEntity<List<InquiryInfoDto>> getInquiryListByUser(@RequestParam Long userId) {
-        return inquiryService.findAllByUser(userId);
+    public ResponseEntity<MyPage<InquiryInfoDto>> getInquiryListByUser(@RequestParam Long userId, final Pageable pageable) {
+        return inquiryService.findAllByUser(pageable, userId);
     }
+
 
     //By 회원 핸드폰 번호
     @GetMapping("/list/phone")
-    public ResponseEntity<List<InquiryInfoDto>> getInquiryListByPhone(@RequestParam String phone) {
-        return inquiryService.findAllByPhone(phone);
+    public ResponseEntity<MyPage<InquiryInfoDto>> getInquiryListByPhone(@RequestParam String phone, final Pageable pageable) {
+        return inquiryService.findAllByPhone(pageable, phone);
     }
+
     // 전체 조회
     @GetMapping("/list")
-    public ResponseEntity<List<InquiryInfoDto>> getInquiryList() {
-        return inquiryService.findAll();
+    public ResponseEntity<MyPage<InquiryInfoDto>> getInquiryList(final Pageable pageable) {
+        return inquiryService.findAll(pageable);
     }
 
 
@@ -66,7 +67,7 @@ public class InquiryController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<InquiryInfoDto> modifyInquiryById(
             final @RequestBody ModifyInquiryRequestDto requestDto) {
-      return inquiryService.modifyInquiryById(requestDto);
+        return inquiryService.modifyInquiryById(requestDto);
     }
 
     // By 코드
@@ -89,7 +90,7 @@ public class InquiryController {
     // By 코드
     @DeleteMapping("/delete/code")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteInquiryById(@RequestParam String  inquiryCode) {
+    public void deleteInquiryById(@RequestParam String inquiryCode) {
         inquiryService.deleteInquiryByCode(inquiryCode);
     }
 }

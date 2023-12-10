@@ -1,16 +1,17 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.controller;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnswerInfoDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.service.InquiryAnswerServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -36,19 +37,19 @@ public class InquiryAnswerController {
     }
 
     @GetMapping("/search-list")
-    public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerList() {
-        return inquiryAnswerService.findAll();
+    public ResponseEntity<MyPage<InquiryAnswerInfoDto>> getAnswerList(final Pageable pageable) {
+        return inquiryAnswerService.findAll(pageable);
     }
 
     @GetMapping("/search-userId")
-    public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByUserId(@RequestParam Long userId) {
-        return inquiryAnswerService.getAnswerByUserId(userId);
+    public ResponseEntity<MyPage<InquiryAnswerInfoDto>> getAnswerByUserId(final Pageable pageable, @RequestParam Long userId) {
+        return inquiryAnswerService.getAnswerByUserId(pageable,userId);
     }
 
     //유저 이메일로 검색
     @GetMapping("/search-email")
-    public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByEmail(@RequestParam String email) {
-        return inquiryAnswerService.getAnswerByEmail(email);
+    public ResponseEntity<MyPage<InquiryAnswerInfoDto>> getAnswerByEmail(final Pageable pageable,@RequestParam String email) {
+        return inquiryAnswerService.getAnswerByEmail(pageable,email);
     }
 
     // ==================== DELETE ==================== //

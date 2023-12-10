@@ -16,6 +16,19 @@
         <result property="createDate" column="CREAT_DE"/>
         <result property="deleteDate" column="DELETED_DE"/>
     </resultMap>
+    <resultMap id="GoodsReviewInfoMapper" type="com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto">
+        <result property="reviewId" column="GOODS_REVW_ID"/>
+        <result property="ordersId" column="ORDERS_ID"/>
+        <result property="goodsId" column="GOODS_ID"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="code" column="GOODS_REVW_CODE"/>
+        <result property="isBest" column="GOODS_REVW_BEST_YN"/>
+        <result property="subject" column="GOODS_REVW_SJ"/>
+        <result property="content" column="GOODS_REVW_CN"/>
+        <result property="status" column="GOODS_REVW_STTUS"/>
+        <result property="createDate" column="CREAT_DE"/>
+        <result property="deleteDate" column="DELETED_DE"/>
+    </resultMap>
 
     <!--    INSERT   -->
     <insert id="save" useGeneratedKeys="true"
@@ -56,14 +69,14 @@
           AND GOODS_REVW_STTUS != 'DELETED'
     </select>
 
-    <select id="findAll" resultMap="GoodsReviewMapper">
+    <select id="findAll" resultMap="GoodsReviewInfoMapper">
         select *
         from GOODS_REVW
         WHERE GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
         ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
     </select>
 
-    <select id="findAllByGoodsId" resultMap="GoodsReviewMapper">
+    <select id="findAllByGoodsId" resultMap="GoodsReviewInfoMapper">
         select *
         from GOODS_REVW
         WHERE GOODS_ID = #{goodsId}
@@ -71,7 +84,7 @@
         ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
     </select>
 
-    <select id="findAllByOrderId" resultMap="GoodsReviewMapper">
+    <select id="findAllByOrderId" resultMap="GoodsReviewInfoMapper">
         select *
         from GOODS_REVW
         WHERE ORDERS_ID = #{ordersId}
@@ -79,7 +92,7 @@
         ORDER BY CASE WHEN GOODS_REVW.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GOODS_REVW_ID
     </select>
 
-    <select id="findAllByUserId" resultMap="GoodsReviewMapper">
+    <select id="findAllByUserId" resultMap="GoodsReviewInfoMapper">
         select *
         from GOODS_REVW
         WHERE ORDERS_ID IN (SELECT ORDERS_ID FROM ORDER_DETAIL WHERE ACNT_ID = #{userId})

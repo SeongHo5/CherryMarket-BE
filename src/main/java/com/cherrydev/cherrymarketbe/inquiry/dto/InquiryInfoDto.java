@@ -2,7 +2,9 @@ package com.cherrydev.cherrymarketbe.inquiry.dto;
 
 
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
+import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryStatus;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -10,6 +12,7 @@ import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampT
 
 
 @Getter
+@NoArgsConstructor(force = true)
 public class InquiryInfoDto {
     Long inquiryId;
     Long userId;
@@ -43,5 +46,8 @@ public class InquiryInfoDto {
         return inquiryList.stream()
                 .map(InquiryInfoDto::new)
                 .toList();
+    }
+
+    public void updateAnswerStatus(InquiryStatus inquiryStatus) {
     }
 }

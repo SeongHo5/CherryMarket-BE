@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiry.repository;
 
+import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -17,17 +18,19 @@ public interface InquiryMapper {
 
     Inquiry findByInquiryCode(String inquiryCode);
 
-    List<Inquiry> findAll();
+    List<InquiryInfoDto> findAll();
 
-    List<Inquiry> findAllByUser(Long userId);
+    List<InquiryInfoDto> findAllByUser(Long userId);
 
-    List<Inquiry> findAllByPhone(String phone);
+    List<InquiryInfoDto> findAllByPhone(String phone);
 
     void updateStatusByDel(Inquiry inquiry);
 
     void update(Inquiry inquiry);
 
     void updateAnswerStatus(Inquiry inquiry);
+
+    void updateAnswerStatusByInfo(InquiryInfoDto inquiryInfoDto);
 
     boolean existAnswerInquiry(Long inquiryId);
 }

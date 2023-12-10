@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReview.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
@@ -11,15 +12,15 @@ import com.cherrydev.cherrymarketbe.goodsReview.repository.GoodsReviewMapper;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REVIEW;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.REVIEW_NOT_ALLOWED_BEFORE_DELIVERY;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 
 @Service
@@ -81,39 +82,37 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<List<GoodsReviewInfoDto>> findAll() {
-        List<GoodsReview> goodsReviews = goodsReviewMapper.findAll();
-        List<GoodsReviewInfoDto> goodsReviewInfoDtos = GoodsReviewInfoDto.convertToDtoList(goodsReviews);
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAll(final Pageable pageable) {
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, goodsReviewMapper::findAll);
         return ResponseEntity.ok()
-                .body(goodsReviewInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<List<GoodsReviewInfoDto>> findAllByGoodsId(final Long goodsId) {
-        List<GoodsReview> goodsReviews = goodsReviewMapper.findAllByGoodsId(goodsId);
-        List<GoodsReviewInfoDto> goodsReviewInfoDtos = GoodsReviewInfoDto.convertToDtoList(goodsReviews);
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByGoodsId(final Pageable pageable, final Long goodsId) {
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> goodsReviewMapper.findAllByGoodsId(goodsId));
         return ResponseEntity.ok()
-                .body(goodsReviewInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<List<GoodsReviewInfoDto>> findAllByOrderId(final Long ordersId) {
-        List<GoodsReview> goodsReviews = goodsReviewMapper.findAllByOrderId(ordersId);
-        List<GoodsReviewInfoDto> goodsReviewInfoDtos = GoodsReviewInfoDto.convertToDtoList(goodsReviews);
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByOrderId(final Pageable pageable,final Long ordersId) {
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> goodsReviewMapper.findAllByOrderId(ordersId));
         return ResponseEntity.ok()
-                .body(goodsReviewInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override
-    public ResponseEntity<List<GoodsReviewInfoDto>> findAllByUser(Long userId) {
-        List<GoodsReview> goodsReviews = goodsReviewMapper.findAllByUserId(userId);
-        List<GoodsReviewInfoDto> goodsReviewInfoDtos = goodsReviews.stream()
-                .map(goodsReview -> new GoodsReviewInfoDto(goodsReview, userId))
-                .collect(Collectors.toList());
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByUser(final Pageable pageable,final  Long userId) {
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> goodsReviewMapper.findAllByUserId(userId));
         return ResponseEntity.ok()
-                .body(goodsReviewInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override

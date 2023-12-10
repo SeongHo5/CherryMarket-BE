@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.repository;
 
+import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnswerInfoDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer;
 
 import java.util.List;
@@ -11,11 +12,11 @@ public interface InquiryAnswerMapper {
 
     InquiryAnswer findById(Long inquiryId);
 
-    List<InquiryAnswer> findAll();
+    List<InquiryAnswerInfoDto> findAll();
 
-    List<InquiryAnswer> findByUserId(Long userId);
+    List<InquiryAnswerInfoDto> findByUserId(Long userId);
 
-    List<InquiryAnswer> findByEmail(String email);
+    List<InquiryAnswerInfoDto> findByEmail(String email);
 
     void delete(Long answerId);
 

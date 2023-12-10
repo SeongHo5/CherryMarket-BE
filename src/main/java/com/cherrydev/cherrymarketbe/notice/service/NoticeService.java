@@ -1,11 +1,11 @@
 package com.cherrydev.cherrymarketbe.notice.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
+import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 public interface NoticeService {
 
@@ -15,7 +15,7 @@ public interface NoticeService {
 
     ResponseEntity<NoticeInfoDto> getNoticeInfoByCode(String noticeCode);
 
-    ResponseEntity<List<NoticeInfoDto>> findAll();
+    ResponseEntity<MyPage<NoticeInfoDto>> getAllNotice(Pageable pageable);
 
     ResponseEntity<NoticeInfoDto> modifyById(ModifyNoticeInfoRequestDto requestDto);
 

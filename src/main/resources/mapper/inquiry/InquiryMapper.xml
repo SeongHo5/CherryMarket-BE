@@ -18,6 +18,21 @@
         <result property="deleteDate" column="DELETED_DE"/>
     </resultMap>
 
+    <resultMap id="inquiryInfoMap" type="com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto">
+        <result property="inquiryId" column="INQRY_ID"/>
+        <result property="userId" column="ACNT_ID"/>
+        <result property="code" column="INQRY_CODE"/>
+        <result property="type" column="INQRY_TYPE"/>
+        <result property="detailType" column="INQRY_DETAIL_TYPE"/>
+        <result property="subject" column="INQRY_SJ"/>
+        <result property="content" column="INQRY_CN"/>
+        <result property="status" column="INQRY_STTUS"/>
+        <result property="answerStatus" column="INQRY_ANSWER_STTUS"/>
+        <result property="phone" column="INQRY_RECPTN_MOBLPHON_NO"/>
+        <result property="createDate" column="CREAT_DE"/>
+        <result property="deleteDate" column="DELETED_DE"/>
+    </resultMap>
+
     <!--    INSERT-->
     <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
         <selectKey keyProperty="inquiryId" keyColumn="INQRY_ID" resultType="Long" order="AFTER">
@@ -61,7 +76,7 @@
           and INQRY.INQRY_STTUS != 'DELETED'
     </select>
 
-    <select id="findAll" resultMap="inquiryMap">
+    <select id="findAll" resultMap="inquiryInfoMap">
         select INQRY_ID,
                ACNT_ID,
                INQRY_CODE,
@@ -79,7 +94,7 @@
         ORDER BY INQRY_ID
     </select>
 
-    <select id="findAllByUser" parameterType="Long" resultMap="inquiryMap">
+    <select id="findAllByUser" parameterType="Long" resultMap="inquiryInfoMap">
         select *
         from INQRY
         WHERE INQRY.INQRY_STTUS != 'DELETED'
@@ -87,7 +102,7 @@
         ORDER BY INQRY_CODE
     </select>
 
-    <select id="findAllByPhone" parameterType="String" resultMap="inquiryMap">
+    <select id="findAllByPhone" parameterType="String" resultMap="inquiryInfoMap">
         select *
         from INQRY
         WHERE INQRY.INQRY_STTUS != 'DELETED'
@@ -112,6 +127,14 @@
     </update>
 
     <update id="updateAnswerStatus" parameterType="com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry">
+        UPDATE INQRY
+        <set>
+            INQRY_ANSWER_STTUS = #{answerStatus},
+        </set>
+        WHERE INQRY_ID = #{inquiryId}
+    </update>
+
+    <update id="updateAnswerStatusByInfo" parameterType="com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto">
         UPDATE INQRY
         <set>
             INQRY_ANSWER_STTUS = #{answerStatus},

@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.notice.controller;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
@@ -8,11 +9,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -42,10 +43,11 @@ public class NoticeController {
         return noticeService.getNoticeInfoByCode(noticeCode);
     }
 
+
     // 전체 조회
     @GetMapping("/notice-list")
-    public ResponseEntity<List<NoticeInfoDto>> getNoticeList() {
-        return noticeService.findAll();
+    public ResponseEntity<MyPage<NoticeInfoDto>> getNoticeList(final Pageable pageable) {
+        return noticeService.getAllNotice(pageable);
     }
 
     // 수정 - 아이디
@@ -53,7 +55,7 @@ public class NoticeController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<NoticeInfoDto> modifyById(
             final @RequestBody ModifyNoticeInfoRequestDto requestDto) {
-      return noticeService.modifyById(requestDto);
+        return noticeService.modifyById(requestDto);
     }
 
     // 수정 - 코드

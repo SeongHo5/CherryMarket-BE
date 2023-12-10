@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.goodsReviewReport.service;
 
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportModifyDto;
@@ -10,13 +11,14 @@ import com.cherrydev.cherrymarketbe.goodsReviewReport.enums.ReviewReportAnswer;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.repository.ReviewReportMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REPORT;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 
 
 @Service
@@ -62,20 +64,20 @@ public class ReviewReportServiceImpl implements ReviewReportService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ReviewReportInfoDto>> findAll() {
-        List<ReviewReport> reviewReports = reviewReportMapper.findAll();
-        List<ReviewReportInfoDto> reviewReportInfoDtos = ReviewReportInfoDto.convertToDtoList(reviewReports);
+    public ResponseEntity<MyPage<ReviewReportInfoDto>> findAll(final Pageable pageable) {
+        MyPage<ReviewReportInfoDto> infoPage = createPage(pageable, reviewReportMapper::findAll);
         return ResponseEntity.ok()
-                .body(reviewReportInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<List<ReviewReportInfoDto>> findAllByStatus() {
-        List<ReviewReport> reviewReports = reviewReportMapper.findAllByStatus();
-        List<ReviewReportInfoDto> reviewReportInfoDtos = ReviewReportInfoDto.convertToDtoList(reviewReports);
+    public ResponseEntity<MyPage<ReviewReportInfoDto>> findAllByStatus(final Pageable pageable) {
+        MyPage<ReviewReportInfoDto> infoPage = createPage(pageable, reviewReportMapper::findAllByStatus);
         return ResponseEntity.ok()
-                .body(reviewReportInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     // =============== PRIVATE METHODS =============== //

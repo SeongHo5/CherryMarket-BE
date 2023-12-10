@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReviewReport.repository;
 
+import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -21,10 +22,10 @@ public interface ReviewReportMapper {
     ReviewReport findReport(Long reportId);
 
     //전체 조회
-    List<ReviewReport> findAll();
+    List<ReviewReportInfoDto> findAll();
 
     //전체 조회 - 답변 여부로 확인
-    List<ReviewReport> findAllByStatus();
+    List<ReviewReportInfoDto> findAllByStatus();
 
     //중복신고 검사
     boolean checkDupulicateReport(ReviewReport reviewReport);

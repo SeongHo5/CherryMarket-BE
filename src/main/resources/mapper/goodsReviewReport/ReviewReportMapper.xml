@@ -14,6 +14,17 @@
         <result property="createDate" column="CREAT_DE"/>
     </resultMap>
 
+    <resultMap id="ReviewReportInfoMapper" type="com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportInfoDto">
+        <result property="reportId" column="GOODS_REVW_STTEMNT_ID"/>
+        <result property="reviewId" column="GOODS_REVW_ID"/>
+        <result property="userId" column="ACNT_ID"/>
+        <result property="reportType" column="GOODS_REVW_STTEMNT_TYPE"/>
+        <result property="content" column="GOODS_REVW_STTEMNT_CN"/>
+        <result property="answerStatus" column="GOODS_REVW_STTEMNT_STTUS"/>
+        <result property="answerContent" column="GOODS_REVW_STTEMNT_ANSWER"/>
+        <result property="createDate" column="CREAT_DE"/>
+    </resultMap>
+
     <!-- ==================== INSERT ==================== -->
     <insert id="save" useGeneratedKeys="true"
             parameterType="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
@@ -42,13 +53,13 @@
         WHERE GOODS_REVW_STTEMNT_ID = #{reportId}
     </select>
 
-    <select id="findAll" resultMap="ReviewReportMapper">
+    <select id="findAll" resultMap="ReviewReportInfoMapper">
         select *
         from GOODS_REVW_STTEMNT
         ORDER BY GOODS_REVW_STTEMNT_ID DESC
     </select>
 
-    <select id="findAllByStatus" resultMap="ReviewReportMapper">
+    <select id="findAllByStatus" resultMap="ReviewReportInfoMapper">
         select *
         from GOODS_REVW_STTEMNT
         WHERE GOODS_REVW_STTEMNT_STTUS = 'NOT_EXIST'

@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReviewReport.controller;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportRequestDto;
@@ -7,11 +8,10 @@ import com.cherrydev.cherrymarketbe.goodsReviewReport.service.ReviewReportServic
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -35,13 +35,13 @@ public class ReviewReportController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ReviewReportInfoDto>> getReviewReportList() {
-        return reviewReportService.findAll();
+    public ResponseEntity<MyPage<ReviewReportInfoDto>> getReviewReportList(final Pageable pageable) {
+        return reviewReportService.findAll(pageable);
     }
 
     @GetMapping("/list-status")
-    public ResponseEntity<List<ReviewReportInfoDto>> getReviewReportListByStatus() {
-        return reviewReportService.findAllByStatus();
+    public ResponseEntity<MyPage<ReviewReportInfoDto>> getReviewReportListByStatus(final Pageable pageable) {
+        return reviewReportService.findAllByStatus(pageable);
     }
 
     // ==================== UPDATE ==================== //

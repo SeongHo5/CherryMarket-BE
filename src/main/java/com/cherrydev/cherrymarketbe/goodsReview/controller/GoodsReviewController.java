@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReview.controller;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
@@ -7,11 +8,11 @@ import com.cherrydev.cherrymarketbe.goodsReview.service.GoodsReviewServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -34,23 +35,23 @@ public class GoodsReviewController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewList() {
-        return goodsReviewService.findAll();
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> getGoodsReviewList(final Pageable pageable) {
+        return goodsReviewService.findAll(pageable);
     }
 
     @GetMapping("/list-goods")
-    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewListByGoods(@RequestParam Long goodsId) {
-        return goodsReviewService.findAllByGoodsId(goodsId);
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> getGoodsReviewListByGoods(final Pageable pageable, @RequestParam Long goodsId) {
+        return goodsReviewService.findAllByGoodsId(pageable, goodsId);
     }
 
     @GetMapping("/list-user")
-    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewListByUser(@RequestParam Long userId) {
-        return goodsReviewService.findAllByUser(userId);
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> getGoodsReviewListByUser(final Pageable pageable, @RequestParam Long userId) {
+        return goodsReviewService.findAllByUser(pageable, userId);
     }
 
     @GetMapping("/list-order")
-    public ResponseEntity<List<GoodsReviewInfoDto>> getGoodsReviewListByOrder(@RequestParam Long ordersId) {
-        return goodsReviewService.findAllByOrderId(ordersId);
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> getGoodsReviewListByOrder(final Pageable pageable, @RequestParam Long ordersId) {
+        return goodsReviewService.findAllByOrderId(pageable, ordersId);
     }
 
 

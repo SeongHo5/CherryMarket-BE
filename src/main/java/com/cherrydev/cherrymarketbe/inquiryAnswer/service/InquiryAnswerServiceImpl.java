@@ -1,16 +1,19 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnswerInfoDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.repository.InquiryAnswerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 
 @Service
 @Slf4j
@@ -41,29 +44,29 @@ public class InquiryAnswerServiceImpl implements InquiryAnswerService {
 
     @Override
     @Transactional
-    public ResponseEntity<List<InquiryAnswerInfoDto>> findAll() {
-        List<InquiryAnswer> inquiryAnswer = inquiryAnswerMapper.findAll();
-        List<InquiryAnswerInfoDto> inquiryAnswerInfoDtos = InquiryAnswerInfoDto.convertToDtoList(inquiryAnswer);
+    public ResponseEntity<MyPage<InquiryAnswerInfoDto>> findAll(final Pageable pageable) {
+        MyPage<InquiryAnswerInfoDto> infoPage =  createPage(pageable, inquiryAnswerMapper::findAll);
         return ResponseEntity.ok()
-                .body(inquiryAnswerInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByUserId(Long userId) {
-        List<InquiryAnswer> inquiryAnswer = inquiryAnswerMapper.findByUserId(userId);
-        List<InquiryAnswerInfoDto> inquiryAnswerInfoDtos = InquiryAnswerInfoDto.convertToDtoList(inquiryAnswer);
+    public ResponseEntity<MyPage<InquiryAnswerInfoDto>> getAnswerByUserId(final Pageable pageable, Long userId) {
+        MyPage<InquiryAnswerInfoDto> infoPage =  createPage(pageable, () -> inquiryAnswerMapper.findByUserId(userId));
         return ResponseEntity.ok()
-                .body(inquiryAnswerInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByEmail(String email) {
-        List<InquiryAnswer> inquiryAnswer = inquiryAnswerMapper.findByEmail(email);
-        List<InquiryAnswerInfoDto> inquiryAnswerInfoDtos = InquiryAnswerInfoDto.convertToDtoList(inquiryAnswer);
+    public ResponseEntity<MyPage<InquiryAnswerInfoDto>> getAnswerByEmail(final Pageable pageable,String email) {
+        MyPage<InquiryAnswerInfoDto> infoPage =  createPage(pageable, () -> inquiryAnswerMapper.findByEmail(email));
         return ResponseEntity.ok()
-                .body(inquiryAnswerInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 
     @Override

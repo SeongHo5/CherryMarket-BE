@@ -28,20 +28,10 @@ public class ReviewLikeController {
     }
 
     // ==================== SELECT ==================== //
-    //리뷰Id에 대한 좋아요 수 카운트
-//    @GetMapping("/count-like")
-//    public ResponseEntity<Long> getReviewLike(@RequestParam Long reviewId) {
-//        return reviewLikeService.countLike(reviewId);
-//    }
 
     @GetMapping("/count-like")
     public ResponseEntity<ReviewLikeCountDto> getReviewLike(@RequestParam Long reviewId) {
         return reviewLikeService.countLike(reviewId);
     }
 
-
-    // ==================== UPDATE ==================== //
-
-
-    // ==================== DELETE ==================== //
 }

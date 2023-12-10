@@ -1,11 +1,11 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 
 public interface InquiryService {
@@ -19,11 +19,11 @@ public interface InquiryService {
 
     ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode);
 
-    ResponseEntity<List<InquiryInfoDto>> findAll();
+    ResponseEntity<MyPage<InquiryInfoDto>> findAll(Pageable pageable);
 
-    ResponseEntity<List<InquiryInfoDto>> findAllByUser(Long userId);
+    ResponseEntity<MyPage<InquiryInfoDto>> findAllByUser(Pageable pageable, Long userId);
 
-    ResponseEntity<List<InquiryInfoDto>> findAllByPhone(String phone);
+    ResponseEntity<MyPage<InquiryInfoDto>> findAllByPhone(Pageable pageable, String phone);
 
     ResponseEntity<InquiryInfoDto> modifyInquiryById(ModifyInquiryRequestDto requestDto);
 

@@ -1,28 +1,30 @@
 package com.cherrydev.cherrymarketbe.notice.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
+import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
 import com.cherrydev.cherrymarketbe.notice.repository.NoticeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.List;
 
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 
 @Service
 @Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-
 public class NoticeServiceImpl implements NoticeService {
     private final NoticeMapper noticeMapper;
 
@@ -50,18 +52,22 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<List<NoticeInfoDto>> findAll() {
-        List<Notice> notices = noticeMapper.findAll();
-        List<NoticeInfoDto> noticeDtos = NoticeInfoDto.convertToDtoList(notices);
+    public ResponseEntity<MyPage<NoticeInfoDto>> getAllNotice(final Pageable pageable) {
+        MyPage<NoticeInfoDto> infoPage =  createPage(pageable, noticeMapper::findAll);
         return ResponseEntity.ok()
-                .body(noticeDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
+
+
+
 
     @Override
     @Transactional
     public void deleteById(final Long noticeId) {
         noticeMapper.deleteById(noticeId);
     }
+
     @Override
     @Transactional
     public void deleteByCode(final String code) {

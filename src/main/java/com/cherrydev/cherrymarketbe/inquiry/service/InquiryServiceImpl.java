@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
@@ -11,12 +12,15 @@ import com.cherrydev.cherrymarketbe.inquiry.repository.InquiryMapper;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 
 @Service
@@ -59,27 +63,26 @@ public class InquiryServiceImpl implements InquiryService {
         return getExistAnswer(inquiry);
     }
 
-
     @Override
     @Transactional
-    public ResponseEntity<List<InquiryInfoDto>> findAll() {
-        List<Inquiry> inquiries = inquiryMapper.findAll();
-        return getListCheckAnswer(inquiries);
+    public ResponseEntity<MyPage<InquiryInfoDto>> findAll(final Pageable pageable) {
+        MyPage<InquiryInfoDto> infoPage = createPage(pageable, inquiryMapper::findAll);
+        return getListCheckAnswer(infoPage);
     }
 
 
-    @Override
+    //    @Override
     @Transactional
-    public ResponseEntity<List<InquiryInfoDto>> findAllByUser(final Long userId) {
-        List<Inquiry> inquiries = inquiryMapper.findAllByUser(userId);
-        return getListCheckAnswer(inquiries);
+    public ResponseEntity<MyPage<InquiryInfoDto>> findAllByUser(final Pageable pageable, final Long userId) {
+        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> inquiryMapper.findAllByUser(userId));
+        return getListCheckAnswer(infoPage);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<List<InquiryInfoDto>> findAllByPhone(String phone) {
-        List<Inquiry> inquiries = inquiryMapper.findAllByPhone(phone);
-        return getListCheckAnswer(inquiries);
+    public ResponseEntity<MyPage<InquiryInfoDto>> findAllByPhone(final Pageable pageable, final String phone) {
+        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> inquiryMapper.findAllByPhone(phone));
+        return getListCheckAnswer(infoPage);
     }
 
     @Override
@@ -159,19 +162,22 @@ public class InquiryServiceImpl implements InquiryService {
                 .body(new InquiryInfoDto(inquiry));
     }
 
-    private ResponseEntity<List<InquiryInfoDto>> getListCheckAnswer(List<Inquiry> inquiries) {
-        for (Inquiry inquiry : inquiries) {
+    private ResponseEntity<MyPage<InquiryInfoDto>> getListCheckAnswer(MyPage<InquiryInfoDto> infoPage) {
+        List<InquiryInfoDto> inquiries = infoPage.getContent();
+
+        for (InquiryInfoDto inquiry : inquiries) {
             if (inquiryMapper.existAnswerInquiry(inquiry.getInquiryId())) {
                 inquiry.updateAnswerStatus(InquiryStatus.COMPLETE);
-                inquiryMapper.updateAnswerStatus(inquiry);
+                inquiryMapper.updateAnswerStatusByInfo(inquiry);
             } else {
                 inquiry.updateAnswerStatus(InquiryStatus.ACCEPTING);
-                inquiryMapper.updateAnswerStatus(inquiry);
+                inquiryMapper.updateAnswerStatusByInfo(inquiry);
             }
         }
-        List<InquiryInfoDto> inquiryInfoDtos = InquiryInfoDto.convertToDtoList(inquiries);
+
         return ResponseEntity.ok()
-                .body(inquiryInfoDtos);
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
     }
 }
 

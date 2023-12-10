@@ -2,12 +2,14 @@ package com.cherrydev.cherrymarketbe.inquiryAnswer.dto;
 
 import com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
 
 @Getter
+@NoArgsConstructor(force = true)
 public class InquiryAnswerInfoDto {
     Long answerId;
     Long inquiryId;

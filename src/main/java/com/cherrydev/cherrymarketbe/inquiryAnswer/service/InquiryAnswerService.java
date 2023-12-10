@@ -1,10 +1,10 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnswerInfoDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 
 public interface InquiryAnswerService {
@@ -15,11 +15,11 @@ public interface InquiryAnswerService {
 
     ResponseEntity<InquiryAnswerInfoDto> getInquiryAnswerById(Long inquiryId);
 
-    ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByUserId(Long userId);
+    ResponseEntity<MyPage<InquiryAnswerInfoDto>> getAnswerByUserId(Pageable pageable, Long userId);
 
-    ResponseEntity<List<InquiryAnswerInfoDto>> getAnswerByEmail(String email);
+    ResponseEntity<MyPage<InquiryAnswerInfoDto>> getAnswerByEmail(Pageable pageable, String email);
 
-    ResponseEntity<List<InquiryAnswerInfoDto>> findAll();
+    ResponseEntity<MyPage<InquiryAnswerInfoDto>> findAll(Pageable pageable);
 
     void deleteAndSetStatusAccepting(Long answerId);
 }

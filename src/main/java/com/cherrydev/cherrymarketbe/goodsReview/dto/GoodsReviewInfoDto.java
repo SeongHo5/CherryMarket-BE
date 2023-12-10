@@ -2,12 +2,14 @@ package com.cherrydev.cherrymarketbe.goodsReview.dto;
 
 import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
 
 @Getter
+@NoArgsConstructor(force = true)
 public class GoodsReviewInfoDto {
     Long reviewId;
     Long ordersId;
