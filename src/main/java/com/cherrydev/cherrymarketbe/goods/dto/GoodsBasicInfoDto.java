@@ -9,6 +9,8 @@ public class GoodsBasicInfoDto {
 
     String goodsName;
 
+    String description;
+
     int price;
 
     Integer discountRate;

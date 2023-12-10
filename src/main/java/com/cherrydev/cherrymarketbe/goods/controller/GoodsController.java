@@ -26,8 +26,8 @@ public class GoodsController {
     public void save(final @Valid @RequestBody GoodsRegistrationDto goodsRegistrationDto) {
         goodsService.save(goodsRegistrationDto);
     }
-    /* Select */
 
+    /* Select */
     @GetMapping("/listAll")
     public ResponseEntity<List<GoodsRegistrationDto>> getListAll() {
         return ResponseEntity.ok(goodsService.findAll());
@@ -38,14 +38,24 @@ public class GoodsController {
         return ResponseEntity.ok(goodsService.findBasicInfo(goodsId));
     }
 
+    @GetMapping("/category")
+    public ResponseEntity<List<DiscountCalcDto>> getCategoryGoods(@RequestParam Long categoryId) {
+        return ResponseEntity.ok(goodsService.findByCategoryId(categoryId));
+    }
+
     @GetMapping("/toCart")
     public ResponseEntity<ToCartResponseDto> getToCart(@RequestParam Long goodsId) {
         return ResponseEntity.ok(goodsService.findToCart(goodsId));
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<GoodsDetailResponseDto> getDetail(@RequestParam Long goodsId) {
-        return ResponseEntity.ok(goodsService.findDetail(goodsId));
+    public ResponseEntity<GoodsDetailResponseDto> getDetailById(@RequestParam Long goodsId) {
+        return ResponseEntity.ok(goodsService.findDetailById(goodsId));
+    }
+
+    @GetMapping("/{goodsCode}")
+    public ResponseEntity<GoodsDetailResponseDto> getDetailByCode(@PathVariable String goodsCode) {
+        return ResponseEntity.ok(goodsService.findDetailByCode(goodsCode));
     }
 
     /* Delete */

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -19,6 +20,8 @@ public class GoodsService {
 
     @Transactional
     public void save(GoodsRegistrationDto goodsRegistrationDto) {
+        // 새 상품이 입력 되었을 떄 동일한 Code를 갖고 있다면 기존 상품의 판매 상태를 변경
+        goodsMapper.updateStatusWhenNewGoods(goodsRegistrationDto.getGoodsCode(), "DISCONTINUANCE");
         goodsMapper.save(goodsRegistrationDto);
     }
 
@@ -38,10 +41,30 @@ public class GoodsService {
         return DiscountCalcDto.builder()
                        .goodsId(basicInfo.getGoodsId())
                        .goodsName(basicInfo.getGoodsName())
+                       .description(basicInfo.getDescription())
                        .price(basicInfo.getPrice())
                        .discountRate(basicInfo.getDiscountRate())
                        .discountedPrice(discountedPrice)
                        .build();
+    }
+
+    @Transactional
+    public List<DiscountCalcDto> findByCategoryId(Long categoryId) {
+        List<GoodsBasicInfoDto> basicInfoList = goodsMapper.findByCategoryId(categoryId);
+
+        return basicInfoList.stream()
+                       .map(basicInfo -> {
+                           Integer discountedPrice = discountedPrice = (basicInfo.getDiscountRate() != null) ? basicInfo.getPrice() - (basicInfo.getPrice() * basicInfo.getDiscountRate() / 100) : null;
+                           return DiscountCalcDto.builder()
+                                          .goodsId(basicInfo.getGoodsId())
+                                          .goodsName(basicInfo.getGoodsName())
+                                          .description(basicInfo.getDescription())
+                                          .price(basicInfo.getPrice())
+                                          .discountRate(basicInfo.getDiscountRate())
+                                          .discountedPrice(discountedPrice)
+                                          .build();
+                       })
+                       .collect(Collectors.toList());
     }
 
     @Transactional
@@ -63,8 +86,8 @@ public class GoodsService {
     }
 
     @Transactional
-    public GoodsDetailResponseDto findDetail(Long goodsId) {
-        GoodsDetailDto goodsDetailDto = goodsMapper.findDetail(goodsId);
+    public GoodsDetailResponseDto findDetailById(Long goodsId) {
+        GoodsDetailDto goodsDetailDto = goodsMapper.findDetailById(goodsId);
         Integer discountedPrice = (goodsDetailDto.getDiscountRate() != null) ? goodsDetailDto.getPrice() - (goodsDetailDto.getPrice() * goodsDetailDto.getDiscountRate() / 100) : null;
 
         return GoodsDetailResponseDto.builder()
@@ -84,8 +107,30 @@ public class GoodsService {
                        .discountedPrice(discountedPrice)
                        .makerName(goodsDetailDto.getMakerName())
                        .build();
+    }
 
+    @Transactional
+    public GoodsDetailResponseDto findDetailByCode(String goodsCode) {
+        GoodsDetailDto goodsDetailDto = goodsMapper.findDetailByCode(goodsCode);
+        Integer discountedPrice = (goodsDetailDto.getDiscountRate() != null) ? goodsDetailDto.getPrice() - (goodsDetailDto.getPrice() * goodsDetailDto.getDiscountRate() / 100) : null;
 
+        return GoodsDetailResponseDto.builder()
+                       .goodsId(goodsDetailDto.getGoodsId())
+                       .goodsCode(goodsDetailDto.getGoodsCode())
+                       .goodsName(goodsDetailDto.getGoodsName())
+                       .description(goodsDetailDto.getDescription())
+                       .price(goodsDetailDto.getPrice())
+                       .inventory(goodsDetailDto.getInventory())
+                       .storageType(goodsDetailDto.getStorageType())
+                       .capacity(goodsDetailDto.getCapacity())
+                       .expDate(goodsDetailDto.getExpDate())
+                       .allergyInfo(goodsDetailDto.getAllergyInfo())
+                       .originPlace(goodsDetailDto.getOriginPlace())
+                       .salesStatus(goodsDetailDto.getSalesStatus())
+                       .discountRate(goodsDetailDto.getDiscountRate())
+                       .discountedPrice(discountedPrice)
+                       .makerName(goodsDetailDto.getMakerName())
+                       .build();
     }
 
     @Transactional

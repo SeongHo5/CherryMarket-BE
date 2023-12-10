@@ -22,22 +22,39 @@
         <result property = "updateDate" column = "UPDT_DE"/>
     </resultMap>
 
+    <!-- Insert -->
     <insert id = "save" parameterType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsRegistrationDto">
-        INSERT INTO  GOODS
-        VALUE (NULL, #{makerId}, #{categoryId}, #{goodsCode}, #{goodsName}, #{description}, #{discountId}, #{price}, #{retailPrice}, #{inventory}, #{storageType}, #{capacity},
-                #{expDate}, #{allergyInfo}, #{originPlace}, #{salesStatus}, NOW(), NOW())
+        INSERT INTO GOODS
+            VALUE (NULL, #{makerId}, #{categoryId}, #{goodsCode}, #{goodsName}, #{description}, #{discountId}, #{price}, #{retailPrice}, #{inventory}, #{storageType}, #{capacity},
+                   #{expDate}, #{allergyInfo}, #{originPlace}, #{salesStatus}, NOW(), NOW())
     </insert>
 
+    <!-- Select -->
     <select id = "findAll" resultMap = "goodsRegistrationMap">
         SELECT *
         FROM GOODS
+        WHERE GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        ORDER BY CREAT_DE DESC
     </select>
 
     <select id = "findBasicInfo" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto" parameterType = "long">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_PRICE, D.DSCNT_RATE
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_ID = #{goodsId}
+    </select>
+
+    <select id = "findByCategoryId" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        FROM GOODS G
+                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+        WHERE (G.CTGRY_ID = #{categoryId}
+            OR G.CTGRY_ID IN (SELECT C.CTGRY_ID
+                              FROM CTGRY C
+                              WHERE C.CTGRY_UPPER = #{categoryId}
+                                AND C.CTGRY_UPPER IS NOT NULL))
+          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        ORDER BY G.CREAT_DE DESC
     </select>
 
     <select id = "findToCart" resultType = "com.cherrydev.cherrymarketbe.goods.dto.ToCartDto" parameterType = "long">
@@ -45,9 +62,11 @@
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_ID = #{goodsId}
+          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        ORDER BY G.CREAT_DE DESC
     </select>
 
-    <select id = "findDetail" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailDto" parameterType = "long">
+    <select id = "findDetailById" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailDto" parameterType = "long">
         SELECT G.GOODS_ID,
                G.GOODS_CODE,
                G.GOODS_NM,
@@ -66,8 +85,39 @@
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
                  LEFT JOIN MAKR M ON G.MAKR_ID = M.MAKR_ID
         WHERE G.GOODS_ID = #{goodsId}
+          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
     </select>
 
+    <select id = "findDetailByCode" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailDto">
+        SELECT G.GOODS_ID,
+               G.GOODS_CODE,
+               G.GOODS_NM,
+               G.GOODS_DC,
+               G.GOODS_PRICE,
+               G.GOODS_INVTRY,
+               G.GOODS_CSTDY_TY,
+               G.GOODS_CPCY,
+               G.GOODS_EXPR_DE,
+               G.GOODS_ALLERGY_INFO,
+               G.GOODS_ORGPLCE,
+               G.GOODS_SEL_STTUS,
+               D.DSCNT_RATE,
+               M.MAKR_NM
+        FROM GOODS G
+                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+                 LEFT JOIN MAKR M ON G.MAKR_ID = M.MAKR_ID
+        WHERE G.GOODS_CODE = #{goodsCode}
+          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
+    </select>
+
+    <!-- Update -->
+    <update id = "updateStatusWhenNewGoods" parameterType="com.cherrydev.cherrymarketbe.goods.dto.GoodsRegistrationDto">
+        UPDATE GOODS SET GOODS_SEL_STTUS = #{salesStatus}
+        WHERE GOODS_CODE = #{goodsCode}
+    </update>
+
+
+    <!-- Delete -->
     <delete id = "deleteById" parameterType = "Long">
         DELETE
         FROM GOODS

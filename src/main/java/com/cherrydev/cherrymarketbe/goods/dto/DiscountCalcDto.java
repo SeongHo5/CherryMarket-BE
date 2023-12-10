@@ -11,6 +11,8 @@ public class DiscountCalcDto {
 
     String goodsName;
 
+    String description;
+
     int price;
 
     Integer discountRate;
