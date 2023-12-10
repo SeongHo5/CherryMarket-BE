@@ -7,7 +7,7 @@ import lombok.Value;
 import java.sql.Date;
 
 @Value
-public class GoodsRegistrationDto {
+public class GoodsDto {
 
     Long goodsId;
 

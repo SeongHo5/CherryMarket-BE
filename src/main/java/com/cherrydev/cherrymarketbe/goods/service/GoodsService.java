@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,15 +19,17 @@ public class GoodsService {
 
     private final GoodsMapper goodsMapper;
 
+    /* Insert */
     @Transactional
-    public void save(GoodsRegistrationDto goodsRegistrationDto) {
+    public void save(GoodsDto goodsDto) {
         // 새 상품이 입력 되었을 떄 동일한 Code를 갖고 있다면 기존 상품의 판매 상태를 변경
-        goodsMapper.updateStatusWhenNewGoods(goodsRegistrationDto.getGoodsCode(), "DISCONTINUANCE");
-        goodsMapper.save(goodsRegistrationDto);
+        goodsMapper.updateStatusWhenNewGoods(goodsDto.getGoodsCode(), "DISCONTINUANCE");
+        goodsMapper.save(goodsDto);
     }
 
+    /* Select */
     @Transactional
-    public List<GoodsRegistrationDto> findAll() {
+    public List<GoodsDto> findAll() {
 
         return goodsMapper.findAll();
     }
@@ -133,6 +136,48 @@ public class GoodsService {
                        .build();
     }
 
+    @Transactional
+    public List<DiscountCalcDto> findByName(String goodsName) {
+        List<GoodsBasicInfoDto> basicInfoList = goodsMapper.findByName(goodsName);
+        List<DiscountCalcDto> discountCalcDtoList = new ArrayList<>();
+
+        for(GoodsBasicInfoDto basicInfoDto : basicInfoList) {
+            // 할인된 금액 계산
+            Integer discountedPrice = discountedPrice = (basicInfoDto.getDiscountRate() != null) ? basicInfoDto.getPrice() - (basicInfoDto.getPrice() * basicInfoDto.getDiscountRate() / 100) : null;
+
+            DiscountCalcDto discountCalcDto = DiscountCalcDto.builder()
+                                                      .goodsId(basicInfoDto.getGoodsId())
+                                                      .goodsName(basicInfoDto.getGoodsName())
+                                                      .description(basicInfoDto.getDescription())
+                                                      .price(basicInfoDto.getPrice())
+                                                      .discountRate(basicInfoDto.getDiscountRate())
+                                                      .discountedPrice(discountedPrice)
+                                                      .build();
+            discountCalcDtoList.add(discountCalcDto);
+        }
+        return discountCalcDtoList;
+    }
+
+    /* Update */
+    @Transactional
+    public List<GoodsDto> updateDiscountByMaker(Long discountId, Long makerId) {
+        goodsMapper.updateDiscountByMaker(discountId, makerId);
+        return goodsMapper.findByMakerForDiscount(makerId);
+    }
+
+    @Transactional
+    public List<GoodsDto> updateDiscountByCategory(Long discountId, Long categoryId) {
+        goodsMapper.updateDiscountByCategory(discountId, categoryId);
+        return goodsMapper.findByCategoryForDiscount(categoryId);
+    }
+
+    @Transactional
+    public GoodsDto updateDiscountByGoodsId(Long discountId, Long goodsId) {
+        goodsMapper.updateDiscountByGoodsId(discountId, goodsId);
+        return goodsMapper.findByGoodsIdForDiscount(goodsId);
+    }
+
+    /* Delete */
     @Transactional
     public void deleteById(Long goodId) {
         goodsMapper.deleteById(goodId);
