@@ -8,7 +8,11 @@ import java.util.List;
 @Mapper
 public interface MakerMapper {
 
-    List<MakerDto> findAll();
+    List<MakerDto> findAll(String sortBy);
+
+    MakerDto findById(Long makerId);
+
+    List<MakerDto> findByName(String makerName);
 
     MakerDto findByBusinessNumber(String businessNumber);
 

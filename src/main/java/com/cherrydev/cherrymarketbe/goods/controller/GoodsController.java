@@ -89,9 +89,9 @@ public class GoodsController {
         return ResponseEntity.ok(goodsService.findAll(sortBy));
     }
 
-    /* 파일 이름 생성 메소드 */
-    private String generateFileName(String goodsCode, int type) {
-        return goodsCode + "-" + String.format("%03d", type);
-    }
+    // /* 파일 이름 생성 메소드 */
+    // private String generateFileName(String goodsCode, int type) {
+    //     return goodsCode + "-" + String.format("%03d", type);
+    // }
 
 }

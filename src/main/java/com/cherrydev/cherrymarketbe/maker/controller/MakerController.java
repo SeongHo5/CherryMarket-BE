@@ -20,30 +20,40 @@ public class MakerController {
     private final MakerService makerService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<MakerDto>> getMakerList() {
-        return ResponseEntity.ok(makerService.findAll());
+    public ResponseEntity<List<MakerDto>> getMakerList(@RequestParam(required = false) String sortBy) {
+        return ResponseEntity.ok(makerService.findAll(sortBy));
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<MakerDto> getMakerInfo(@RequestParam String businessNumber) {
+    @GetMapping("/info/makerName")
+    public ResponseEntity<List<MakerDto>> getMakerInfoByName(@RequestParam String makerName) {
+        return ResponseEntity.ok(makerService.findByName(makerName));
+    }
+
+    @GetMapping("/info/makerId")
+    public ResponseEntity<MakerDto> getMakerInfoById(@RequestParam Long makerId) {
+        return ResponseEntity.ok(makerService.findById(makerId));
+    }
+
+    @GetMapping("/info/businessNumber")
+    public ResponseEntity<MakerDto> getMakerInfoByBusinessNumber(@RequestParam String businessNumber) {
         return ResponseEntity.ok(makerService.findByBusinessNumber(businessNumber));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<MakerDto> addMaker(final @Valid @RequestBody MakerDto makerDto) {
+    public ResponseEntity<MakerDto> save(final @Valid @RequestBody MakerDto makerDto) {
         makerService.save(makerDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(makerDto);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<List<MakerDto>> delMaker(@RequestParam Long makerId) {
+    public ResponseEntity<List<MakerDto>> delete(@RequestParam Long makerId, @RequestParam(required = false) String sortBy) {
         makerService.deleteById(makerId);
-        return ResponseEntity.ok(makerService.findAll());
+        return ResponseEntity.ok(makerService.findAll(sortBy));
     }
 
     @PostMapping("/update")
-    public ResponseEntity<List<MakerDto>> updateMaker(final  @Valid @RequestBody MakerDto makerDto) {
+    public ResponseEntity<List<MakerDto>> update(final @Valid @RequestBody MakerDto makerDto, @RequestParam(required = false) String sortBy) {
         makerService.updateById(makerDto);
-        return ResponseEntity.ok(makerService.findAll());
+        return ResponseEntity.ok(makerService.findAll(sortBy));
     }
 }
