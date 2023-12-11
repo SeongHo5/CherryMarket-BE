@@ -1,18 +1,21 @@
 package com.cherrydev.cherrymarketbe.notice.controller;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
-import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
+import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.service.NoticeServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 
 @Slf4j
@@ -22,12 +25,19 @@ import org.springframework.web.bind.annotation.*;
 public class NoticeController {
 
     private final NoticeServiceImpl noticeService;
+    private final FileService fileService;
 
     // 등록
     @PostMapping("/add-notice")
     @ResponseStatus(HttpStatus.CREATED)
     public void addNotice(final @Valid @RequestBody NoticeRequestDto noticeRequestDto) {
         noticeService.createNotice(noticeRequestDto);
+    }
+
+    @PostMapping("/add-image")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addImage(@RequestPart("imageFiles") List<MultipartFile> imageFiles,String dirName) {
+        fileService.uploadMultipleFiles(imageFiles, dirName);
     }
 
     // 조회 - 아이디

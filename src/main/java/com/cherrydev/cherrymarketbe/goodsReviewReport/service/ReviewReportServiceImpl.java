@@ -3,6 +3,7 @@ package com.cherrydev.cherrymarketbe.goodsReviewReport.service;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
+import com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportRequestDto;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REPORT;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
@@ -65,7 +68,11 @@ public class ReviewReportServiceImpl implements ReviewReportService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<MyPage<ReviewReportInfoDto>> findAll(final Pageable pageable) {
-        MyPage<ReviewReportInfoDto> infoPage = createPage(pageable, reviewReportMapper::findAll);
+
+        List<ReviewReportInfoDto> getDto = reviewReportMapper.findAll();
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<ReviewReportInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
@@ -74,7 +81,11 @@ public class ReviewReportServiceImpl implements ReviewReportService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<MyPage<ReviewReportInfoDto>> findAllByStatus(final Pageable pageable) {
-        MyPage<ReviewReportInfoDto> infoPage = createPage(pageable, reviewReportMapper::findAllByStatus);
+
+        List<ReviewReportInfoDto> getDto = reviewReportMapper.findAllByStatus();
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<ReviewReportInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
@@ -85,6 +96,11 @@ public class ReviewReportServiceImpl implements ReviewReportService {
         if (reviewReportMapper.checkDupulicateReport(reviewReport)) {
             throw new DuplicatedException(ALREADY_EXIST_REPORT);
         }
+    }
+
+    private String CheckForForbiddenWordsTest(String content) {
+        System.out.println("CheckForForbiddenWords start");
+        return BadWordFilter.filterAndReplace(content);
     }
 
 }

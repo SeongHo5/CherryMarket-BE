@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
+import static com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter.CheckForForbiddenWords;
 
 
 @Getter
@@ -34,7 +35,7 @@ public class InquiryInfoDto {
         this.type = inquiry.getType().toString();
         this.detailType = inquiry.getDetailType().toString();
         this.subject = inquiry.getSubject();
-        this.content = inquiry.getContent();
+        this.content = CheckForForbiddenWords(inquiry.getContent());
         this.status = inquiry.getStatus().toString();
         this.answerStatus = inquiry.getAnswerStatus().toString();
         this.phone = inquiry.getPhone();
@@ -48,6 +49,11 @@ public class InquiryInfoDto {
                 .toList();
     }
 
-    public void updateAnswerStatus(InquiryStatus inquiryStatus) {
+    public void updateAnswerStatus(InquiryStatus answerStatus) {
+        this.answerStatus = answerStatus.toString();
+    }
+
+    public void updateContent(String content){
+        this.content = content;
     }
 }

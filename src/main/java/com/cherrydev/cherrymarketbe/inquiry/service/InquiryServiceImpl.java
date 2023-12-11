@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
@@ -66,7 +67,11 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public ResponseEntity<MyPage<InquiryInfoDto>> findAll(final Pageable pageable) {
-        MyPage<InquiryInfoDto> infoPage = createPage(pageable, inquiryMapper::findAll);
+
+        List<InquiryInfoDto> getDto = inquiryMapper.findAll();
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return getListCheckAnswer(infoPage);
     }
 
@@ -74,14 +79,22 @@ public class InquiryServiceImpl implements InquiryService {
     //    @Override
     @Transactional
     public ResponseEntity<MyPage<InquiryInfoDto>> findAllByUser(final Pageable pageable, final Long userId) {
-        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> inquiryMapper.findAllByUser(userId));
+
+        List<InquiryInfoDto> getDto = inquiryMapper.findAllByUser(userId);
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return getListCheckAnswer(infoPage);
     }
 
     @Override
     @Transactional
     public ResponseEntity<MyPage<InquiryInfoDto>> findAllByPhone(final Pageable pageable, final String phone) {
-        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> inquiryMapper.findAllByPhone(phone));
+
+        List<InquiryInfoDto> getDto = inquiryMapper.findAllByPhone(phone);
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return getListCheckAnswer(infoPage);
     }
 
@@ -178,6 +191,11 @@ public class InquiryServiceImpl implements InquiryService {
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
+    }
+
+    private String CheckForForbiddenWordsTest(String content) {
+        System.out.println("CheckForForbiddenWords start");
+        return BadWordFilter.filterAndReplace(content);
     }
 }
 

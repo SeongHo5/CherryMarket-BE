@@ -9,6 +9,7 @@ import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
 import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
 import com.cherrydev.cherrymarketbe.goodsReview.enums.GoodsReviewBest;
 import com.cherrydev.cherrymarketbe.goodsReview.repository.GoodsReviewMapper;
+import com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REVIEW;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.REVIEW_NOT_ALLOWED_BEFORE_DELIVERY;
@@ -83,7 +86,11 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAll(final Pageable pageable) {
-        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, goodsReviewMapper::findAll);
+
+        List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAll();
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
@@ -92,33 +99,40 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByGoodsId(final Pageable pageable, final Long goodsId) {
-        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> goodsReviewMapper.findAllByGoodsId(goodsId));
+
+        List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByGoodsId(goodsId);
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
     }
+
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByOrderId(final Pageable pageable,final Long ordersId) {
-        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> goodsReviewMapper.findAllByOrderId(ordersId));
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByOrderId(final Pageable pageable, final Long ordersId) {
+
+        List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByOrderId(ordersId);
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
     }
 
     @Override
-    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByUser(final Pageable pageable,final  Long userId) {
-        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> goodsReviewMapper.findAllByUserId(userId));
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByUser(final Pageable pageable, final Long userId) {
+
+        List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByUserId(userId);
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
+
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
-    }
-
-    @Override
-    @Transactional
-    public void findAllByLike() {
-
     }
 
 
@@ -133,5 +147,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
         if (!goodsReviewMapper.checkDeliveryStatus(goodsReview)) {
             throw new ServiceFailedException(REVIEW_NOT_ALLOWED_BEFORE_DELIVERY);
         }
+    }
+
+    private String CheckForForbiddenWordsTest(String content) {
+        System.out.println("CheckForForbiddenWords start");
+        return BadWordFilter.filterAndReplace(content);
     }
 }

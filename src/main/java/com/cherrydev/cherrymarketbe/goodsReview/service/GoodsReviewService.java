@@ -33,8 +33,5 @@ public interface GoodsReviewService {
     // 전체조회 - 유저
     ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByUser(final Pageable pageable, Long userId);
 
-    // 전체조회 - 좋아요 수
-    void findAllByLike();
-
 
 }

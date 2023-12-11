@@ -21,7 +21,6 @@ public class InquiryRequestDto {
     String status;
     String phone;
 
-
     public Inquiry toEntity() {
         return Inquiry.builder()
                 .userId(this.getUserId())
@@ -33,5 +32,4 @@ public class InquiryRequestDto {
                 .status(DisplayStatus.ACTIVE)
                 .build();
     }
-
 }

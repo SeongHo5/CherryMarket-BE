@@ -4,9 +4,8 @@ import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.timeStampToString;
+import static com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter.CheckForForbiddenWords;
 
 @Getter
 @NoArgsConstructor(force = true)
@@ -31,7 +30,7 @@ public class GoodsReviewInfoDto {
         this.code = goodsReview.getCode();
         this.isBest = goodsReview.getIsBest().toString();
         this.subject = goodsReview.getSubject();
-        this.content = goodsReview.getContent();
+        this.content = CheckForForbiddenWords(goodsReview.getContent());
         this.status = goodsReview.getStatus().toString();
         this.createDate = timeStampToString(goodsReview.getCreateDate());
         this.deleteDate = goodsReview.getDeleteDate() != null ? timeStampToString(goodsReview.getDeleteDate()) : null;
@@ -45,17 +44,15 @@ public class GoodsReviewInfoDto {
         this.code = goodsReview.getCode();
         this.isBest = goodsReview.getIsBest().toString();
         this.subject = goodsReview.getSubject();
-        this.content = goodsReview.getContent();
+        this.content = CheckForForbiddenWords(goodsReview.getContent());
         this.status = goodsReview.getStatus().toString();
         this.createDate = timeStampToString(goodsReview.getCreateDate());
         this.deleteDate = goodsReview.getDeleteDate() != null ? timeStampToString(goodsReview.getDeleteDate()) : null;
     }
 
-
-    public static List<GoodsReviewInfoDto> convertToDtoList(List<GoodsReview> goodsReviews) {
-        return goodsReviews.stream()
-                .map(GoodsReviewInfoDto::new)
-                .toList();
+    public void updateContent(String content){
+        this.content = content;
     }
+
 
 }
