@@ -169,6 +169,10 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public ResponseEntity<Void> verifyEmail(final String email, final String code) {
+        if (!redisService.hasKey(PREFIX_VERIFY + email)) {
+            throw new NotFoundException(NOT_FOUND_REDIS_KEY);
+        }
+
         String validCode = redisService.getData(PREFIX_VERIFY + email);
         if (!code.equals(validCode)) {
             throw new AuthException(INVALID_EMAIL_VERIFICATION_CODE);

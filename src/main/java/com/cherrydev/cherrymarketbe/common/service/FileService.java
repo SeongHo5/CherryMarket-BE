@@ -28,11 +28,11 @@ public class FileService {
 
     private final AmazonS3Client objectStorageClient;
 
-    private static final String BUCKET_NAME = "cherry-resource";
-    private static final String[] SUPPORTED_IMAGE_FORMAT = {"jpg", "jpeg", "png"};
-    private static final int FILE_LIMIT_MAX_COUNT = 3;
-    private static final long FILE_LIMIT_MAX_SIZE = 3L * 1024 * 1024; // 3MB
-    private static final String DIRECTORY_SEPARATOR = "/";
+    public static final String BUCKET_NAME = "cherry-resource";
+    public static final String[] SUPPORTED_IMAGE_FORMAT = {"jpg", "jpeg", "png"};
+    public static final int FILE_LIMIT_MAX_COUNT = 3;
+    public static final long FILE_LIMIT_MAX_SIZE = 3L * 1024 * 1024; // 3MB
+    public static final String DIRECTORY_SEPARATOR = "/";
 
     /**
      * 단일 파일 업로드
