@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.goodsReview.controller;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
@@ -12,14 +13,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/goods-review")
 public class GoodsReviewController {
+
     private final GoodsReviewServiceImpl goodsReviewService;
+    private final FileService fileService;
 
     // ==================== INSERT ==================== //
     @PostMapping("/add")
@@ -27,6 +32,13 @@ public class GoodsReviewController {
     public void addReivew(final @Valid @RequestBody GoodsReviewRequestDto goodsReviewRequestDto) {
         goodsReviewService.save(goodsReviewRequestDto);
     }
+
+    @PostMapping("/add-image")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addImage(@RequestPart("imageFiles") List<MultipartFile> imageFiles, String dirName) {
+        fileService.uploadMultipleFiles(imageFiles, dirName);
+    }
+
 
     // ==================== SELECT ==================== //
     @GetMapping("/search")

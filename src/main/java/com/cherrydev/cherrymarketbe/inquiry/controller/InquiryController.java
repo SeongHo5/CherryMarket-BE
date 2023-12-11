@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.inquiry.controller;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
@@ -12,6 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class InquiryController {
 
     private final InquiryServiceImpl inquiryService;
+    private final FileService fileService;
 
     // ==================== INSERT ==================== //
     @PostMapping("/add")
@@ -27,6 +32,13 @@ public class InquiryController {
     public void addInquiry(final @Valid @RequestBody InquiryRequestDto inquiryRequestDto) {
         inquiryService.createInquiry(inquiryRequestDto);
     }
+
+    @PostMapping("/add-image")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addImage(@RequestPart("imageFiles") List<MultipartFile> imageFiles, String dirName) {
+        fileService.uploadMultipleFiles(imageFiles, dirName);
+    }
+
 
     // ==================== SELECT ==================== //
     // By 아이디
