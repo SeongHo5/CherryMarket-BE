@@ -2,6 +2,7 @@ package com.cherrydev.cherrymarketbe.common;
 
 import com.cherrydev.cherrymarketbe.common.service.RedisService;
 import com.redis.testcontainers.RedisContainer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +11,8 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Objects;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -97,6 +100,11 @@ public class RedisServiceTest {
 
         // Then
         assertThat(redisService.getData(key)).isNull();
+    }
+
+    @AfterEach
+    void tearDown() {
+        Objects.requireNonNull(redisTemplate.getConnectionFactory()).getConnection().serverCommands().flushDb();
     }
 
 }

@@ -1,17 +1,21 @@
 package com.cherrydev.cherrymarketbe.common;
 
-import com.cherrydev.cherrymarketbe.common.utils.TimeFormatter;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.AUTHORIZATION_HEADER;
 import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.VERIFICATION_CODE_LENGTH;
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.*;
+import static com.cherrydev.cherrymarketbe.common.utils.HttpEntityUtils.createHttpEntity;
 import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 @SpringBootTest
 class UtilTest {
@@ -41,5 +45,31 @@ class UtilTest {
         assertThat(result1).isEqualTo(case1.toString());
         assertThat(result2).isEqualTo("2021-10-10 10:10:10");
     }
+
+    @Test
+    void HTTP_엔티티_생성_성공() {
+        // When
+        HttpEntity<String> httpEntity = createHttpEntity();
+
+        // Then
+        HttpHeaders headers = httpEntity.getHeaders();
+        assertThat(headers.getContentType()).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
+        assertThat(headers.get(AUTHORIZATION_HEADER)).isNull();
+    }
+
+    @Test
+    void HTTP_엔티티_생성_성공_토큰_포함() {
+        // Given
+        String accessToken = "testToken";
+
+        // When
+        HttpEntity<String> httpEntity = createHttpEntity(accessToken);
+
+        // Then
+        HttpHeaders headers = httpEntity.getHeaders();
+        assertThat(headers.getContentType()).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
+        assertThat(headers.get(AUTHORIZATION_HEADER)).isNotNull();
+    }
+
 
 }
