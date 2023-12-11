@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace = "com.cherrydev.cherrymarketbe.goods.repository.GoodsMapper">
-    <resultMap id = "goodsRegistrationMap" type = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
-        <result property = "goodsId" column = "GOODS_ID"/>
-        <result property = "makerId" column = "MAKR_ID"/>
-        <result property = "categoryId" column = "CTGRY_ID"/>
-        <result property = "goodsCode" column = "GOODS_CODE"/>
-        <result property = "goodsName" column = "GOODS_NM"/>
-        <result property = "description" column = "GOODS_DC"/>
-        <result property = "discountId" column = "GOODS_DSCNT_ID"/>
-        <result property = "price" column = "GOODS_PRICE"/>
-        <result property = "retailPrice" column = "GOODS_SPLPC"/>
-        <result property = "inventory" column = "GOODS_INVTRY"/>
-        <result property = "storageType" column = "GOODS_CSTDY_TY"/>
-        <result property = "capacity" column = "GOODS_CPCY"/>
-        <result property = "expDate" column = "GOODS_EXPR_DE"/>
-        <result property = "allergyInfo" column = "GOODS_ALLERGY_INFO"/>
-        <result property = "originPlace" column = "GOODS_ORGPLCE"/>
-        <result property = "salesStatus" column = "GOODS_SEL_STTUS"/>
-        <result property = "createDate" column = "CREAT_DE"/>
-        <result property = "updateDate" column = "UPDT_DE"/>
-    </resultMap>
-
     <!-- Insert -->
     <insert id = "save" parameterType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
         INSERT INTO GOODS
@@ -30,11 +9,33 @@
     </insert>
 
     <!-- Select -->
-    <select id = "findAll" resultMap = "goodsRegistrationMap">
+    <select id = "findAll" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
         SELECT *
         FROM GOODS
         WHERE GOODS_SEL_STTUS != 'DISCONTINUANCE'
-        ORDER BY CREAT_DE DESC
+        <choose>
+            <when test = "sortBy == 'priceAsc'">
+                ORDER BY GOODS_PRICE ASC
+            </when>
+            <when test = "sortBy == 'priceDesc'">
+                ORDER BY GOODS_PRICE DESC
+            </when>
+            <when test = "sortBy == 'dateAsc'">
+                ORDER BY CREAT_DE ASC
+            </when>
+            <when test = "sortBy == 'dateDesc'">
+                ORDER BY CREAT_DE DESC
+            </when>
+            <otherwise>
+                ORDER BY CREAT_DE DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id = "findById" parameterType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
+        SELECT *
+        FROM GOODS
+        WHERE GOODS_ID = #{goodsId}
     </select>
 
     <select id = "findByMakerForDiscount" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
@@ -57,15 +58,10 @@
         SELECT *
         FROM GOODS
         WHERE GOODS_ID = #{goodsId}
-          AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
         ORDER BY CREAT_DE DESC
     </select>
 
-    <select id = "findById" resultType="com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
-
-    </select>
-
-    <select id = "findBasicInfo" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto" parameterType = "long">
+    <select id = "findBasicInfo" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
         SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
@@ -82,7 +78,23 @@
                               WHERE C.CTGRY_UPPER = #{categoryId}
                                 AND C.CTGRY_UPPER IS NOT NULL))
           AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
-        ORDER BY G.CREAT_DE DESC
+        <choose>
+            <when test = "sortBy == 'priceAsc'">
+                ORDER BY G.GOODS_PRICE ASC
+            </when>
+            <when test = "sortBy == 'priceDesc'">
+                ORDER BY G.GOODS_PRICE DESC
+            </when>
+            <when test = "sortBy == 'dateAsc'">
+                ORDER BY G.CREAT_DE ASC
+            </when>
+            <when test = "sortBy == 'dateDesc'">
+                ORDER BY G.CREAT_DE DESC
+            </when>
+            <otherwise>
+                ORDER BY G.CREAT_DE DESC
+            </otherwise>
+        </choose>
     </select>
 
     <select id = "findToCart" resultType = "com.cherrydev.cherrymarketbe.goods.dto.ToCartDto" parameterType = "long">
@@ -94,7 +106,7 @@
         ORDER BY G.CREAT_DE DESC
     </select>
 
-    <select id = "findDetailById" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailDto" parameterType = "long">
+    <select id = "findDetailById" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailDto">
         SELECT G.GOODS_ID,
                G.GOODS_CODE,
                G.GOODS_NM,
@@ -144,6 +156,23 @@
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_NM LIKE CONCAT('%', #{goodsName}, '%')
           AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        <choose>
+            <when test = "sortBy == 'priceAsc'">
+                ORDER BY G.GOODS_PRICE ASC
+            </when>
+            <when test = "sortBy == 'priceDesc'">
+                ORDER BY G.GOODS_PRICE DESC
+            </when>
+            <when test = "sortBy == 'dateAsc'">
+                ORDER BY G.CREAT_DE ASC
+            </when>
+            <when test = "sortBy == 'dateDesc'">
+                ORDER BY G.CREAT_DE DESC
+            </when>
+            <otherwise>
+                ORDER BY G.CREAT_DE DESC
+            </otherwise>
+        </choose>
     </select>
 
     <!-- Update -->
@@ -176,7 +205,7 @@
 
 
     <!-- Delete -->
-    <delete id = "deleteById" parameterType = "Long">
+    <delete id = "deleteById" parameterType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
         DELETE
         FROM GOODS
         WHERE GOODS_ID = #{goodsId};

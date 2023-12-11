@@ -2,6 +2,7 @@ package com.cherrydev.cherrymarketbe.goods.repository;
 
 import com.cherrydev.cherrymarketbe.goods.dto.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -12,17 +13,19 @@ public interface GoodsMapper {
     void save(GoodsDto goodsDto);
 
     /* Select */
-    List<GoodsDto> findAll();
+    List<GoodsDto> findAll(String sortBy);
+
+    GoodsDto findById(Long goodsId);
 
     List<GoodsDto> findByMakerForDiscount(Long makerId);
 
-    List<GoodsDto> findByCategoryForDiscount(Long makerId);
+    List<GoodsDto> findByCategoryForDiscount(Long categoryId);
 
-    GoodsDto findByGoodsIdForDiscount(Long makerId);
+    GoodsDto findByGoodsIdForDiscount(Long goodsId);
 
     GoodsBasicInfoDto findBasicInfo(Long goodsId);
 
-    List<GoodsBasicInfoDto> findByCategoryId(Long categoryId);
+    List<GoodsBasicInfoDto> findByCategoryId(Long categoryId, String sortBy);
 
     ToCartDto findToCart(Long goodsId);
 
@@ -30,7 +33,8 @@ public interface GoodsMapper {
 
     GoodsDetailDto findDetailByCode(String goodsCode);
 
-    List<GoodsBasicInfoDto> findByName(String goodsName);
+    List<GoodsBasicInfoDto> findByName(String goodsName, String sortBy);
+
 
     /* Update */
     void updateStatusWhenNewGoods(String goodsCode, String salesStatus);
@@ -41,7 +45,8 @@ public interface GoodsMapper {
 
     void updateDiscountByGoodsId(Long discountId, Long goodsId);
 
+
     /* Delete */
-    void deleteById(Long goodId);
+    void deleteById(Long goodsId);
 
 }

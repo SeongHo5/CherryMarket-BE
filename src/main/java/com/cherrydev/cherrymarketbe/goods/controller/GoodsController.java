@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goods.controller;
 
+import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.goods.dto.DiscountCalcDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDto;
@@ -20,6 +21,7 @@ import java.util.List;
 public class GoodsController {
 
     private final GoodsService goodsService;
+    private final FileService fileService;
 
     /* Insert */
     @PostMapping("/save")
@@ -29,8 +31,8 @@ public class GoodsController {
 
     /* Select */
     @GetMapping("/listAll")
-    public ResponseEntity<List<GoodsDto>> getListAll() {
-        return ResponseEntity.ok(goodsService.findAll());
+    public ResponseEntity<List<GoodsDto>> getListAll(@RequestParam(required = false) String sortBy) {
+        return ResponseEntity.ok(goodsService.findAll(sortBy));
     }
 
     @GetMapping("/basicInfo")
@@ -39,8 +41,8 @@ public class GoodsController {
     }
 
     @GetMapping("/category")
-    public ResponseEntity<List<DiscountCalcDto>> getCategoryGoods(@RequestParam Long categoryId) {
-        return ResponseEntity.ok(goodsService.findByCategoryId(categoryId));
+    public ResponseEntity<List<DiscountCalcDto>> getCategoryGoods(@RequestParam Long categoryId, @RequestParam(required = false) String sortBy) {
+        return ResponseEntity.ok(goodsService.findByCategoryId(categoryId, sortBy));
     }
 
     @GetMapping("/toCart")
@@ -59,8 +61,8 @@ public class GoodsController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<List<DiscountCalcDto>> getInfoByName(@RequestParam String goodsName) {
-        return ResponseEntity.ok(goodsService.findByName(goodsName));
+    public ResponseEntity<List<DiscountCalcDto>> getInfoByName(@RequestParam String goodsName, @RequestParam(required = false) String sortBy) {
+        return ResponseEntity.ok(goodsService.findByName(goodsName, sortBy));
     }
 
     /* Update */
@@ -82,9 +84,14 @@ public class GoodsController {
 
     /* Delete */
     @DeleteMapping("/delete")
-    public ResponseEntity<List<GoodsDto>> delete(Long goodsId) {
+    public ResponseEntity<List<GoodsDto>> delete(@RequestParam Long goodsId, @RequestParam(required = false) String sortBy) {
         goodsService.deleteById(goodsId);
-        return ResponseEntity.ok(goodsService.findAll());
+        return ResponseEntity.ok(goodsService.findAll(sortBy));
+    }
+
+    /* 파일 이름 생성 메소드 */
+    private String generateFileName(String goodsCode, int type) {
+        return goodsCode + "-" + String.format("%03d", type);
     }
 
 }
