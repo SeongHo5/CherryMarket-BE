@@ -6,7 +6,7 @@ import lombok.Value;
 
 @Value
 @Builder
-public class AdminCouponInfoDto {
+public class CouponInfoDto {
 
     String code;
 
