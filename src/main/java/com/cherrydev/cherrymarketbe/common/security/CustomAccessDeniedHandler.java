@@ -20,7 +20,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             HttpServletResponse response,
             AccessDeniedException accessDeniedException
     ) throws IOException, ServletException {
-        log.error("접근 권한이 없습니다.");
+        log.warn("Reject forbidden request: {}", request.getRequestURI());
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
