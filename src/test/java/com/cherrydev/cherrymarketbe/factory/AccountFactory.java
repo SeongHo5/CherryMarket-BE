@@ -35,13 +35,16 @@ public class AccountFactory {
                 .contact(("010-1234-5678"))
                 .gender(("MALE"))
                 .birthdate("1990-01-01")
+                .serviceAgreement(Boolean.TRUE)
+                .privacyAgreement(Boolean.TRUE)
+                .marketingAgreement(Boolean.TRUE)
                 .build();
     }
 
     public static SignUpRequestDto createSignUpRequestDtoC() {
         return SignUpRequestDto.builder()
                 .name("김영희")
-                .email("test151@marketcherry.com")
+                .email("test1818@marketcherry.com")
                 .password("Testuser12#")
                 .contact(("010-1234-5678"))
                 .gender("FEMALE")
