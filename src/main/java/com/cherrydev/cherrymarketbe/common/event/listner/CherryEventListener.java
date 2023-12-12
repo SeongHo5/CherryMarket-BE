@@ -1,5 +1,7 @@
 package com.cherrydev.cherrymarketbe.common.event.listner;
 
+import com.cherrydev.cherrymarketbe.admin.dto.GrantCouponByAdminDto;
+import com.cherrydev.cherrymarketbe.admin.service.CouponService;
 import com.cherrydev.cherrymarketbe.common.event.AccountRegistrationEvent;
 import com.cherrydev.cherrymarketbe.common.event.PasswordResetEvent;
 import com.cherrydev.cherrymarketbe.common.service.EmailService;
@@ -19,17 +21,26 @@ import static java.time.OffsetDateTime.now;
 public class CherryEventListener {
 
     private final RewardService rewardService;
+    private final CouponService couponService;
     private final EmailService emailService;
 
     @EventListener
     public void onAccountRegistration(AccountRegistrationEvent event) {
-        log.info("Reward granted to {}", event.getAccount().getEmail());
+
         rewardService.grantReward(
                 AddRewardRequestDto.builder()
                         .email(event.getAccount().getEmail())
                         .rewardGrantType(event.getRewardGrantType())
                         .amounts(event.getAmounts())
                         .earnedAt(now().toLocalDate().toString())
+                        .expiredAt(now().plusYears(1).toLocalDate().toString())
+                        .build()
+        );
+
+        couponService.grantCoupon(
+                GrantCouponByAdminDto.builder()
+                        .email(event.getAccount().getEmail())
+                        .couponCode(event.getCouponCode())
                         .expiredAt(now().plusYears(1).toLocalDate().toString())
                         .build()
         );

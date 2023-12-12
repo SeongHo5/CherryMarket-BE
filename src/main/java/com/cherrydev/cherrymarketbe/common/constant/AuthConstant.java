@@ -5,8 +5,6 @@ public final class AuthConstant {
     // JWT Constants
     public static final String BLACK_LIST_KEY_PREFIX = "JWT::BLACK_LIST::";
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
-    private static final String KAKAO_ADMIN_PREFIX = "KakaoAK";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
     public static final long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 30; // 30분
@@ -23,8 +21,10 @@ public final class AuthConstant {
     public static final String GRANT_TYPE_AUTHORIZATION = "authorization_code";
 
     // OAuth Constants - NAVER
-
+    public static final String OAUTH_NAVER_PREFIX = "OAUTH::NAVER::";
+    public static final String OAUTH_NAVER_REFRESH_PREFIX = "OAUTH::NAVER::REFRESH::";
     public static final String NAVER_AUTH_URL = "https://nid.naver.com/oauth2.0/token";
+    public static final String NAVER_USER_INFO_URL = "https://openapi.naver.com/v1/nid/me";
 
 
 

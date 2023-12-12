@@ -35,7 +35,9 @@ public interface AccountMapper {
 
     Optional<Account> findByEmail(String email);
 
-    boolean existByEmailAndRegistType(String email, RegisterType registType);
+    RegisterType getRegisterTypeByEmail(String email);
+
+    boolean existByEmailAndRegisterType(String email, RegisterType registType);
 
     boolean existByEmail(String email);
 

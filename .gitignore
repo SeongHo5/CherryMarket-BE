@@ -1,4 +1,5 @@
 HELP.md
+/src/**/resources/static/**
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -39,6 +40,10 @@ out/
 
 ### Property ###
 /src/**/*.properties
+*.key
+*.p12
+*.pem
+*.jks
 
 ### Log ###
 /logs/

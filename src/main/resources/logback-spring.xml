@@ -22,6 +22,7 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{10} - %msg%n</pattern>
         </encoder>
     </appender>
+
     <!--  INFO LEVEL까지만 로그 기록  -->
     <root level="INFO">
         <appender-ref ref="FILE" />
