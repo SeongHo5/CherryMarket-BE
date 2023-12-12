@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
@@ -34,6 +36,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional
     public void createInquiry(final InquiryRequestDto inquiryRequestDto) {
+        CheckValidationForInsert(inquiryRequestDto);
         inquiryMapper.save(inquiryRequestDto.toEntity());
     }
 
@@ -101,7 +104,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<InquiryInfoDto> modifyInquiryById(final ModifyInquiryRequestDto modifyDto) {
-
+        CheckValidationForModify(modifyDto);
         Inquiry inquiry = inquiryMapper.findByInquiryId(modifyDto.getInquiryId());
 
         inquiry.updateStatus(DELETED);
@@ -131,7 +134,7 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<InquiryInfoDto> modifyInquiryByCode(final ModifyInquiryRequestDto modifyDto) {
-
+        CheckValidationForModify(modifyDto);
         Inquiry inquiry = inquiryMapper.findByInquiryCode(modifyDto.getCode());
 
 
@@ -196,6 +199,36 @@ public class InquiryServiceImpl implements InquiryService {
     private String CheckForForbiddenWordsTest(String content) {
         System.out.println("CheckForForbiddenWords start");
         return BadWordFilter.filterAndReplace(content);
+    }
+
+    private void CheckValidationForInsert(InquiryRequestDto inquiryRequestDto) {
+        if (inquiryRequestDto.getContent() == null || inquiryRequestDto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (inquiryRequestDto.getSubject() == null || inquiryRequestDto.getSubject().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+        }
+        if (inquiryRequestDto.getType() == null || inquiryRequestDto.getType().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+        }
+        if (inquiryRequestDto.getDetailType() == null || inquiryRequestDto.getDetailType().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
+        }
+    }
+
+    private void CheckValidationForModify(ModifyInquiryRequestDto modifydto) {
+        if (modifydto.getContent() == null || modifydto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (modifydto.getSubject() == null || modifydto.getSubject().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+        }
+        if (modifydto.getType() == null || modifydto.getType().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+        }
+        if (modifydto.getDetailType() == null || modifydto.getDetailType().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
+        }
     }
 }
 

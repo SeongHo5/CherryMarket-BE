@@ -83,4 +83,10 @@
                            WHERE ACNT_EMAIL = #{email})
     </select>
 
+    <select id="existAnswer" resultType="java.lang.Boolean">
+        select count(*)
+        from INQRY_ANSWER
+        order by INQRY_ANSWER_ID = #{answerId}
+    </select>
+
 </mapper>

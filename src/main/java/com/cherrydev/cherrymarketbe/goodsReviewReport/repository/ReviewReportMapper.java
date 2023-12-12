@@ -30,6 +30,5 @@ public interface ReviewReportMapper {
     //중복신고 검사
     boolean checkDupulicateReport(ReviewReport reviewReport);
 
-
-
+    ReviewReportInfoDto findAnswer(Long reportId);
 }

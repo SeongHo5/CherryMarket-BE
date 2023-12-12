@@ -3,6 +3,7 @@ package com.cherrydev.cherrymarketbe.goodsReviewReport.service;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
+import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportModifyDto;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REPORT;
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 
@@ -35,14 +36,15 @@ public class ReviewReportServiceImpl implements ReviewReportService {
     @Override
     @Transactional
     public void save(ReviewReportRequestDto reviewReportRequestDto) {
-        CheckDupulicateReport(reviewReportRequestDto.toEntity());
+        CheckValidationForInsert(reviewReportRequestDto);
         reviewReportMapper.save(reviewReportRequestDto.toEntity());
     }
 
     @Override
     @Transactional
     public ResponseEntity<ReviewReportInfoDto> update(ReviewReportModifyDto modifyDto) {
-
+        CheckValidationForModify(modifyDto);
+        CheckDupulicateAnswer(modifyDto);
         ReviewReport addAnswer = ReviewReport.builder()
                 .reportId(modifyDto.getReportId())
                 .answerContent(modifyDto.getAnswerContent())
@@ -98,9 +100,31 @@ public class ReviewReportServiceImpl implements ReviewReportService {
         }
     }
 
+    private void CheckDupulicateAnswer(ReviewReportModifyDto reviewReportModifyDto) {
+        if (reviewReportMapper.findAnswer(reviewReportModifyDto.getReportId()) != null ||  reviewReportModifyDto.getAnswerContent().equals("")){
+            throw new DuplicatedException(ALREADY_EXIST_ANSWER);
+        }
+    }
+
     private String CheckForForbiddenWordsTest(String content) {
         System.out.println("CheckForForbiddenWords start");
         return BadWordFilter.filterAndReplace(content);
     }
 
+    private void CheckValidationForInsert(ReviewReportRequestDto reviewReportRequestDto) {
+        if (reviewReportRequestDto.getContent() == null || reviewReportRequestDto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (reviewReportRequestDto.getReportType() == null || reviewReportRequestDto.getReportType().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+        }
+        CheckDupulicateReport(reviewReportRequestDto.toEntity());
+
+    }
+
+    private void CheckValidationForModify(ReviewReportModifyDto modifydto) {
+        if (modifydto.getAnswerContent() == null || modifydto.getAnswerContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.notice.service;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
@@ -31,6 +33,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public void createNotice(final NoticeRequestDto noticeRequestDto) {
+        CheckValidationForInsert(noticeRequestDto);
         noticeMapper.save(noticeRequestDto.toEntity());
     }
 
@@ -53,13 +56,11 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<MyPage<NoticeInfoDto>> getAllNotice(final Pageable pageable) {
-        MyPage<NoticeInfoDto> infoPage =  createPage(pageable, noticeMapper::findAll);
+        MyPage<NoticeInfoDto> infoPage = createPage(pageable, noticeMapper::findAll);
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
                 .body(infoPage);
     }
-
-
 
 
     @Override
@@ -78,6 +79,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<NoticeInfoDto> modifyById(final ModifyNoticeInfoRequestDto modifyDto) {
 
+        CheckValidationForModify(modifyDto);
         Notice notice = noticeMapper.findByNoticeId(modifyDto.getNoticeId());
 
         notice.updateStatus(DELETED);
@@ -94,6 +96,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .deleteDate(null)
                 .build();
 
+
         noticeMapper.update(newNotice);
         NoticeInfoDto resultDto = new NoticeInfoDto(noticeMapper.findByNoticeId(newNotice.getNoticeId()));
 
@@ -106,6 +109,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<NoticeInfoDto> modifyByCode(final ModifyNoticeInfoRequestDto modifyDto) {
 
+        CheckValidationForModify(modifyDto);
         Notice notice = noticeMapper.findByNoticeCode(modifyDto.getCode());
 
         notice.updateStatus(DELETED);
@@ -128,6 +132,41 @@ public class NoticeServiceImpl implements NoticeService {
         return ResponseEntity
                 .ok()
                 .body(resultDto);
+    }
+
+
+    // =============== PRIVATE METHODS =============== //
+
+    private void CheckValidationForModify(ModifyNoticeInfoRequestDto modifydto) {
+        if (modifydto.getContent() == null || modifydto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (modifydto.getSubject() == null || modifydto.getSubject().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+        }
+        if (modifydto.getHideDate() == null || modifydto.getDisplayDate() == null
+                || modifydto.getHideDate().equals("") || modifydto.getDisplayDate().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DATE);
+        }
+        if (modifydto.getCategory() == null || modifydto.getCategory().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+        }
+    }
+
+    private void CheckValidationForInsert(NoticeRequestDto noticeRequestDto) {
+        if (noticeRequestDto.getContent() == null || noticeRequestDto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (noticeRequestDto.getSubject() == null || noticeRequestDto.getSubject().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+        }
+        if (noticeRequestDto.getHideDate() == null || noticeRequestDto.getDisplayDate() == null
+                || noticeRequestDto.getHideDate().equals("") || noticeRequestDto.getDisplayDate().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DATE);
+        }
+        if (noticeRequestDto.getCategory() == null || noticeRequestDto.getCategory().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+        }
     }
 
 }

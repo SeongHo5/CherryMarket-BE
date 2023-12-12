@@ -26,7 +26,6 @@ public class GoodsReviewRequestDto {
                 .isBest(GoodsReviewBest.NORMAL)
                 .subject(this.getSubject())
                 .content(this.getContent())
-//                .content(CheckForForbiddenWords(this.getContent()))
                 .status(DisplayStatus.ACTIVE)
                 .build();
     }

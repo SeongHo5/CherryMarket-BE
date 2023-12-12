@@ -22,4 +22,6 @@ public interface InquiryAnswerMapper {
 
     void updateStatusAccepting(Long answerId);
 
+    boolean existAnswer(Long inquiryId);
+
 }

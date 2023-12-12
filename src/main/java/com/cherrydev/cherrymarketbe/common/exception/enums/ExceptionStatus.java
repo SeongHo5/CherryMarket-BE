@@ -17,6 +17,10 @@ public enum ExceptionStatus {
     NOT_SOCIAL_ACCOUNT(400, "소셜 가입 계정이 아닙니다."),
     NOT_ALLOWED_CATEGORY_NAME(400, "카테고리 이름은 한글만 가능합니다."),
     NOT_ALLOWED_EMPTY_CONTENT(400, "내용을 입력해주세요."),
+    NOT_ALLOWED_EMPTY_SUBJECT(400, "제목을 입력해주세요."),
+    NOT_ALLOWED_EMPTY_CATEGORY(400, "카테고리를 입력해주세요."),
+    NOT_ALLOWED_EMPTY_DETAIL_CATEGORY(400, "상세카테고리를 입력해주세요."),
+    NOT_ALLOWED_EMPTY_DATE(400, "날짜를 입력해주세요."),
     ADDRESS_COUNT_EXCEEDED(400, "주소는 최대 3개까지 등록할 수 있습니다."),
     DEFAULT_ADDRESS_ALREADY_EXISTS(400, "이미 등록된 기본 주소가 있습니다."),
 
@@ -65,6 +69,7 @@ public enum ExceptionStatus {
     DELETED_ACCOUNT(409, "이미 탈퇴한 계정입니다."),
     ALREADY_EXIST_COUPON(409, "이미 등록된 쿠폰입니다."),
     ALREADY_EXIST_REVIEW(409, "이미 등록된 리뷰입니다."),
+    ALREADY_EXIST_ANSWER(409, "이미 등록된 답변입니다."),
     ALREADY_EXIST_REPORT(409, "이미 등록된 신고입니다."),
 
     // 413 - Payload Too Large

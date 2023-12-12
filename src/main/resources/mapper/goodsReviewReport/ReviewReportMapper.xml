@@ -65,6 +65,13 @@
         WHERE GOODS_REVW_STTEMNT_STTUS = 'NOT_EXIST'
     </select>
 
+    <select id="findAnswer" resultMap="ReviewReportInfoMapper">
+        select GOODS_REVW_STTEMNT_ANSWER
+        from GOODS_REVW_STTEMNT
+        WHERE GOODS_REVW_STTEMNT_STTUS != 'NOT_EXIST' AND GOODS_REVW_STTEMNT_ID = #{reportId}
+    </select>
+
+
 
     <!-- ==================== UPDATE ==================== -->
     <update id="update" parameterType="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">

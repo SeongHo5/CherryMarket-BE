@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.inquiryAnswer.service;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnswerInfoDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
 import com.cherrydev.cherrymarketbe.inquiryAnswer.entity.InquiryAnswer;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_ANSWER;
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 
@@ -25,6 +28,7 @@ public class InquiryAnswerServiceImpl implements InquiryAnswerService {
     @Override
     @Transactional
     public void createInquiryAnswer(final InquiryAnwerRequestDto inquiryAnwerRequestDto) {
+        CheckValidationForInsert(inquiryAnwerRequestDto);
         inquiryAnswerMapper.save(inquiryAnwerRequestDto.toEntity());
     }
 
@@ -81,4 +85,18 @@ public class InquiryAnswerServiceImpl implements InquiryAnswerService {
     }
 
 
+    // =============== PRIVATE METHODS =============== //
+
+    private void CheckValidationForInsert(InquiryAnwerRequestDto inquiryAnwerRequestDto) {
+        if (inquiryAnwerRequestDto.getContent() == null || inquiryAnwerRequestDto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        isDuplicate(inquiryAnwerRequestDto.getInquiryId());
+    }
+
+    private void isDuplicate(Long inquiryId){
+        if (inquiryAnswerMapper.existAnswer(inquiryId)){
+            throw new ServiceFailedException(ALREADY_EXIST_ANSWER);
+        }
+    }
 }

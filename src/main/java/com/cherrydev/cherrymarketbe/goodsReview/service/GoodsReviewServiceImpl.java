@@ -20,8 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REVIEW;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.REVIEW_NOT_ALLOWED_BEFORE_DELIVERY;
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.PAGE_HEADER;
 import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
@@ -37,14 +36,14 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     @Override
     @Transactional
     public void save(final GoodsReviewRequestDto goodsReviewRequestDto) {
-        CheckExistReview(goodsReviewRequestDto.toEntity());
-        CheckDelieveryStatus(goodsReviewRequestDto.toEntity());
+        CheckValidationForInsert(goodsReviewRequestDto);
         goodsReviewMapper.save(goodsReviewRequestDto.toEntity());
     }
 
     @Override
     @Transactional
     public ResponseEntity<GoodsReviewInfoDto> update(GoodsReviewModifyDto modifyDto) {
+        CheckValidationForModify(modifyDto);
         GoodsReview goodsReview = goodsReviewMapper.findReivew(modifyDto.getOrdersId(), modifyDto.getGoodsId());
 
         goodsReview.updateStatus(DELETED);
@@ -153,4 +152,26 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
         System.out.println("CheckForForbiddenWords start");
         return BadWordFilter.filterAndReplace(content);
     }
+
+    private void CheckValidationForInsert(GoodsReviewRequestDto goodsReviewRequestDto) {
+        if (goodsReviewRequestDto.getContent() == null || goodsReviewRequestDto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (goodsReviewRequestDto.getSubject() == null || goodsReviewRequestDto.getSubject().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+        }
+        CheckExistReview(goodsReviewRequestDto.toEntity());
+        CheckDelieveryStatus(goodsReviewRequestDto.toEntity());
+
+    }
+
+    private void CheckValidationForModify(GoodsReviewModifyDto modifydto) {
+        if (modifydto.getContent() == null || modifydto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (modifydto.getSubject() == null || modifydto.getSubject().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+        }
+    }
+
 }
