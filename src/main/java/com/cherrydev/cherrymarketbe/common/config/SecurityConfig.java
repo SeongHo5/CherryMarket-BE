@@ -51,7 +51,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/static/**").hasAuthority("ROLE_ADMIN")
-                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
@@ -70,9 +69,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOriginPattern(ALLOWED_ORIGINS);
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod(ALLOWED_METHODS);
+        corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
