@@ -24,4 +24,5 @@ public class OAuthTokenResponseDto {
     @Nullable
     @JsonProperty("refresh_token_expires_in")
     Long refreshTokenExpiresIn = 0L;
+
 }

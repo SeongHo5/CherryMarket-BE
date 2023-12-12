@@ -20,6 +20,12 @@
                 #{accountId})
     </insert>
 
+    <select id="findAllByAccountId" parameterType="java.lang.Long" resultMap="customerCouponMap">
+        SELECT *
+        FROM CSTMR_COUPON
+        WHERE ACNT_ID = #{accountId}
+    </select>
+
     <select id="existByCouponIdAndAccountId" resultType="java.lang.Boolean">
         SELECT COUNT(*) > 0
         FROM CSTMR_COUPON

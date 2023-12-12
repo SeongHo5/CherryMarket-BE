@@ -2,7 +2,7 @@ package com.cherrydev.cherrymarketbe.admin.service;
 
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
-import com.cherrydev.cherrymarketbe.admin.dto.AdminCouponInfoDto;
+import com.cherrydev.cherrymarketbe.admin.dto.CouponInfoDto;
 import com.cherrydev.cherrymarketbe.admin.dto.GrantCouponByAdminDto;
 import com.cherrydev.cherrymarketbe.admin.dto.IssueCouponDto;
 import com.cherrydev.cherrymarketbe.admin.entity.Coupon;
@@ -56,10 +56,10 @@ public class CouponService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<MyPage<AdminCouponInfoDto>> getAllCoupons(
+    public ResponseEntity<MyPage<CouponInfoDto>> getAllCoupons(
             final Pageable pageable
     ) {
-        MyPage<AdminCouponInfoDto> infoPage = createPage(pageable, couponMapper::findAll);
+        MyPage<CouponInfoDto> infoPage = createPage(pageable, couponMapper::findAll);
 
         return ResponseEntity.ok()
                 .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))

@@ -86,7 +86,7 @@ public class AdminController {
      * @return 쿠폰 목록
      */
     @GetMapping("/coupon-list")
-    public ResponseEntity<MyPage<AdminCouponInfoDto>> searchCoupons(
+    public ResponseEntity<MyPage<CouponInfoDto>> searchCoupons(
             final Pageable pageable
     ) {
         return couponService.getAllCoupons(pageable);

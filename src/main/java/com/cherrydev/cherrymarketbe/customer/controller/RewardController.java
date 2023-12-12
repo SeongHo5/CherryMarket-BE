@@ -17,6 +17,11 @@ public class RewardController {
 
     private final RewardService rewardService;
 
+    /**
+     * 내 리워드 정보 조회
+     * @param accountDetails 로그인한 회원 정보
+     * @return 리워드 내역 및 요약 정보
+     */
     @GetMapping("/summary")
     public ResponseEntity<RewardInfoDto> getRewardInfo(
             final @AuthenticationPrincipal AccountDetails accountDetails

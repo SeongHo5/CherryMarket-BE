@@ -51,6 +51,7 @@ public enum ExceptionStatus {
     NOT_FOUND_MAKER(404, "등록되지 않은 제조사 입니다."),
     NOT_FOUND_COUPON(404, "등록되지 않은 쿠폰 입니다."),
     NOT_FOUND_FILE(404, "파일이 존재하지 않습니다."),
+    NOT_FOUND_REDIS_KEY(404, "존재하지 않는 REDIS KEY 입니다."),
 
     // 405 - Method Not Allowed
     METHOD_NOT_ALLOWED(405, "허용되지 않는 HTTP 메서드입니다."),

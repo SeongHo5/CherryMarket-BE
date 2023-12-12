@@ -12,7 +12,7 @@ public class ModifyAddressRequestDto {
 
     String name;
 
-    @Pattern(regexp = "^[0-9]{5}$", message = "우편번호는 5자리 숫자입니다.")
+    @Pattern(regexp = "^\\d{5}$", message = "우편번호는 5자리 숫자입니다.")
     String zipcode;
 
     String address;
