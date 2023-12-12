@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.RewardMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.CustomerRewardMapper">
     <resultMap id="rewardMap" type="com.cherrydev.cherrymarketbe.customer.entity.CustomerReward">
         <result property="rewardId" column="CSTMR_REWARD_ID"/>
         <result property="accountId" column="ACNT_ID"/>

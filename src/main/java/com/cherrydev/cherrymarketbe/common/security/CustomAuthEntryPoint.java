@@ -10,6 +10,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import java.io.IOException;
+
+import static com.cherrydev.cherrymarketbe.common.log.CherryLogger.logUnAuthorizedRequest;
+
 @Slf4j
 public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
 
@@ -19,7 +22,7 @@ public class CustomAuthEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException, ServletException {
-        log.error("인증이 필요한 서비스입니다.");
+        logUnAuthorizedRequest(request);
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -13,7 +13,6 @@ public enum ExceptionStatus {
     INVALID_OAUTH_TYPE(400, "소셜 로그인 제공자가 일치하지 않습니다."),
     INVALID_USER_ROLE(400, "존재하지 않는 권한입니다."),
     BLACKLISTED_IP(400, "차단된 IP입니다."),
-    INVALID_USER_STATUS(400, "존재하지 않는 상태입니다."),
     NO_FILE_TO_UPLOAD(400, "업로드할 파일이 없습니다."),
     NOT_SOCIAL_ACCOUNT(400, "소셜 가입 계정이 아닙니다."),
     NOT_ALLOWED_CATEGORY_NAME(400, "카테고리 이름은 한글만 가능합니다."),
@@ -45,11 +44,14 @@ public enum ExceptionStatus {
     NOT_FOUND_POST(404, "게시글이 존재하지 않습니다."),
     NOT_FOUND_GOODS(404, "상품이 존재하지 않습니다."),
     NOT_FOUND_GRANT_TYPE(404, "존재하지 않는 포인트 지급 타입입니다."),
+    NOT_FOUND_ADDRESS(404, "배송지 정보를 찾을 수 없습니다."),
     NOT_FOUND_COMMENT(404, "댓글이 존재하지 않습니다."),
     NOT_FOUND_CATEGORY(404, "카테고리가 존재하지 않습니다."),
     NOT_FOUND_DISCOUNT(404, "등록되지 않은 할인 코드 입니다."),
     NOT_FOUND_MAKER(404, "등록되지 않은 제조사 입니다."),
+    NOT_FOUND_COUPON(404, "등록되지 않은 쿠폰 입니다."),
     NOT_FOUND_FILE(404, "파일이 존재하지 않습니다."),
+    NOT_FOUND_REDIS_KEY(404, "존재하지 않는 REDIS KEY 입니다."),
 
     // 405 - Method Not Allowed
     METHOD_NOT_ALLOWED(405, "허용되지 않는 HTTP 메서드입니다."),
@@ -59,6 +61,7 @@ public enum ExceptionStatus {
     DUPLICATED_CATEGORY(409, "이미 등록된 카테고리 입니다."),
     LOCAL_ACCOUNT_ALREADY_EXIST(409, "이미 등록된 계정입니다."),
     DELETED_ACCOUNT(409, "이미 탈퇴한 계정입니다."),
+    ALREADY_EXIST_COUPON(409, "이미 등록된 쿠폰입니다."),
 
     // 413 - Payload Too Large
     TOO_MANY_FILES(413, "파일은 최대 3개만 업로드 할 수 있습니다."),

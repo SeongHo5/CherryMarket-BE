@@ -3,6 +3,8 @@ package com.cherrydev.cherrymarketbe.common.log;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
+
 @Slf4j
 public final class CherryLogger {
 
@@ -11,10 +13,34 @@ public final class CherryLogger {
     }
 
     public static void logRequestInfo(HttpServletRequest request) {
-        log.info("[REQUEST] {} {} / FROM {}",
+                log.info("[REQUEST] {} {} / FROM {}",
                 request.getMethod(),
                 request.getRequestURI(),
                 request.getRemoteAddr()
+        );
+    }
+
+    public static void logUnAuthorizedRequest(HttpServletRequest request) {
+        StringBuilder parameters = new StringBuilder();
+        request.getParameterMap().forEach((key, value)
+                -> parameters.append(key).append("=").append(Arrays.toString(value)).append(", "));
+        log.warn("[UNAUTHORIZED REQUEST] {} {} / FROM {} / PARAMS: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                parameters
+        );
+    }
+
+    public static void logForbiddenRequest(HttpServletRequest request) {
+        StringBuilder parameters = new StringBuilder();
+        request.getParameterMap().forEach((key, value)
+                -> parameters.append(key).append("=").append(Arrays.toString(value)).append(", "));
+        log.warn("[FORBIDDEN REQUEST] {} {} / FROM {} / PARAMS: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                request.getRemoteAddr(),
+                parameters
         );
     }
 

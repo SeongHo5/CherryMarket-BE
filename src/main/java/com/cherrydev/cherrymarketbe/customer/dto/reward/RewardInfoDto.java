@@ -1,9 +1,7 @@
 package com.cherrydev.cherrymarketbe.customer.dto.reward;
 
-import com.cherrydev.cherrymarketbe.customer.enums.RewardGrantType;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.util.List;

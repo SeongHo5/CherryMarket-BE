@@ -4,6 +4,7 @@ import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.customer.entity.CustomerReward;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Value;
@@ -14,7 +15,6 @@ import java.time.LocalDate;
 @Builder
 public class AddRewardRequestDto {
 
-    @JsonProperty("to")
     @Email(message = "이메일 형식이 맞지 않습니다.")
     String email;
 
@@ -27,6 +27,7 @@ public class AddRewardRequestDto {
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "날짜 형식이 맞지 않습니다.")
     String earnedAt;
 
+    @Future
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "날짜 형식이 맞지 않습니다.")
     String expiredAt;
 
