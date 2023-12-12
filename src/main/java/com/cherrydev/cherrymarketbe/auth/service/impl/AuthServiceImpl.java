@@ -7,7 +7,6 @@ import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInResponseDto;
 import com.cherrydev.cherrymarketbe.auth.service.AuthService;
-import com.cherrydev.cherrymarketbe.common.event.AccountRegistrationEvent;
 import com.cherrydev.cherrymarketbe.common.event.PasswordResetEvent;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
@@ -18,6 +17,7 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.*;
 import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.PREFIX_PW_RESET;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRandomPassword;
+import static com.cherrydev.cherrymarketbe.common.utils.CookieUtil.createCookie;
 import static org.springframework.beans.propertyeditors.CustomBooleanEditor.VALUE_TRUE;
 
 @Slf4j
@@ -70,7 +71,8 @@ public class AuthServiceImpl implements AuthService {
 
         return ResponseEntity
                 .ok()
-                .header(AUTHORIZATION_HEADER, BEARER_PREFIX + jwtResponseDto.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, createCookie(AUTHORIZATION_KEY, jwtResponseDto.getRefreshToken()).toString())
+                .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + jwtResponseDto.getAccessToken())
                 .body(
                         SignInResponseDto.builder()
                                 .userName(account.getName())
