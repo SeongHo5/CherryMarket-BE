@@ -2,7 +2,6 @@ package com.cherrydev.cherrymarketbe.goods.repository;
 
 import com.cherrydev.cherrymarketbe.goods.dto.*;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

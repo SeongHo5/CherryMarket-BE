@@ -1,20 +1,26 @@
 package com.cherrydev.cherrymarketbe.goods.service;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.service.FileService;
+import com.cherrydev.cherrymarketbe.common.utils.PagingUtil;
 import com.cherrydev.cherrymarketbe.goods.dto.*;
 import com.cherrydev.cherrymarketbe.goods.exception.DiscontinuedGoodsException;
 import com.cherrydev.cherrymarketbe.goods.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.goods.exception.OnSaleGoodsException;
 import com.cherrydev.cherrymarketbe.goods.repository.GoodsMapper;
+import com.github.pagehelper.page.PageMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.cherrydev.cherrymarketbe.goods.exception.enums.GoodsExceptionStatus.*;
+import static com.cherrydev.cherrymarketbe.common.utils.PagingUtil.createPage;
 
 @Service
 @Slf4j
@@ -23,22 +29,33 @@ import static com.cherrydev.cherrymarketbe.goods.exception.enums.GoodsExceptionS
 public class GoodsService {
 
     private final GoodsMapper goodsMapper;
+    private final FileService fileService;
 
     /* Insert */
     @Transactional
-    public void save(GoodsDto goodsDto) {
+    public void save(GoodsDto goodsDto, List<MultipartFile> images) {
+
+        if(images.size() != 3) {
+            throw new IllegalArgumentException(INVALID_IMAGE_COUNT.getMessage());
+        }
+
+        // 파일 업로드
+        fileService.uploadMultipleFiles(images, "goods");
+
         // 새 상품이 입력 되었을 떄 동일한 Code를 갖고 있다면 기존 상품의 판매 상태를 변경
         goodsMapper.updateStatusWhenNewGoods(goodsDto.getGoodsCode(), "DISCONTINUANCE");
         goodsMapper.save(goodsDto);
     }
 
     /* Select */
-    @Transactional
-    public List<GoodsDto> findAll(String sortBy) {
-        return goodsMapper.findAll(sortBy);
+    public MyPage<GoodsDto> findAll(final Pageable pageable, String sortBy) {
+        return PagingUtil.createPage(pageable, () -> {
+            PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
+            return goodsMapper.findAll(sortBy);
+        });
     }
 
-    @Transactional
+
     public DiscountCalcDto findBasicInfo(Long goodsId) {
         GoodsBasicInfoDto basicInfo = goodsMapper.findBasicInfo(goodsId);
 
@@ -60,30 +77,23 @@ public class GoodsService {
                        .build();
     }
 
-    @Transactional
-    public List<DiscountCalcDto> findByCategoryId(Long categoryId, String sortBy) {
-        List<GoodsBasicInfoDto> basicInfoList = goodsMapper.findByCategoryId(categoryId, sortBy);
+    public MyPage<DiscountCalcDto> findByCategoryId(final Pageable pageable, Long categoryId, String sortBy) {
 
-        if(basicInfoList.isEmpty()) {
+        MyPage<DiscountCalcDto> pageResult = createPage(pageable, () -> {
+            PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
+
+            return goodsMapper.findByCategoryId(categoryId, sortBy).stream()
+                           .map(this::convertToDiscountCalcDto)
+                           .collect(Collectors.toList());
+        });
+
+        if(pageResult.getContent().isEmpty()) {
             throw new NotFoundException(GOODS_NOT_FOUND);
         }
 
-        return basicInfoList.stream()
-                       .map(basicInfo -> {
-                           Integer discountedPrice = discountedPrice = (basicInfo.getDiscountRate() != null) ? basicInfo.getPrice() - (basicInfo.getPrice() * basicInfo.getDiscountRate() / 100) : null;
-                           return DiscountCalcDto.builder()
-                                          .goodsId(basicInfo.getGoodsId())
-                                          .goodsName(basicInfo.getGoodsName())
-                                          .description(basicInfo.getDescription())
-                                          .price(basicInfo.getPrice())
-                                          .discountRate(basicInfo.getDiscountRate())
-                                          .discountedPrice(discountedPrice)
-                                          .build();
-                       })
-                       .collect(Collectors.toList());
+        return pageResult;
     }
 
-    @Transactional
     public ToCartResponseDto findToCart(Long goodsId) {
 
         ToCartDto toCartDto = goodsMapper.findToCart(goodsId);
@@ -101,7 +111,6 @@ public class GoodsService {
                        .build();
     }
 
-    @Transactional
     public GoodsDetailResponseDto findDetailById(Long goodsId) {
         GoodsDetailDto goodsDetailDto = goodsMapper.findDetailById(goodsId);
 
@@ -130,7 +139,6 @@ public class GoodsService {
                        .build();
     }
 
-    @Transactional
     public GoodsDetailResponseDto findDetailByCode(String goodsCode) {
         GoodsDetailDto goodsDetailDto = goodsMapper.findDetailByCode(goodsCode);
 
@@ -159,30 +167,20 @@ public class GoodsService {
                        .build();
     }
 
-    @Transactional
-    public List<DiscountCalcDto> findByName(String goodsName, String sortBy) {
-        List<GoodsBasicInfoDto> basicInfoList = goodsMapper.findByName(goodsName, sortBy);
-        List<DiscountCalcDto> discountCalcDtoList = new ArrayList<>();
+    public MyPage<DiscountCalcDto> findByName(final Pageable pageable, String goodsName, String sortBy) {
+        MyPage<DiscountCalcDto> pageResult = PagingUtil.createPage(pageable, () -> {
+            PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
 
-        if(basicInfoList.isEmpty()){
+            return goodsMapper.findByName(goodsName, sortBy).stream()
+                           .map(this::convertToDiscountCalcDto)
+                           .collect(Collectors.toList());
+        });
+
+        if(pageResult.getContent().isEmpty()) {
             throw new NotFoundException(GOODS_NOT_FOUND);
         }
 
-        for(GoodsBasicInfoDto basicInfoDto : basicInfoList) {
-            // 할인된 금액 계산
-            Integer discountedPrice = discountedPrice = (basicInfoDto.getDiscountRate() != null) ? basicInfoDto.getPrice() - (basicInfoDto.getPrice() * basicInfoDto.getDiscountRate() / 100) : null;
-
-            DiscountCalcDto discountCalcDto = DiscountCalcDto.builder()
-                                                      .goodsId(basicInfoDto.getGoodsId())
-                                                      .goodsName(basicInfoDto.getGoodsName())
-                                                      .description(basicInfoDto.getDescription())
-                                                      .price(basicInfoDto.getPrice())
-                                                      .discountRate(basicInfoDto.getDiscountRate())
-                                                      .discountedPrice(discountedPrice)
-                                                      .build();
-            discountCalcDtoList.add(discountCalcDto);
-        }
-        return discountCalcDtoList;
+        return pageResult;
     }
 
     /* Update */
@@ -243,6 +241,20 @@ public class GoodsService {
         }
 
         goodsMapper.deleteById(goodsId);
+    }
+
+    // 페이징 처리를 위한 메소드
+    private DiscountCalcDto convertToDiscountCalcDto(GoodsBasicInfoDto basicInfoDto) {
+        Integer discountedPrice = discountedPrice = (basicInfoDto.getDiscountRate() != null) ? basicInfoDto.getPrice() - (basicInfoDto.getPrice() * basicInfoDto.getDiscountRate() / 100) : null;
+
+        return DiscountCalcDto.builder()
+                       .goodsId(basicInfoDto.getGoodsId())
+                       .goodsName(basicInfoDto.getGoodsName())
+                       .description(basicInfoDto.getDescription())
+                       .price(basicInfoDto.getPrice())
+                       .discountRate(basicInfoDto.getDiscountRate())
+                       .discountedPrice(discountedPrice)
+                       .build();
     }
 
 }

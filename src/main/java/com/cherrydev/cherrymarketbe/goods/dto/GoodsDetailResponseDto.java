@@ -3,10 +3,12 @@ package com.cherrydev.cherrymarketbe.goods.dto;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @Builder
 public class GoodsDetailResponseDto {
-    
+
     Long goodsId;
 
     String goodsCode;
@@ -36,4 +38,6 @@ public class GoodsDetailResponseDto {
     Integer discountedPrice;
 
     String makerName;
+
+    List<String> goodsImageUrls;
 }

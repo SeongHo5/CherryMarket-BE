@@ -28,7 +28,7 @@ public class FileService {
 
     private final AmazonS3Client objectStorageClient;
 
-    private static final String BUCKET_NAME = "myvelog";
+    private static final String BUCKET_NAME = "cherry-resource"; // ※ 수정 완료
     private static final String[] SUPPORTED_IMAGE_FORMAT = {"jpg", "jpeg", "png"};
     private static final int FILE_LIMIT_MAX_COUNT = 3;
     private static final long FILE_LIMIT_MAX_SIZE = 3L * 1024 * 1024; // 3MB

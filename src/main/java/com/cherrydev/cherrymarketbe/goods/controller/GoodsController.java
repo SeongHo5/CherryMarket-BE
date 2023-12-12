@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goods.controller;
 
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.goods.dto.DiscountCalcDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailResponseDto;
@@ -9,8 +10,10 @@ import com.cherrydev.cherrymarketbe.goods.service.GoodsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,14 +28,16 @@ public class GoodsController {
 
     /* Insert */
     @PostMapping("/save")
-    public void save(final @Valid @RequestBody GoodsDto goodsDto) {
-        goodsService.save(goodsDto);
+    public ResponseEntity<String> save(@Valid @ModelAttribute GoodsDto goodsDto,
+                                       @RequestParam List<MultipartFile> images) {
+        goodsService.save(goodsDto, images);
+        return ResponseEntity.ok("상품이 정상적으로 등록되었습니다");
     }
 
     /* Select */
     @GetMapping("/listAll")
-    public ResponseEntity<List<GoodsDto>> getListAll(@RequestParam(required = false) String sortBy) {
-        return ResponseEntity.ok(goodsService.findAll(sortBy));
+    public ResponseEntity<MyPage<GoodsDto>> getListAll(final Pageable pageable, @RequestParam(required = false) String sortBy) {
+        return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
     }
 
     @GetMapping("/basicInfo")
@@ -41,8 +46,8 @@ public class GoodsController {
     }
 
     @GetMapping("/category")
-    public ResponseEntity<List<DiscountCalcDto>> getCategoryGoods(@RequestParam Long categoryId, @RequestParam(required = false) String sortBy) {
-        return ResponseEntity.ok(goodsService.findByCategoryId(categoryId, sortBy));
+    public ResponseEntity<MyPage<DiscountCalcDto>> getCategoryGoods(final Pageable pageable, @RequestParam Long categoryId, @RequestParam(required = false) String sortBy) {
+        return ResponseEntity.ok(goodsService.findByCategoryId(pageable, categoryId, sortBy));
     }
 
     @GetMapping("/toCart")
@@ -61,8 +66,8 @@ public class GoodsController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<List<DiscountCalcDto>> getInfoByName(@RequestParam String goodsName, @RequestParam(required = false) String sortBy) {
-        return ResponseEntity.ok(goodsService.findByName(goodsName, sortBy));
+    public ResponseEntity<MyPage<DiscountCalcDto>> getInfoByName(final Pageable pageable, @RequestParam String goodsName, @RequestParam(required = false) String sortBy) {
+        return ResponseEntity.ok(goodsService.findByName(pageable, goodsName, sortBy));
     }
 
     /* Update */
@@ -84,9 +89,9 @@ public class GoodsController {
 
     /* Delete */
     @DeleteMapping("/delete")
-    public ResponseEntity<List<GoodsDto>> delete(@RequestParam Long goodsId, @RequestParam(required = false) String sortBy) {
+    public ResponseEntity<MyPage<GoodsDto>> delete(@RequestParam Long goodsId, final Pageable pageable, @RequestParam(required = false) String sortBy) {
         goodsService.deleteById(goodsId);
-        return ResponseEntity.ok(goodsService.findAll(sortBy));
+        return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
     }
 
     // /* 파일 이름 생성 메소드 */
