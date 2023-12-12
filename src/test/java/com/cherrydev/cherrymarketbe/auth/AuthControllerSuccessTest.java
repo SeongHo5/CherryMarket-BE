@@ -127,6 +127,7 @@ class AuthControllerSuccessTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userName").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userRole").value("ROLE_CUSTOMER"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.grantType").value("Bearer "))
+                .andExpect(MockMvcResultMatchers.header().exists("Set-Cookie"))
                 .andDo(document("Sign-In-Success",
                         resourceDetails()
                                 .tag("인증 관리")
