@@ -86,7 +86,7 @@
     <select id="existAnswer" resultType="java.lang.Boolean">
         select count(*)
         from INQRY_ANSWER
-        order by INQRY_ANSWER_ID = #{answerId}
+        WHERE INQRY_ID = #{inquiryId}
     </select>
 
 </mapper>

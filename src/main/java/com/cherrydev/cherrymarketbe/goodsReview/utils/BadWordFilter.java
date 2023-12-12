@@ -83,7 +83,6 @@ public class BadWordFilter {
     }
 
     public static String CheckForForbiddenWords(String content) {
-        System.out.println("CheckForForbiddenWords start");
         return BadWordFilter.filterAndReplace(content);
     }
 }

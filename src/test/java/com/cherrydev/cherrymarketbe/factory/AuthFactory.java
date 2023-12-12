@@ -5,6 +5,9 @@ import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 
 public class AuthFactory {
 
+//    public static SignInRequestDto createSignInRequestDtoA() {
+//        return new SignInRequestDto("boram17@example.org", "Password12#");
+//    }
     public static SignInRequestDto createSignInRequestDtoA() {
         return new SignInRequestDto("boram17@example.org", "Password12#");
     }

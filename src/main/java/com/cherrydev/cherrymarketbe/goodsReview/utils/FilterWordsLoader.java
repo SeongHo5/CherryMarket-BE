@@ -16,7 +16,6 @@ public class FilterWordsLoader {
     public static List<String> loadFilterWords() {
         List<String> filterWords = new ArrayList<>();
         try {
-            System.out.println("Start loading filter words...");
             URL fileUrl = new URL(FILTERING_URL);
             HttpURLConnection connection = (HttpURLConnection) fileUrl.openConnection();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
@@ -28,13 +27,10 @@ public class FilterWordsLoader {
 //                    System.out.println("Loaded word: " + trimmedLine);
                 }
             }
-            System.out.println("Filter words loaded successfully.");
             connection.disconnect();
-            System.out.println("Connection closed.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("return");
         return filterWords;
     }
 

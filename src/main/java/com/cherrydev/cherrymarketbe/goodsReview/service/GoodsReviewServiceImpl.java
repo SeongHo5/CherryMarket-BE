@@ -149,7 +149,6 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     }
 
     private String CheckForForbiddenWordsTest(String content) {
-        System.out.println("CheckForForbiddenWords start");
         return BadWordFilter.filterAndReplace(content);
     }
 
