@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 
 @Configuration
@@ -30,6 +31,9 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
+
+    public static final String ALLOWED_ORIGINS = "https://marketcherry.store";
+    public static final String ALLOWED_METHODS = "GET, POST, DELETE, PATCH";
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -45,7 +49,9 @@ public class SecurityConfig {
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/static/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
@@ -64,9 +70,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.addAllowedOriginPattern(ALLOWED_ORIGINS);
         corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedMethod(ALLOWED_METHODS);
         corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
