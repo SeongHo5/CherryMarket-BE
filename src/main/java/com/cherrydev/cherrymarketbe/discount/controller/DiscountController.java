@@ -40,7 +40,7 @@ public class DiscountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(discountDto);
     }
 
-    @PostMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<List<DiscountDto>> updateDiscount(final @Valid @RequestBody DiscountDto discountDto) {
         discountService.updateById(discountDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(discountService.findAll());

@@ -51,7 +51,7 @@ public class MakerController {
         return ResponseEntity.ok(makerService.findAll(sortBy));
     }
 
-    @PostMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<List<MakerDto>> update(final @Valid @RequestBody MakerDto makerDto, @RequestParam(required = false) String sortBy) {
         makerService.updateById(makerDto);
         return ResponseEntity.ok(makerService.findAll(sortBy));
