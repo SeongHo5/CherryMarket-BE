@@ -24,4 +24,5 @@ public class AuthFactory {
     public static SignInRequestDto createSignInRequestDtoE() {
         return new SignInRequestDto("test2@marketcherry.com", "Password12#");
     }
+
 }

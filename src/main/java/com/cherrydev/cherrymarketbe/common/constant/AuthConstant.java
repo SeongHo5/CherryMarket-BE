@@ -5,8 +5,6 @@ public final class AuthConstant {
     // JWT Constants
     public static final String BLACK_LIST_KEY_PREFIX = "JWT::BLACK_LIST::";
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
-    private static final String KAKAO_ADMIN_PREFIX = "KakaoAK";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
     public static final long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 30; // 30분

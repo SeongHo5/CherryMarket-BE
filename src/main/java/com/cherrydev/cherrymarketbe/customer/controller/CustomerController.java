@@ -1,12 +1,16 @@
 package com.cherrydev.cherrymarketbe.customer.controller;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
+import com.cherrydev.cherrymarketbe.admin.dto.CouponInfoDto;
 import com.cherrydev.cherrymarketbe.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +32,16 @@ public class CustomerController {
             final @RequestParam("couponCode") String couponCode
     ) {
         customerService.registerCoupon(accountDetails, couponCode);
+    }
+
+    /**
+     * 내 쿠폰 목록 조회
+     */
+    @GetMapping("/coupon/list")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<CouponInfoDto>> getCouponList(
+            final @AuthenticationPrincipal AccountDetails accountDetails
+    ) {
+        return customerService.getCouponList(accountDetails);
     }
 }

@@ -12,7 +12,7 @@
         <result property="createdAt" column="CREAT_DE"/>
         <result property="updatedAt" column="UPDT_DE"/>
     </resultMap>
-    <resultMap id="adminCouponInfoMap" type="com.cherrydev.cherrymarketbe.admin.dto.AdminCouponInfoDto">
+    <resultMap id="couponInfoMap" type="com.cherrydev.cherrymarketbe.admin.dto.CouponInfoDto">
         <result property="code" column="COUPON_CODE"/>
         <result property="type" column="COUPON_TY"/>
         <result property="minimumOrderAmount" column="COUPON_MIN_AMOUNT"/>
@@ -42,7 +42,7 @@
         where COUPON_ID = #{id}
     </delete>
 
-    <select id="findAll" resultMap="adminCouponInfoMap">
+    <select id="findAll" resultMap="couponInfoMap">
         select COUPON_CODE,
                COUPON_TY,
                COUPON_MIN_AMOUNT,
@@ -64,6 +64,14 @@
         select COUPON_ID
         from COUPON
         where COUPON_CODE = #{code}
+    </select>
+
+    <select id="findById" parameterType="java.util.List" resultMap="couponInfoMap">
+        SELECT COUPON_CODE, COUPON_TY, COUPON_MIN_AMOUNT, COUPON_DSCNT_RATE, COUPON_BGNDE, COUPON_ENDDE FROM COUPON
+        WHERE COUPON_ID IN
+        <foreach item="id" collection="couponIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </select>
 
     <select id="existByCode" resultType="java.lang.Boolean">

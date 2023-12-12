@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.admin.repository;
 
-import com.cherrydev.cherrymarketbe.admin.dto.AdminCouponInfoDto;
+import com.cherrydev.cherrymarketbe.admin.dto.CouponInfoDto;
 import com.cherrydev.cherrymarketbe.admin.entity.Coupon;
 import com.cherrydev.cherrymarketbe.admin.enums.CouponType;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,7 +17,10 @@ public interface CouponMapper {
 
     void delete(Coupon coupon);
 
-    List<AdminCouponInfoDto> findAll();
+    List<CouponInfoDto> findAll();
+
+    List<CouponInfoDto> findById(List<Long> couponIds);
+
     List<Coupon> findAllByType(CouponType type);
 
     Optional<Long> findIdByCode(String code);
