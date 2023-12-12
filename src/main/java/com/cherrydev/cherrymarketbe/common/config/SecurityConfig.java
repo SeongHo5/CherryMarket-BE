@@ -32,7 +32,7 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
 
-    public static final String ALLOWED_ORIGINS = "https://marketcherry.store";
+    public static final String ALLOWED_ORIGINS = "marketcherry.store";
     public static final String ALLOWED_METHODS = "GET, POST, DELETE, PATCH";
 
     @Bean
@@ -70,7 +70,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOriginPattern(ALLOWED_ORIGINS);
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod(ALLOWED_METHODS);
         corsConfiguration.setAllowCredentials(true);
