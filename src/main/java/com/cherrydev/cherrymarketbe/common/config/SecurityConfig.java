@@ -49,9 +49,7 @@ public class SecurityConfig {
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/**").permitAll()
-                        .requestMatchers("/static/**").hasAuthority("ROLE_ADMIN")
-                        .anyRequest().denyAll()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
