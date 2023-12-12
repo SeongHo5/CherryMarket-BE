@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReview.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -12,6 +13,7 @@ public class GoodsReviewModifyDto {
     String subject;
     String content;
 
+    @Builder
     public GoodsReviewModifyDto(Long reviewId, Long ordersId, Long goodsId,
                                 String code, String subject,
                                 String content) {
