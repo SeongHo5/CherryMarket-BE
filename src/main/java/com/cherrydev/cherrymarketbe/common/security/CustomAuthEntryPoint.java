@@ -12,7 +12,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import java.io.IOException;
 
 import static com.cherrydev.cherrymarketbe.common.log.CherryLogger.logForbiddenRequest;
-import static com.cherrydev.cherrymarketbe.common.log.CherryLogger.logUnAuthorizedRequest;
 
 @Slf4j
 public class CustomAuthEntryPoint implements AuthenticationEntryPoint {

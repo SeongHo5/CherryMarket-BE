@@ -13,12 +13,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest
 @Testcontainers
-public class RedisServiceTest {
+class RedisServiceTest {
 
     @Container
     private static final RedisContainer container = new RedisContainer(
@@ -62,7 +64,7 @@ public class RedisServiceTest {
     }
 
     @Test
-    void 데이터_저장_만료_시간_설정_성공() throws Exception {
+    void 데이터_저장_만료_시간_설정_성공() {
         // Given
         String key = "testKey";
         String value = "testValue";
@@ -73,7 +75,7 @@ public class RedisServiceTest {
 
         // Then
         assertThat(redisService.getData(key)).isEqualTo(value);
-        Thread.sleep(duration * 1000 + 1);
+        await().atMost(duration + 1, TimeUnit.SECONDS).untilAsserted(() -> assertThat(redisService.getData(key)).isNull());
         assertThat(redisService.getData(key)).isNull();
     }
 

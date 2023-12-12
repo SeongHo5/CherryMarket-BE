@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class FileServiceTest {
+class FileServiceTest {
 
     @Mock
     private AmazonS3Client objectStorageClient;
