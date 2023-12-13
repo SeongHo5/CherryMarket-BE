@@ -2,11 +2,13 @@ package com.cherrydev.cherrymarketbe.goods.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Value;
 
 import java.sql.Date;
 
 @Value
+@Builder
 public class GoodsDto {
 
     Long goodsId;
