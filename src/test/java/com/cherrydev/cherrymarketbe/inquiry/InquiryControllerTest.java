@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
-import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoA;
+import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoF;
 import static com.cherrydev.cherrymarketbe.factory.InquiryFactory.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -89,7 +89,7 @@ class InquiryControllerTest {
     @Transactional
     void 로그인_성공() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoA();
+        SignInRequestDto signInRequestDto = createSignInRequestDtoF();
         String requestBody = Jackson.toJsonString(signInRequestDto);
 
         // When & Then
@@ -117,7 +117,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_등록_성공() throws Exception {
         // Given
         InquiryRequestDto inquiryRequestDto = createInquiryA();
@@ -139,7 +139,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_등록_실패_카테고리_누락() throws Exception {
         // Given
         InquiryRequestDto inquiryRequestDto = createInquiryB();
@@ -164,7 +164,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_등록_실패_세부카테고리_누락() throws Exception {
         // Given
         InquiryRequestDto inquiryRequestDto = createInquiryC();
@@ -189,7 +189,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_등록_실패_제목_누락() throws Exception {
         // Given
         InquiryRequestDto inquiryRequestDto = createInquiryD();
@@ -215,7 +215,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 공지사항_등록_실패_내용_누락() throws Exception {
         // Given
         InquiryRequestDto inquiryRequestDto = createInquiryE();
@@ -240,7 +240,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_조회_아이디_성공() throws Exception {
 
         // When & Then
@@ -263,7 +263,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_조회_코드_성공() throws Exception {
         // Given
 
@@ -287,7 +287,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_전체조회_성공() throws Exception {
         // Given
 
@@ -310,7 +310,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_전체조회_코드_성공() throws Exception {
         // Given
 
@@ -333,7 +333,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_전체조회_회원ID_성공() throws Exception {
         // Given
 
@@ -356,7 +356,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_전체조회_회원Phone_성공() throws Exception {
         // Given
 
@@ -379,10 +379,10 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_삭제_아이디_성공() throws Exception {
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/id?inquiryId=39")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/id?inquiryId=82")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -394,10 +394,10 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_삭제_코드_성공() throws Exception {
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/code?inquiryCode=INQ10")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/code?inquiryCode=INQ11")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -410,7 +410,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_수정_아이디_성공() throws Exception {
         // Given
         ModifyInquiryRequestDto modifyInquiryRequestDto = createModifyInquiryA();
@@ -447,7 +447,7 @@ class InquiryControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "boram17@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_수정_코드_성공() throws Exception {
         // Given
         ModifyInquiryRequestDto modifyInquiryRequestDto = createModifyInquiryB();

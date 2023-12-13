@@ -54,6 +54,24 @@
           and GOODS_REVW_STTUS != 'DELETED'
     </select>
 
+    <select id="getUserId" parameterType="Long" resultType="Boolean">
+        SELECT count(*) > 0
+        FROM ORDER_DETAIL
+        WHERE ORDERS_ID = #{ordersId}
+          AND GOODS_ID = #{goodsId}
+          AND ACNT_ID = #{userId}
+    </select>
+
+
+    <select id="getUserIdByCode" resultType="Boolean">
+        SELECT count(*) > 0
+        FROM INQRY
+        WHERE INQRY_CODE = #{code}
+          AND ACNT_ID = #{userId}
+          AND INQRY_CODE != 'DELETED'
+    </select>
+
+
     <select id="checkDeliveryStatus" resultType="java.lang.Boolean">
         select count(*)
         from DLVY_DETAIL
@@ -107,6 +125,26 @@
         ORDER BY CASE WHEN GR.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GR.GOODS_REVW_ID
     </select>
 
+    <select id="findAllMyList" parameterType="Long" resultMap="GoodsReviewInfoMapper">
+        SELECT *
+        FROM GOODS_REVW
+        WHERE GOODS_REVW.GOODS_REVW_STTUS != 'DELETED'
+          AND GOODS_REVW.ORDERS_ID IN (
+            SELECT ORDERS_ID
+            FROM ORDERS
+            WHERE ACNT_ID = #{userId}
+        )
+          AND GOODS_REVW.GOODS_REVW_ID IN (
+            SELECT GOODS_REVW_ID
+            FROM GOODS_REVW
+            WHERE ORDERS_ID IN (
+                SELECT ORDERS_ID
+                FROM ORDERS
+                WHERE ACNT_ID = #{userId}
+            )
+        )
+        ORDER BY GOODS_REVW_ID
+    </select>
 
     <!--    DELETE   -->
     <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview">

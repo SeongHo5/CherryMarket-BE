@@ -28,4 +28,8 @@ public class AuthFactory {
         return new SignInRequestDto("test2@marketcherry.com", "Password12#");
     }
 
+    public static SignInRequestDto createSignInRequestDtoF() {
+        return new SignInRequestDto("noyeongjin@example.org", "Password12#");
+    }
+
 }

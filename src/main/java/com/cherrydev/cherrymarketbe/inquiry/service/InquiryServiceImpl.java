@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter;
@@ -35,20 +36,22 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     @Transactional
-    public void createInquiry(final InquiryRequestDto inquiryRequestDto) {
+    public void createInquiry(final InquiryRequestDto inquiryRequestDto, final AccountDetails accountDetails) {
         CheckValidationForInsert(inquiryRequestDto);
-        inquiryMapper.save(inquiryRequestDto.toEntity());
+        inquiryMapper.save(inquiryRequestDto.toEntity(accountDetails));
     }
 
     @Override
     @Transactional
-    public void deleteInquiryById(final Long inquiryId) {
+    public void deleteInquiryById(final Long inquiryId, AccountDetails accountDetails) {
+        CheckUserValidation(inquiryId, accountDetails.getAccount().getAccountId());
         inquiryMapper.deleteById(inquiryId);
     }
 
     @Override
     @Transactional
-    public void deleteInquiryByCode(String inquiryCode) {
+    public void deleteInquiryByCode(String inquiryCode, AccountDetails accountDetails) {
+        CheckUserValidation(inquiryCode, accountDetails.getAccount().getAccountId());
         inquiryMapper.deleteByCode(inquiryCode);
     }
 
@@ -101,10 +104,23 @@ public class InquiryServiceImpl implements InquiryService {
         return getListCheckAnswer(infoPage);
     }
 
+
+    @Override
+    @Transactional
+    public ResponseEntity<MyPage<InquiryInfoDto>> findAllMyList(Pageable pageable, Long accountId) {
+
+        List<InquiryInfoDto> getDto = inquiryMapper.findAllMyList(accountId);
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
+
+        return getListCheckAnswer(infoPage);
+    }
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<InquiryInfoDto> modifyInquiryById(final ModifyInquiryRequestDto modifyDto) {
-        CheckValidationForModify(modifyDto);
+    public ResponseEntity<InquiryInfoDto> modifyInquiryById(final ModifyInquiryRequestDto modifyDto, AccountDetails accountDetails) {
+        CheckValidationForModify(modifyDto,accountDetails.getAccount().getAccountId());
         Inquiry inquiry = inquiryMapper.findByInquiryId(modifyDto.getInquiryId());
 
         inquiry.updateStatus(DELETED);
@@ -133,8 +149,8 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseEntity<InquiryInfoDto> modifyInquiryByCode(final ModifyInquiryRequestDto modifyDto) {
-        CheckValidationForModify(modifyDto);
+    public ResponseEntity<InquiryInfoDto> modifyInquiryByCode(final ModifyInquiryRequestDto modifyDto, AccountDetails accountDetails) {
+        CheckValidationForModifyByCode(modifyDto, accountDetails.getAccount().getAccountId());
         Inquiry inquiry = inquiryMapper.findByInquiryCode(modifyDto.getCode());
 
 
@@ -160,6 +176,7 @@ public class InquiryServiceImpl implements InquiryService {
                 .ok()
                 .body(resultDto);
     }
+
 
     // =============== PRIVATE METHODS =============== //
 
@@ -197,8 +214,18 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     private String CheckForForbiddenWordsTest(String content) {
-        System.out.println("CheckForForbiddenWords start");
         return BadWordFilter.filterAndReplace(content);
+    }
+    private void CheckUserValidation(Long inquiryId, Long userId){
+        if (!inquiryMapper.getUserId(inquiryId,userId)){
+            throw new ServiceFailedException(NOT_POST_OWNER);
+        }
+    }
+
+    private void CheckUserValidation(String code, Long userId){
+        if (!inquiryMapper.getUserIdByCode(code,userId)){
+            throw new ServiceFailedException(NOT_POST_OWNER);
+        }
     }
 
     private void CheckValidationForInsert(InquiryRequestDto inquiryRequestDto) {
@@ -216,7 +243,26 @@ public class InquiryServiceImpl implements InquiryService {
         }
     }
 
-    private void CheckValidationForModify(ModifyInquiryRequestDto modifydto) {
+    private void CheckValidationForModify(ModifyInquiryRequestDto modifydto, Long userId) {
+        //등록된 userId 와 동일한지 확인한다
+        CheckUserValidation(modifydto.getInquiryId(), userId);
+        if (modifydto.getContent() == null || modifydto.getContent().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+        }
+        if (modifydto.getSubject() == null || modifydto.getSubject().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+        }
+        if (modifydto.getType() == null || modifydto.getType().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+        }
+        if (modifydto.getDetailType() == null || modifydto.getDetailType().equals("")) {
+            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
+        }
+    }
+
+    private void CheckValidationForModifyByCode(ModifyInquiryRequestDto modifydto, Long userId) {
+        //등록된 userId 와 동일한지 확인한다
+        CheckUserValidation(modifydto.getCode(),userId);
         if (modifydto.getContent() == null || modifydto.getContent().equals("")) {
             throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
         }

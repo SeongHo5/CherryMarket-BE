@@ -33,8 +33,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REVIEW;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoA;
 import static com.cherrydev.cherrymarketbe.factory.GoodsReviewFactory.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -117,8 +116,9 @@ class GoodsReviewControllerTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_등록_성공() throws Exception {
+
         // Given
         GoodsReviewRequestDto goodsReviewRequestDto = createGoodsReviewRequestDtoA();
         String requestBody = Jackson.toJsonString(goodsReviewRequestDto);
@@ -141,6 +141,7 @@ class GoodsReviewControllerTest {
     @Transactional
     @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_등록_실패_중복리뷰() throws Exception {
+
         // Given
         GoodsReviewRequestDto goodsReviewRequestDto = createGoodsReviewRequestDtoD();
         String requestBody = Jackson.toJsonString(goodsReviewRequestDto);
@@ -156,10 +157,37 @@ class GoodsReviewControllerTest {
                 .andDo(document("Add-GoodsReview-Failed-Duplicated-Exception",
                         resourceDetails()
                                 .tag("상품 후기")
+                                .description("상품 후기 등록 실패 - 게시글 소유자가 아님"),
+                        responseFields(
+                                fieldWithPath("statusCode").description(NOT_POST_OWNER.getStatusCode()),
+                                fieldWithPath("message").description(NOT_POST_OWNER.getMessage())
+                        )));
+
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 상품후기_등록_실패_소유자_아님() throws Exception {
+        // Given
+        GoodsReviewRequestDto goodsReviewRequestDto = createGoodsReviewRequestDtoD();
+        String requestBody = Jackson.toJsonString(goodsReviewRequestDto);
+
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/goods-review/add")
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .secure(true)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andDo(document("Add-GoodsReview-Failed-Not-Post-Owner",
+                        resourceDetails()
+                                .tag("상품 후기")
                                 .description("상품 후기 등록 실패 - 중복리뷰 존재"),
                         responseFields(
-                                fieldWithPath("statusCode").description(ALREADY_EXIST_REVIEW.getStatusCode()),
-                                fieldWithPath("message").description(ALREADY_EXIST_REVIEW.getMessage())
+                                fieldWithPath("statusCode").description(NOT_POST_OWNER.getStatusCode()),
+                                fieldWithPath("message").description(NOT_POST_OWNER.getMessage())
                         )));
 
     }
@@ -314,6 +342,28 @@ class GoodsReviewControllerTest {
     @Test
     @Transactional
     @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 상품후기_전체조회_내상품_성공() throws Exception {
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/goods-review/list-my")
+                        .secure(true)
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfElements").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").exists())
+                .andDo(document("Get-GoodsReview-My-List-Info",
+                        resourceDetails()
+                                .tag("상품 후기")
+                                .description("상품 후기 전체 조회 - 내 리뷰 보기")
+
+                ));
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_삭제_성공() throws Exception {
 
         // When & Then
@@ -329,10 +379,32 @@ class GoodsReviewControllerTest {
                 ));
     }
 
-
     @Test
     @Transactional
     @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 상품후기_삭제_실패_게시글_권한() throws Exception {
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/goods-review/delete?ordersId=4&goodsId=33")
+                        .secure(true)
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
+                .andExpect(MockMvcResultMatchers.status().is(403))
+                .andDo(document("Delete-GoodsReview-Failed-Not-Post-Owner",
+                        resourceDetails()
+                                .tag("상품 후기")
+                                .description("상품 후기 삭제 실패- 게시글 소유자"),
+                        responseFields(
+                                fieldWithPath("statusCode").description(NOT_POST_OWNER.getStatusCode()),
+                                fieldWithPath("message").description(NOT_POST_OWNER.getMessage())
+                        )));
+
+    }
+
+
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_수정_성공() throws Exception {
         // Given
         GoodsReviewModifyDto modifyInquiryRequestDto = createGoodsReviewModifyDto();
@@ -351,5 +423,33 @@ class GoodsReviewControllerTest {
 
                 ));
     }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 상품후기_수정_실패_게시글_권한() throws Exception {
+
+        // Given
+        GoodsReviewModifyDto modifyInquiryRequestDto = createGoodsReviewModifyDto();
+        String requestBody = Jackson.toJsonString(modifyInquiryRequestDto);
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/goods-review/modify")
+                        .secure(true)
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().is(403))
+                .andDo(document("Modify-GoodsReview-Failed-Not-Post-Owner",
+                        resourceDetails()
+                                .tag("상품 후기")
+                                .description("상품 후기 수정 실패- 게시글 소유자"),
+                        responseFields(
+                                fieldWithPath("statusCode").description(NOT_POST_OWNER.getStatusCode()),
+                                fieldWithPath("message").description(NOT_POST_OWNER.getMessage())
+                        )));
+
+    }
+
 }
 

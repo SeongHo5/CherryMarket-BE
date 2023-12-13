@@ -11,8 +11,8 @@ public class GoodsReviewFactory {
     //등록 성공
     public static GoodsReviewRequestDto createGoodsReviewRequestDtoA() {
         return GoodsReviewRequestDto.builder()
-                .ordersId(4L)
-                .goodsId(33L)
+                .ordersId(17L)
+                .goodsId(10L)
                 .code("1")
                 .isBest(GoodsReviewBest.NORMAL.toString())
                 .subject("키보드 받침대 사용후기")

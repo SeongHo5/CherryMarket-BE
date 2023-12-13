@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReview.service;
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
@@ -10,13 +11,13 @@ import org.springframework.http.ResponseEntity;
 public interface GoodsReviewService {
 
     //저장
-    void save(final GoodsReviewRequestDto goodsReviewRequestDto);
+    void save(final GoodsReviewRequestDto goodsReviewRequestDto, final AccountDetails accountDetails);
 
     //업데이트
-    ResponseEntity<GoodsReviewInfoDto> update(GoodsReviewModifyDto modifyDto);
+    ResponseEntity<GoodsReviewInfoDto> update(GoodsReviewModifyDto modifyDto,AccountDetails accountDetails);
 
     //삭제
-    void delete(final Long ordersId, Long goodsId);
+    void delete(final Long ordersId, Long goodsId, AccountDetails accountDetails);
 
     //조회
     ResponseEntity<GoodsReviewInfoDto> getReview(final Long ordersId, final Long goodsId);
@@ -34,4 +35,5 @@ public interface GoodsReviewService {
     ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByUser(final Pageable pageable, Long userId);
 
 
+    ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllMyList(Pageable pageable, Long accountId);
 }

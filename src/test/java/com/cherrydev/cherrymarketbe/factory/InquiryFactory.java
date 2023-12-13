@@ -12,7 +12,7 @@ public class InquiryFactory {
     //등록 성공
     public static InquiryRequestDto createInquiryA() {
         return InquiryRequestDto.builder()
-                .userId(13L)
+//                .userId(137L)
                 .code("001")
                 .type(InquiryType.ORDER.toString())
                 .detailType(InquiryDetailType.INFO_CHANGE.toString())
@@ -25,7 +25,7 @@ public class InquiryFactory {
     //카테고리 누락
     public static InquiryRequestDto createInquiryB() {
         return InquiryRequestDto.builder()
-                .userId(13L)
+//                .userId(137L)
                 .code("001")
                 .type(null)
                 .detailType(InquiryDetailType.INFO_CHANGE.toString())
@@ -38,7 +38,7 @@ public class InquiryFactory {
     //세부카테고리 누락
     public static InquiryRequestDto createInquiryC() {
         return InquiryRequestDto.builder()
-                .userId(13L)
+//                .userId(137L)
                 .code("001")
                 .type(InquiryType.ORDER.toString())
                 .detailType(null)
@@ -51,7 +51,7 @@ public class InquiryFactory {
     //제목 누락
     public static InquiryRequestDto createInquiryD() {
         return InquiryRequestDto.builder()
-                .userId(13L)
+//                .userId(137L)
                 .code("001")
                 .type(InquiryType.ORDER.toString())
                 .detailType(InquiryDetailType.INFO_CHANGE.toString())
@@ -64,7 +64,7 @@ public class InquiryFactory {
     //내용 누락
     public static InquiryRequestDto createInquiryE() {
         return InquiryRequestDto.builder()
-                .userId(13L)
+//                .userId(137L)
                 .code("001")
                 .type(InquiryType.ORDER.toString())
                 .detailType(InquiryDetailType.INFO_CHANGE.toString())
@@ -77,7 +77,7 @@ public class InquiryFactory {
     //수정 아이디
     public static ModifyInquiryRequestDto createModifyInquiryA() {
         return ModifyInquiryRequestDto.builder()
-                .inquiryId(24L)
+                .inquiryId(82L)
     			.type(InquiryType.ORDER.toString())
     			.detailType(InquiryDetailType.INFO_CHANGE.toString())
     			.subject("데이터 수정 테스트")
@@ -88,7 +88,7 @@ public class InquiryFactory {
     //수정 코드
     public static ModifyInquiryRequestDto createModifyInquiryB() {
         return ModifyInquiryRequestDto.builder()
-                .code("INQ2")
+                .code("INQ11")
                 .type(InquiryType.ORDER.toString())
                 .detailType(InquiryDetailType.INFO_CHANGE.toString())
                 .subject("데이터 수정 테스트")

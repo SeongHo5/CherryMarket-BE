@@ -32,9 +32,14 @@ public interface GoodsReviewMapper {
     // 전체조회 - 유저
     List<GoodsReviewInfoDto> findAllByUserId(Long userId);
 
+    List<GoodsReviewInfoDto> findAllMyList(Long accountId);
+
     boolean existReview(GoodsReview goodsReview);
 
     boolean checkDeliveryStatus(GoodsReview goodsReview);
 
 
+    boolean getUserId(Long ordersId, Long goodsId, Long userId);
+
+    boolean getUserIdByCode(String code, Long userId);
 }

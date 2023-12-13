@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
@@ -9,11 +10,11 @@ import org.springframework.http.ResponseEntity;
 
 
 public interface InquiryService {
-    void createInquiry(final InquiryRequestDto inquiryRequestDto);
+    void createInquiry(final InquiryRequestDto inquiryRequestDto, AccountDetails accountDetails);
 
-    void deleteInquiryById(Long inquiryId);
+    void deleteInquiryById(Long inquiryId, AccountDetails accountDetails);
 
-    void deleteInquiryByCode(String inquiryCode);
+    void deleteInquiryByCode(String inquiryCode, AccountDetails accountDetails);
 
     ResponseEntity<InquiryInfoDto> getInquiryInfoById(Long inquiryId);
 
@@ -25,9 +26,10 @@ public interface InquiryService {
 
     ResponseEntity<MyPage<InquiryInfoDto>> findAllByPhone(Pageable pageable, String phone);
 
-    ResponseEntity<InquiryInfoDto> modifyInquiryById(ModifyInquiryRequestDto requestDto);
+    ResponseEntity<InquiryInfoDto> modifyInquiryById(ModifyInquiryRequestDto requestDto,AccountDetails accountDetails);
 
-    ResponseEntity<InquiryInfoDto> modifyInquiryByCode(ModifyInquiryRequestDto requestDto);
+    ResponseEntity<InquiryInfoDto> modifyInquiryByCode(ModifyInquiryRequestDto requestDto, AccountDetails accountDetails);
 
 
+    ResponseEntity<MyPage<InquiryInfoDto>> findAllMyList(Pageable pageable, Long accountId);
 }

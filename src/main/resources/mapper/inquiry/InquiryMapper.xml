@@ -63,6 +63,23 @@
 
 
     <!--   SELECT -->
+
+    <select id="getUserId" parameterType="Long" resultType="Boolean">
+        SELECT count(*) > 0
+        FROM INQRY
+        WHERE INQRY_ID = #{inquiryId}
+        AND ACNT_ID = #{userId}
+    </select>
+
+
+    <select id="getUserIdByCode" resultType="Boolean">
+        SELECT count(*) > 0
+        FROM INQRY
+        WHERE INQRY_CODE = #{code}
+          AND ACNT_ID = #{userId}
+          AND INQRY_CODE != 'DELETED'
+    </select>
+
     <select id="findByInquiryId" parameterType="Long" resultMap="inquiryMap">
         select *
         from INQRY
@@ -109,6 +126,15 @@
           and (SELECT ACNT_CTTPC FROM ACNT WHERE ACNT_CTTPC = #{phone})
         ORDER BY INQRY_CODE
     </select>
+
+    <select id="findAllMyList" parameterType="Long" resultMap="inquiryInfoMap">
+        select *
+        from INQRY
+        WHERE INQRY.INQRY_STTUS != 'DELETED'
+        AND ACNT_ID = #{userId}
+        ORDER BY INQRY_ID
+    </select>
+
 
     <select id="existAnswerInquiry" resultType="java.lang.Boolean">
         select count(*)

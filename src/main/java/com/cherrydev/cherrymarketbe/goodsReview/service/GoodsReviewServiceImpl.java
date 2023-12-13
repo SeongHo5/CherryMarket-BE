@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReview.service;
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
@@ -35,14 +36,16 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
 
     @Override
     @Transactional
-    public void save(final GoodsReviewRequestDto goodsReviewRequestDto) {
-        CheckValidationForInsert(goodsReviewRequestDto);
-        goodsReviewMapper.save(goodsReviewRequestDto.toEntity());
+    public void save(final GoodsReviewRequestDto goodsReviewRequestDto, final AccountDetails accountDetails) {
+        CheckValidationForInsert(goodsReviewRequestDto,accountDetails);
+        goodsReviewMapper.save(goodsReviewRequestDto.toEntity(accountDetails));
     }
 
     @Override
     @Transactional
-    public ResponseEntity<GoodsReviewInfoDto> update(GoodsReviewModifyDto modifyDto) {
+    public ResponseEntity<GoodsReviewInfoDto> update(GoodsReviewModifyDto modifyDto,AccountDetails accountDetails) {
+
+        CheckUserValidation( modifyDto.getOrdersId(),modifyDto.getGoodsId(),accountDetails.getAccount().getAccountId());
         CheckValidationForModify(modifyDto);
         GoodsReview goodsReview = goodsReviewMapper.findReivew(modifyDto.getOrdersId(), modifyDto.getGoodsId());
 
@@ -70,7 +73,8 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
 
     @Override
     @Transactional
-    public void delete(Long ordersId, Long goodsId) {
+    public void delete(Long ordersId, Long goodsId, AccountDetails accountDetails) {
+        CheckUserValidation(ordersId, goodsId, accountDetails.getAccount().getAccountId());
         goodsReviewMapper.delete(ordersId, goodsId);
     }
 
@@ -125,7 +129,20 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     @Override
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByUser(final Pageable pageable, final Long userId) {
 
+
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByUserId(userId);
+        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
+
+        return ResponseEntity.ok()
+                .header(PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
+                .body(infoPage);
+    }
+
+    @Override
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllMyList(Pageable pageable, Long accountId) {
+
+        List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllMyList(accountId);
         getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
@@ -142,6 +159,18 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
         }
     }
 
+    private void CheckUserValidation(Long goodsId, Long ordersId, Long userId) {
+        if (!goodsReviewMapper.getUserId(goodsId, ordersId, userId)) {
+            throw new ServiceFailedException(NOT_POST_OWNER);
+        }
+    }
+
+    private void CheckUserValidation(String code, Long userId) {
+        if (!goodsReviewMapper.getUserIdByCode(code, userId)) {
+            throw new ServiceFailedException(NOT_POST_OWNER);
+        }
+    }
+
     private void CheckDelieveryStatus(GoodsReview goodsReview) {
         if (!goodsReviewMapper.checkDeliveryStatus(goodsReview)) {
             throw new ServiceFailedException(REVIEW_NOT_ALLOWED_BEFORE_DELIVERY);
@@ -152,7 +181,12 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
         return BadWordFilter.filterAndReplace(content);
     }
 
-    private void CheckValidationForInsert(GoodsReviewRequestDto goodsReviewRequestDto) {
+    private void CheckValidationForInsert(GoodsReviewRequestDto goodsReviewRequestDto, AccountDetails accountDetails) {
+
+        CheckUserValidation(goodsReviewRequestDto.getOrdersId(),
+                            goodsReviewRequestDto.getGoodsId(),
+                            accountDetails.getAccount().getAccountId());
+
         if (goodsReviewRequestDto.getContent() == null || goodsReviewRequestDto.getContent().equals("")) {
             throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
         }

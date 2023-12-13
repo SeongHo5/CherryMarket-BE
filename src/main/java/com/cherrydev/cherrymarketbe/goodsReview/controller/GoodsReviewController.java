@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.goodsReview.controller;
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,8 +33,8 @@ public class GoodsReviewController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
-    public void addReivew(final @Valid @RequestBody GoodsReviewRequestDto goodsReviewRequestDto) {
-        goodsReviewService.save(goodsReviewRequestDto);
+    public void addReivew(final @Valid @RequestBody GoodsReviewRequestDto goodsReviewRequestDto, final @AuthenticationPrincipal AccountDetails accountDetails) {
+        goodsReviewService.save(goodsReviewRequestDto, accountDetails);
     }
 
     @PostMapping("/add-image")
@@ -74,22 +76,29 @@ public class GoodsReviewController {
         return goodsReviewService.findAllByOrderId(pageable, ordersId);
     }
 
+    //내 문의 전체 조회
+    @GetMapping("/list-my")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<MyPage<GoodsReviewInfoDto>> getGoodsReviewMyList(final Pageable pageable, final @AuthenticationPrincipal AccountDetails accountDetails) {
+        return goodsReviewService.findAllMyList(pageable, accountDetails.getAccount().getAccountId());
+    }
 
     // ==================== UPDATE ==================== //
     @PatchMapping("/modify")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<GoodsReviewInfoDto> modify(
-            final @RequestBody GoodsReviewModifyDto modifyDto) {
-        return goodsReviewService.update(modifyDto);
+            final @RequestBody GoodsReviewModifyDto modifyDto, final @AuthenticationPrincipal AccountDetails accountDetails) {
+        return goodsReviewService.update(modifyDto,accountDetails);
     }
 
     // ==================== DELETE ==================== //
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
-    public void deleteGoodsReviewById(@RequestParam Long ordersId, @RequestParam Long goodsId) {
-        goodsReviewService.delete(ordersId, goodsId);
+    public void deleteGoodsReviewById(@RequestParam Long ordersId, @RequestParam Long goodsId, final @AuthenticationPrincipal AccountDetails accountDetails) {
+        goodsReviewService.delete(ordersId, goodsId, accountDetails);
     }
 
 }
