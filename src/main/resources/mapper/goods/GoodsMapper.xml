@@ -98,7 +98,13 @@
     </select>
 
     <select id = "findToCart" resultType = "com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto" parameterType = "long">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_PRICE, G.GOODS_INVTRY, G.GOODS_CSTDY_TY, G.GOODS_SEL_STTUS, D.DSCNT_RATE
+        SELECT G.GOODS_ID as goodsId,
+               G.GOODS_NM as goodsName,
+               G.GOODS_PRICE as price,
+               G.GOODS_INVTRY as inventory,
+               G.GOODS_CSTDY_TY as storageType,
+               G.GOODS_SEL_STTUS as salesStatus,
+               D.DSCNT_RATE as discountRate
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_ID = #{goodsId}

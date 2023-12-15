@@ -107,7 +107,6 @@ public class GoodsService {
                        .salesStatus(toCartResponseDto.getSalesStatus())
                        .discountRate(toCartResponseDto.getDiscountRate())
                        .discountedPrice(toCartResponseDto.getDiscountRate())
-
                        .build();
     }
 
