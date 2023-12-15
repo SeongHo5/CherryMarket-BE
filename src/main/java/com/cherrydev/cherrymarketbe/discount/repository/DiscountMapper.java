@@ -12,7 +12,7 @@ public interface DiscountMapper {
 
     DiscountDto findById(Long discountId);
 
-    DiscountDto findByCode(String discountCode);
+    List<DiscountDto> findByCode(String discountCode);
 
     void save(DiscountDto discountDto);
 

@@ -24,13 +24,13 @@ public class DiscountController {
         return ResponseEntity.ok(discountService.findAll());
     }
 
-    @GetMapping("infoById")
+    @GetMapping("/infoById")
     public ResponseEntity<DiscountDto> getInfoById(@RequestParam Long discountId) {
         return ResponseEntity.ok(discountService.findById(discountId));
     }
 
-    @GetMapping("infoByCode")
-    public ResponseEntity<DiscountDto> getInfoByCode(@RequestParam String discountCode) {
+    @GetMapping("/infoByCode")
+    public ResponseEntity<List<DiscountDto>> getInfoByCode(@RequestParam String discountCode) {
         return ResponseEntity.ok(discountService.findByCode(discountCode));
     }
 

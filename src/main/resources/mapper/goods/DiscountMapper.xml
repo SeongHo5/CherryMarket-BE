@@ -27,7 +27,7 @@
     <select id = "findByCode" resultMap="discountMap">
         select *
         from DSCNT
-        where DSCNT_CODE = #{discountCode}
+        where DSCNT_CODE LIKE CONCAT('%', #{discountCode}, '%')
     </select>
 
     <insert id = "save" parameterType="com.cherrydev.cherrymarketbe.discount.dto.DiscountDto">

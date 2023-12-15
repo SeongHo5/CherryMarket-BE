@@ -28,7 +28,7 @@ public class DiscountService {
     }
 
     @Transactional
-    public DiscountDto findByCode(String discountCode){
+    public List<DiscountDto> findByCode(String discountCode){
         return discountMapper.findByCode(discountCode);
     }
 
