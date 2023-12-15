@@ -71,13 +71,13 @@
     <select id = "findByCategoryId" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
         SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
-                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+        LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE (G.CTGRY_ID = #{categoryId}
-            OR G.CTGRY_ID IN (SELECT C.CTGRY_ID
-                              FROM CTGRY C
-                              WHERE C.CTGRY_UPPER = #{categoryId}
-                                AND C.CTGRY_UPPER IS NOT NULL))
-          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        OR G.CTGRY_ID IN (SELECT C.CTGRY_ID
+        FROM CTGRY C
+        WHERE C.CTGRY_UPPER = #{categoryId}
+        AND C.CTGRY_UPPER IS NOT NULL))
+        AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
         <choose>
             <when test = "sortBy == 'priceAsc'">
                 ORDER BY G.GOODS_PRICE ASC
@@ -153,9 +153,9 @@
     <select id = "findByName" parameterType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
         SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
-                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+        LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_NM LIKE CONCAT('%', #{goodsName}, '%')
-          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
         <choose>
             <when test = "sortBy == 'priceAsc'">
                 ORDER BY G.GOODS_PRICE ASC
@@ -201,6 +201,13 @@
         SET GOODS_DSCNT_ID = #{discountId}
         WHERE GOODS_ID = #{goodsId}
           AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
+    </update>
+
+    <update id = "updateGoodsInventory">
+        UPDATE GOODS
+        SET GOODS_INVTRY = GOODS_INVTRY - #{quantity}
+        WHERE GOODS_ID = #{goodsId}
+
     </update>
 
 

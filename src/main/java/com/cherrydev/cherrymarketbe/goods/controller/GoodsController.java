@@ -2,10 +2,9 @@ package com.cherrydev.cherrymarketbe.goods.controller;
 
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.service.FileService;
-import com.cherrydev.cherrymarketbe.goods.dto.DiscountCalcDto;
+import com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDto;
-import com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto;
 import com.cherrydev.cherrymarketbe.goods.service.GoodsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,18 +40,13 @@ public class GoodsController {
     }
 
     @GetMapping("/basicInfo")
-    public ResponseEntity<DiscountCalcDto> getBasicInfo(@RequestParam Long goodsId) {
+    public ResponseEntity<GoodsBasicInfoResponseDto> getBasicInfo(@RequestParam Long goodsId) {
         return ResponseEntity.ok(goodsService.findBasicInfo(goodsId));
     }
 
     @GetMapping("/category")
-    public ResponseEntity<MyPage<DiscountCalcDto>> getCategoryGoods(final Pageable pageable, @RequestParam Long categoryId, @RequestParam(required = false) String sortBy) {
+    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> getCategoryGoods(final Pageable pageable, @RequestParam Long categoryId, @RequestParam(required = false) String sortBy) {
         return ResponseEntity.ok(goodsService.findByCategoryId(pageable, categoryId, sortBy));
-    }
-
-    @GetMapping("/toCart")
-    public ResponseEntity<ToCartResponseDto> getToCart(@RequestParam Long goodsId) {
-        return ResponseEntity.ok(goodsService.findToCart(goodsId));
     }
 
     @GetMapping("/detail")
@@ -66,7 +60,7 @@ public class GoodsController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<MyPage<DiscountCalcDto>> getInfoByName(final Pageable pageable, @RequestParam String goodsName, @RequestParam(required = false) String sortBy) {
+    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> getInfoByName(final Pageable pageable, @RequestParam String goodsName, @RequestParam(required = false) String sortBy) {
         return ResponseEntity.ok(goodsService.findByName(pageable, goodsName, sortBy));
     }
 
@@ -93,10 +87,4 @@ public class GoodsController {
         goodsService.deleteById(goodsId);
         return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
     }
-
-    // /* 파일 이름 생성 메소드 */
-    // private String generateFileName(String goodsCode, int type) {
-    //     return goodsCode + "-" + String.format("%03d", type);
-    // }
-
 }

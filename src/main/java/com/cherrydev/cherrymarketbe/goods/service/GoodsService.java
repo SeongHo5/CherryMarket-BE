@@ -56,30 +56,30 @@ public class GoodsService {
     }
 
 
-    public DiscountCalcDto findBasicInfo(Long goodsId) {
-        GoodsBasicInfoDto basicInfo = goodsMapper.findBasicInfo(goodsId);
+    public GoodsBasicInfoResponseDto findBasicInfo(Long goodsId) {
+        GoodsBasicInfoDto basicInfoDto = goodsMapper.findBasicInfo(goodsId);
 
-        if(basicInfo == null) {
+        if(basicInfoDto == null) {
             throw new NotFoundException(GOODS_NOT_FOUND);
         }
 
         // 할인된 금액 계산
-        Integer discountedPrice = discountedPrice = (basicInfo.getDiscountRate() != null) ? basicInfo.getPrice() - (basicInfo.getPrice() * basicInfo.getDiscountRate() / 100) : null;
+        Integer discountedPrice = calculateDiscountedPrice(basicInfoDto.getPrice(), basicInfoDto.getDiscountRate());
 
         // 할인된 금액과 함께 Dto 반환
-        return DiscountCalcDto.builder()
-                       .goodsId(basicInfo.getGoodsId())
-                       .goodsName(basicInfo.getGoodsName())
-                       .description(basicInfo.getDescription())
-                       .price(basicInfo.getPrice())
-                       .discountRate(basicInfo.getDiscountRate())
+        return GoodsBasicInfoResponseDto.builder()
+                       .goodsId(basicInfoDto.getGoodsId())
+                       .goodsName(basicInfoDto.getGoodsName())
+                       .description(basicInfoDto.getDescription())
+                       .price(basicInfoDto.getPrice())
+                       .discountRate(basicInfoDto.getDiscountRate())
                        .discountedPrice(discountedPrice)
                        .build();
     }
 
-    public MyPage<DiscountCalcDto> findByCategoryId(final Pageable pageable, Long categoryId, String sortBy) {
+    public MyPage<GoodsBasicInfoResponseDto> findByCategoryId(final Pageable pageable, Long categoryId, String sortBy) {
 
-        MyPage<DiscountCalcDto> pageResult = createPage(pageable, () -> {
+        MyPage<GoodsBasicInfoResponseDto> pageResult = createPage(pageable, () -> {
             PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
 
             return goodsMapper.findByCategoryId(categoryId, sortBy).stream()
@@ -97,7 +97,7 @@ public class GoodsService {
     public ToCartResponseDto findToCart(Long goodsId) {
 
         ToCartDto toCartDto = goodsMapper.findToCart(goodsId);
-        Integer discountedPrice = (toCartDto.getDiscountRate() != null) ? toCartDto.getPrice() - (toCartDto.getPrice() * toCartDto.getDiscountRate() / 100) : null;
+        Integer discountedPrice = calculateDiscountedPrice(toCartDto.getPrice(), toCartDto.getDiscountRate());
 
         return ToCartResponseDto.builder()
                        .goodsId(toCartDto.getGoodsId())
@@ -146,7 +146,7 @@ public class GoodsService {
             throw new NotFoundException(GOODS_NOT_FOUND);
         }
 
-        Integer discountedPrice = (goodsDetailDto.getDiscountRate() != null) ? goodsDetailDto.getPrice() - (goodsDetailDto.getPrice() * goodsDetailDto.getDiscountRate() / 100) : null;
+        Integer discountedPrice = calculateDiscountedPrice(goodsDetailDto.getPrice(), goodsDetailDto.getDiscountRate());
 
         return GoodsDetailResponseDto.builder()
                        .goodsId(goodsDetailDto.getGoodsId())
@@ -167,8 +167,8 @@ public class GoodsService {
                        .build();
     }
 
-    public MyPage<DiscountCalcDto> findByName(final Pageable pageable, String goodsName, String sortBy) {
-        MyPage<DiscountCalcDto> pageResult = PagingUtil.createPage(pageable, () -> {
+    public MyPage<GoodsBasicInfoResponseDto> findByName(final Pageable pageable, String goodsName, String sortBy) {
+        MyPage<GoodsBasicInfoResponseDto> pageResult = PagingUtil.createPage(pageable, () -> {
             PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
 
             return goodsMapper.findByName(goodsName, sortBy).stream()
@@ -217,12 +217,18 @@ public class GoodsService {
             throw new NotFoundException(GOODS_NOT_FOUND);
         }
         // 단종된 상품일 경우
-        if("DISCONTINUANCE" .equals(goodsInfo.getSalesStatus())) {
+        if("DISCONTINUANCE".equals(goodsInfo.getSalesStatus())) {
             throw new DiscontinuedGoodsException(DISCONTINUED_GOODS);
         }
         goodsMapper.updateDiscountByGoodsId(discountId, goodsId);
         return goodsInfo;
     }
+
+    @Transactional
+    public void updateGoodsInventoryupdateGoodsInventory(Long goodsId, int quantity) {
+        goodsMapper.updateGoodsInventory(goodsId, quantity);
+    }
+
 
     /* Delete */
     @Transactional
@@ -236,7 +242,7 @@ public class GoodsService {
         }
 
         // 판매중인 상품일 경우
-        if("ON_SALE" .equals(goodsInfo.getSalesStatus())) {
+        if("ON_SALE".equals(goodsInfo.getSalesStatus())) {
             throw new OnSaleGoodsException(ON_SALE_GOODS);
         }
 
@@ -244,10 +250,11 @@ public class GoodsService {
     }
 
     // 페이징 처리를 위한 메소드
-    private DiscountCalcDto convertToDiscountCalcDto(GoodsBasicInfoDto basicInfoDto) {
-        Integer discountedPrice = discountedPrice = (basicInfoDto.getDiscountRate() != null) ? basicInfoDto.getPrice() - (basicInfoDto.getPrice() * basicInfoDto.getDiscountRate() / 100) : null;
+    private GoodsBasicInfoResponseDto convertToDiscountCalcDto(GoodsBasicInfoDto basicInfoDto) {
 
-        return DiscountCalcDto.builder()
+        Integer discountedPrice = calculateDiscountedPrice(basicInfoDto.getPrice(), basicInfoDto.getDiscountRate());
+
+        return GoodsBasicInfoResponseDto.builder()
                        .goodsId(basicInfoDto.getGoodsId())
                        .goodsName(basicInfoDto.getGoodsName())
                        .description(basicInfoDto.getDescription())
@@ -256,5 +263,15 @@ public class GoodsService {
                        .discountedPrice(discountedPrice)
                        .build();
     }
+
+    // 할인된 금액 계산
+    private Integer calculateDiscountedPrice(Integer price, Integer discountRate) {
+        if(discountRate != null && discountRate > 0) {
+            return price - (price * discountRate / 100);
+        } else {
+            return price;
+        }
+    }
+
 
 }

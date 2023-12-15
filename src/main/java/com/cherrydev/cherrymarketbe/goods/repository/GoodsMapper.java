@@ -44,6 +44,8 @@ public interface GoodsMapper {
 
     void updateDiscountByGoodsId(Long discountId, Long goodsId);
 
+    void updateGoodsInventory(Long goodsId, int quantity);
+
 
     /* Delete */
     void deleteById(Long goodsId);
