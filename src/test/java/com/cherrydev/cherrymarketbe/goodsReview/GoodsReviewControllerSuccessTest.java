@@ -283,6 +283,5 @@ class GoodsReviewControllerSuccessTest {
 
                 ));
     }
-
 }
 

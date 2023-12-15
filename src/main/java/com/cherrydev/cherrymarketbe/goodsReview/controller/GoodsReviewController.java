@@ -45,6 +45,7 @@ public class GoodsReviewController {
     }
 
 
+
     // ==================== SELECT ==================== //
     @GetMapping("/search")
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
@@ -99,6 +100,13 @@ public class GoodsReviewController {
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
     public void deleteGoodsReviewById(@RequestParam Long ordersId, @RequestParam Long goodsId, final @AuthenticationPrincipal AccountDetails accountDetails) {
         goodsReviewService.delete(ordersId, goodsId, accountDetails);
+    }
+
+    @DeleteMapping("/delete-image")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+    public void deleteImages(@RequestBody List<String> imageUrls, String dirName) {
+        fileService.deleteMultipleFiles(imageUrls, dirName);
     }
 
 }

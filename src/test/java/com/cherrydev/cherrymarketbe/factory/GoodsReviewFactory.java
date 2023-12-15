@@ -4,6 +4,8 @@ import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
 import com.cherrydev.cherrymarketbe.goodsReview.enums.GoodsReviewBest;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 public class GoodsReviewFactory {
 
@@ -82,6 +84,11 @@ public class GoodsReviewFactory {
                 .subject("테스트 수정합니다")
                 .content("테스트 합니다.")
                 .build();
+    }
+
+    // 파일 업로드 테스트용 더미 데이터
+    public static MultipartFile createDummyMultipartFile(String originalFileName, String contentType, byte[] content) {
+        return new MockMultipartFile(originalFileName, originalFileName, contentType, content);
     }
 
 
