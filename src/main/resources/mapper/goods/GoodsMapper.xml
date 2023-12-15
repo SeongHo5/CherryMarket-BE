@@ -97,7 +97,7 @@
         </choose>
     </select>
 
-    <select id = "findToCart" resultType = "com.cherrydev.cherrymarketbe.goods.dto.ToCartDto" parameterType = "long">
+    <select id = "findToCart" resultType = "com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto" parameterType = "long">
         SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_PRICE, G.GOODS_INVTRY, G.GOODS_CSTDY_TY, G.GOODS_SEL_STTUS, D.DSCNT_RATE
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID

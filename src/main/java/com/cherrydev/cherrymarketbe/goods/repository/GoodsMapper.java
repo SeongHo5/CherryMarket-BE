@@ -26,7 +26,7 @@ public interface GoodsMapper {
 
     List<GoodsBasicInfoDto> findByCategoryId(Long categoryId, String sortBy);
 
-    ToCartDto findToCart(Long goodsId);
+    ToCartResponseDto findToCart(Long goodsId);
 
     GoodsDetailDto findDetailById(Long goodsId);
 

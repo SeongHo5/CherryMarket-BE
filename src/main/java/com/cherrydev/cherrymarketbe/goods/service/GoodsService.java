@@ -96,18 +96,18 @@ public class GoodsService {
 
     public ToCartResponseDto findToCart(Long goodsId) {
 
-        ToCartDto toCartDto = goodsMapper.findToCart(goodsId);
-        Integer discountedPrice = calculateDiscountedPrice(toCartDto.getPrice(), toCartDto.getDiscountRate());
+        ToCartResponseDto toCartResponseDto = goodsMapper.findToCart(goodsId);
 
         return ToCartResponseDto.builder()
-                       .goodsId(toCartDto.getGoodsId())
-                       .goodsName(toCartDto.getGoodsName())
-                       .price(toCartDto.getPrice())
-                       .inventory(toCartDto.getInventory())
-                       .storageType(toCartDto.getStorageType())
-                       .salesStatus(toCartDto.getSalesStatus())
-                       .discountRate(toCartDto.getDiscountRate())
-                       .discountedPrice(discountedPrice)
+                       .goodsId(toCartResponseDto.getGoodsId())
+                       .goodsName(toCartResponseDto.getGoodsName())
+                       .price(toCartResponseDto.getPrice())
+                       .inventory(toCartResponseDto.getInventory())
+                       .storageType(toCartResponseDto.getStorageType())
+                       .salesStatus(toCartResponseDto.getSalesStatus())
+                       .discountRate(toCartResponseDto.getDiscountRate())
+                       .discountedPrice(toCartResponseDto.getDiscountRate())
+
                        .build();
     }
 

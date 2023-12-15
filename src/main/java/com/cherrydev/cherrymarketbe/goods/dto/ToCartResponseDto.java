@@ -35,4 +35,10 @@ public class ToCartResponseDto {
         this.discountRate = discountRate;
         this.discountedPrice = discountedPrice;
     }
+
+    public Integer getDiscountedPrice() {
+        return discountRate != null ? price - (price * discountRate / 100) : null;
+    }
+
+
 }
