@@ -3,7 +3,6 @@ package com.cherrydev.cherrymarketbe.notice;
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
@@ -35,8 +34,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
-import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoA;
 import static com.cherrydev.cherrymarketbe.factory.NoticeFactory.createModifyNoticeInfoA;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -49,7 +46,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureRestDocs(outputDir = "build/generated-snippets")
 @SpringBootTest
-class NoticeControllerTest {
+class NoticeControllerSuccessTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -88,36 +85,6 @@ class NoticeControllerTest {
 
     @Test
     @Transactional
-    void 로그인_성공() throws Exception {
-        // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoA();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
-                        .secure(true)
-                        .contentType("application/json")
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.userName").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.userRole").value("ROLE_CUSTOMER"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.grantType").value("Bearer "))
-                .andDo(document("Sign-In-Success",
-                        resourceDetails()
-                                .tag("인증 관리")
-                                .description("로그인 성공"),
-                        responseFields(
-                                fieldWithPath("userName").description("사용자 이름"),
-                                fieldWithPath("userRole").description("사용자 권한"),
-                                fieldWithPath("grantType").description("토큰 타입"),
-                                fieldWithPath("accessToken").description("액세스 토큰"),
-                                fieldWithPath("refreshToken").description("리프레시 토큰"),
-                                fieldWithPath("expiresIn").description("토큰 만료 시간")
-                        )));
-    }
-
-    @Test
-    @Transactional
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 공지사항_등록_성공() throws Exception {
         // Given
@@ -136,106 +103,6 @@ class NoticeControllerTest {
                                 .tag("공지사항")
                                 .description("공지사항 등록 성공")
                         ));
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 공지사항_등록_실패_카테고리_누락() throws Exception {
-        // Given
-        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeB();
-        String requestBody = Jackson.toJsonString(noticeRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .secure(true)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andDo(document("Add-Notice-Failed-Null-Category",
-                        resourceDetails()
-                                .tag("공지사항")
-                                .description("공지사항 등록 실패 - 카테고리"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CATEGORY.getStatusCode()),
-                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CATEGORY.getMessage())
-                        )));
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 공지사항_등록_실패_제목_누락() throws Exception {
-        // Given
-        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeC();
-        String requestBody = Jackson.toJsonString(noticeRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .secure(true)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andDo(document("Add-Notice-Failed-Null-Subject",
-                        resourceDetails()
-                                .tag("공지사항")
-                                .description("공지사항 등록 실패 - 제목"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_SUBJECT.getStatusCode()),
-                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_SUBJECT.getMessage())
-                        )));
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 공지사항_등록_실패_내용_누락() throws Exception {
-        // Given
-        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeD();
-        String requestBody = Jackson.toJsonString(noticeRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .secure(true)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is(400))
-                .andDo(document("Add-Notice-Failed-Null-Content",
-                        resourceDetails()
-                                .tag("공지사항")
-                                .description("공지사항 등록 실패 - 내용"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CONTENT.getStatusCode()),
-                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CONTENT.getMessage())
-                        )));
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 공지사항_등록_실패_게시날짜_누락() throws Exception {
-        // Given
-        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeE();
-        String requestBody = Jackson.toJsonString(noticeRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .secure(true)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is(400))
-                .andDo(document("Add-Notice-Failed-Null-Date",
-                        resourceDetails()
-                                .tag("공지사항")
-                                .description("공지사항 등록 실패 - 날짜"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CATEGORY.getStatusCode()),
-                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CATEGORY.getMessage())
-                        )));
     }
 
     @Test
@@ -336,7 +203,7 @@ class NoticeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.noticeId").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.category").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.subject").exists())
-                .andDo(document("Modify-Inquiry-Info-By-ID",
+                .andDo(document("A-Modify-Inquiry-Info-By-ID",
                         resourceDetails()
                                 .tag("공지사항")
                                 .description("공지사항 수정 - 아이디"),
@@ -350,7 +217,7 @@ class NoticeControllerTest {
                                 fieldWithPath("displayDate").optional().description("공지사항 노출 시작일"),
                                 fieldWithPath("hideDate").optional().type(JsonFieldType.STRING).description("공지사항 노출 종료일"),
                                 fieldWithPath("createDate").optional().type(JsonFieldType.STRING).description("공지사항 생성일"),
-                                fieldWithPath("deleteDate").optional().description("공지사항 삭제일")
+                                fieldWithPath("deleteDate").optional().type(JsonFieldType.STRING).description("공지사항 삭제일")
                         )));
     }
 
@@ -370,7 +237,7 @@ class NoticeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.noticeId").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.category").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.subject").exists())
-                .andDo(document("Modify-Inquiry-Info-By-ID",
+                .andDo(document("A-Modify-Inquiry-Info-By-ID",
                         resourceDetails()
                                 .tag("공지사항")
                                 .description("공지사항 수정 - 아이디"),
@@ -384,7 +251,7 @@ class NoticeControllerTest {
                                 fieldWithPath("displayDate").optional().description("공지사항 노출 시작일"),
                                 fieldWithPath("hideDate").optional().type(JsonFieldType.STRING).description("공지사항 노출 종료일"),
                                 fieldWithPath("createDate").optional().type(JsonFieldType.STRING).description("공지사항 생성일"),
-                                fieldWithPath("deleteDate").optional().description("공지사항 삭제일")
+                                fieldWithPath("deleteDate").optional().type(JsonFieldType.STRING).description("공지사항 삭제일")
                         )));
     }
 

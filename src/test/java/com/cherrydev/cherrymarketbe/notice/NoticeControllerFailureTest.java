@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.InquiryAnswer;
+package com.cherrydev.cherrymarketbe.notice;
 
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
@@ -6,8 +6,8 @@ import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
-import com.cherrydev.cherrymarketbe.factory.InquiryAnswerFactory;
-import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
+import com.cherrydev.cherrymarketbe.factory.NoticeFactory;
+import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,10 +32,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_ANSWER;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
+import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
@@ -45,7 +44,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureRestDocs(outputDir = "build/generated-snippets")
 @SpringBootTest
-class InquiryAnswerControllerTest {
+class NoticeControllerFailureTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -82,47 +81,77 @@ class InquiryAnswerControllerTest {
     }
 
 
+
+
     @Test
     @Transactional
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 문의답변_등록_성공() throws Exception {
+    void 공지사항_등록_실패_카테고리_누락() throws Exception {
         // Given
-        InquiryAnwerRequestDto inquiryAnwerRequestDto = InquiryAnswerFactory.createInquiryAnswerA();
-        String requestBody = Jackson.toJsonString(inquiryAnwerRequestDto);
+        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeB();
+        String requestBody = Jackson.toJsonString(noticeRequestDto);
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/inquiryAnswer/add")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andDo(document("Add-Inquiry-Answer-Success",
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andDo(document("Failed-Add-Notice-Empty-Category",
                         resourceDetails()
-                                .tag("문의 답변")
-                                .description("문의 답변 등록 성공")
-                        ));
+                                .tag("공지사항")
+                                .description("공지사항 등록 실패 - 카테고리"),
+                        responseFields(
+                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CATEGORY.getStatusCode()),
+                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CATEGORY.getMessage())
+                        )));
     }
 
     @Test
     @Transactional
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 문의답변_등록_실패_내용누락() throws Exception {
+    void 공지사항_등록_실패_제목_누락() throws Exception {
         // Given
-        InquiryAnwerRequestDto inquiryAnwerRequestDto = InquiryAnswerFactory.createInquiryAnswerB();
-        String requestBody = Jackson.toJsonString(inquiryAnwerRequestDto);
+        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeC();
+        String requestBody = Jackson.toJsonString(noticeRequestDto);
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/inquiryAnswer/add")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .secure(true)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andDo(document("Failed-Add-Notice-Empty-Subject",
+                        resourceDetails()
+                                .tag("공지사항")
+                                .description("공지사항 등록 실패 - 제목"),
+                        responseFields(
+                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_SUBJECT.getStatusCode()),
+                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_SUBJECT.getMessage())
+                        )));
+    }
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 공지사항_등록_실패_내용_누락() throws Exception {
+        // Given
+        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeD();
+        String requestBody = Jackson.toJsonString(noticeRequestDto);
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().is(400))
-                .andDo(document("Failed-Add-Inquiry-Answer-Empty-Contetnt",
+                .andDo(document("Failed-Add-Notice-Empty-Content",
                         resourceDetails()
-                                .tag("문의 답변")
-                                .description("문의 답변 등록 실패 - 내용누락"),
+                                .tag("공지사항")
+                                .description("공지사항 등록 실패 - 내용"),
                         responseFields(
                                 fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CONTENT.getStatusCode()),
                                 fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CONTENT.getMessage())
@@ -132,26 +161,27 @@ class InquiryAnswerControllerTest {
     @Test
     @Transactional
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 문의답변_등록_실패_중복등록() throws Exception {
+    void 공지사항_등록_실패_게시날짜_누락() throws Exception {
         // Given
-        InquiryAnwerRequestDto inquiryAnwerRequestDto = InquiryAnswerFactory.createInquiryAnswerC();
-        String requestBody = Jackson.toJsonString(inquiryAnwerRequestDto);
+        NoticeRequestDto noticeRequestDto = NoticeFactory.createNoticeE();
+        String requestBody = Jackson.toJsonString(noticeRequestDto);
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/inquiryAnswer/add")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andDo(document("Failed-Add-Inquiry-Answer-Duplicate",
+                .andExpect(MockMvcResultMatchers.status().is(400))
+                .andDo(document("Failed-Add-Notice-Empty-Date",
                         resourceDetails()
-                                .tag("문의 답변")
-                                .description("문의 답변 등록 실패 - 중복등록"),
+                                .tag("공지사항")
+                                .description("공지사항 등록 실패 - 날짜"),
                         responseFields(
-                                fieldWithPath("statusCode").description(ALREADY_EXIST_ANSWER.getStatusCode()),
-                                fieldWithPath("message").description(ALREADY_EXIST_ANSWER.getMessage())
+                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CATEGORY.getStatusCode()),
+                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CATEGORY.getMessage())
                         )));
     }
+
 }
 
