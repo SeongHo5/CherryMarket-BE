@@ -3,7 +3,6 @@ package com.cherrydev.cherrymarketbe.GoodsReviewReport;
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
@@ -33,14 +32,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REPORT;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
-import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoA;
-import static com.cherrydev.cherrymarketbe.factory.GoodsReviewReportFactory.*;
+import static com.cherrydev.cherrymarketbe.factory.GoodsReviewReportFactory.createReviewReportRequestDtoA;
+import static com.cherrydev.cherrymarketbe.factory.GoodsReviewReportFactory.createReviewReportRequestDtoD;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 
 @Rollback
@@ -48,7 +43,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 @ExtendWith(RestDocumentationExtension.class)
 @AutoConfigureRestDocs(outputDir = "build/generated-snippets")
 @SpringBootTest
-class GoodsReviewReportControllerTest {
+class GoodsReviewReportControllerSuccessTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -85,35 +80,6 @@ class GoodsReviewReportControllerTest {
     }
 
 
-    @Test
-    @Transactional
-    void 로그인_성공() throws Exception {
-        // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoA();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
-                        .secure(true)
-                        .contentType("application/json")
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.userName").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.userRole").value("ROLE_CUSTOMER"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.grantType").value("Bearer "))
-                .andDo(document("Sign-In-Success",
-                        resourceDetails()
-                                .tag("인증 관리")
-                                .description("로그인 성공"),
-                        responseFields(
-                                fieldWithPath("userName").description("사용자 이름"),
-                                fieldWithPath("userRole").description("사용자 권한"),
-                                fieldWithPath("grantType").description("토큰 타입"),
-                                fieldWithPath("accessToken").description("액세스 토큰"),
-                                fieldWithPath("refreshToken").description("리프레시 토큰"),
-                                fieldWithPath("expiresIn").description("토큰 만료 시간")
-                        )));
-    }
 
     @Test
     @Transactional
@@ -136,90 +102,6 @@ class GoodsReviewReportControllerTest {
                                 .description("상품후기 신고 - 등록")
                 ));
     }
-
-
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 상품후기_중복_실패() throws Exception {
-        // Given
-        ReviewReportRequestDto reviewReportRequestDto = createReviewReportRequestDtoF();
-        String requestBody = Jackson.toJsonString(reviewReportRequestDto);
-
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/review-report/add")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .secure(true)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andDo(document("Add-GoodsReviewReport-Failed-Duplicated-Exception",
-                        resourceDetails()
-                                .tag("상품후기 신고")
-                                .description("상품후기 신고 등록 실패 - 중복 신고"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(ALREADY_EXIST_REPORT.getStatusCode()),
-                                fieldWithPath("message").description(ALREADY_EXIST_REPORT.getMessage())
-                        )));
-
-    }
-
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 상품후기_신고_등록_실패_내용누락() throws Exception {
-        // Given
-        ReviewReportRequestDto reviewReportRequestDto = createReviewReportRequestDtoB();
-        String requestBody = Jackson.toJsonString(reviewReportRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/goods-review/add")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .secure(true)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andDo(document("Add-GoodsReview-Failed-Duplicated-Exception",
-                        resourceDetails()
-                                .tag("상품후기 신고")
-                                .description("상품 후기 등록 실패 - 내용 누락"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CONTENT.getStatusCode()),
-                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CONTENT.getMessage())
-                        )));
-
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 상품후기_신고_등록_실패_카테고리_누락() throws Exception {
-        // Given
-        ReviewReportRequestDto reviewReportRequestDto = createReviewReportRequestDtoC();
-        String requestBody = Jackson.toJsonString(reviewReportRequestDto);
-
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/goods-review/add")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .secure(true)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andDo(document("Add-GoodsReview-Failed-Duplicated-Exception",
-                        resourceDetails()
-                                .tag("상품후기 신고")
-                                .description("상품 후기 등록 실패 - 카테고리 누락"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CONTENT.getStatusCode()),
-                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CONTENT.getMessage())
-                        )));
-
-    }
-
-
 
 
 
@@ -300,11 +182,6 @@ class GoodsReviewReportControllerTest {
                 ));
     }
 
-
-
-
-
-
     @Test
     @Transactional
     @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
@@ -319,36 +196,12 @@ class GoodsReviewReportControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(document("Modify-GoodsReviewReport-Answer",
+                .andDo(document("A-Modify-GoodsReviewReport-Answer",
                         resourceDetails()
                                 .tag("상품후기 신고")
                                 .description("상품후기 신고 답변 - 등록")
 
                 ));
-    }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 상품후기_신고_답변_등록_실패() throws Exception {
-        // Given
-        ReviewReportModifyDto reviewReportModifyDto = createReviewReportRequestDtoE();
-        String requestBody = Jackson.toJsonString(reviewReportModifyDto);
-        // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/review-report/add-answer")
-                        .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andDo(document("Modify-GoodsReviewReport-Answer",
-                        resourceDetails()
-                                .tag("상품후기 신고")
-                                .description("상품후기 신고 답변 - 등록 실패 - 답변 누락"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(NOT_ALLOWED_EMPTY_CONTENT.getStatusCode()),
-                                fieldWithPath("message").description(NOT_ALLOWED_EMPTY_CONTENT.getMessage())
-                        )));
     }
 }
 
