@@ -7,6 +7,7 @@ import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+
 public class GoodsReviewFactory {
 
 
@@ -86,10 +87,10 @@ public class GoodsReviewFactory {
                 .build();
     }
 
+
     // 파일 업로드 테스트용 더미 데이터
     public static MultipartFile createDummyMultipartFile(String originalFileName, String contentType, byte[] content) {
         return new MockMultipartFile(originalFileName, originalFileName, contentType, content);
     }
-
 
 }
