@@ -101,4 +101,12 @@ public class GoodsReviewController {
         goodsReviewService.delete(ordersId, goodsId, accountDetails);
     }
 
+
+    @DeleteMapping("/delete-image")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+    public void deleteImages(@RequestBody List<String> imageUrls, String dirName) {
+        fileService.deleteMultipleFiles(imageUrls, dirName);
+    }
+
 }
