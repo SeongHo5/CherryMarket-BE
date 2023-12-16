@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.notice.entity;
 
+import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
 import com.cherrydev.cherrymarketbe.notice.enums.NoticeCategory;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import lombok.Builder;
@@ -38,6 +39,9 @@ public class Notice {
         this.deleteDate = deleteDate;
     }
 
+    public NoticeInfoDto toDto(){
+        return new NoticeInfoDto(this);
+    }
     public void updateCategory(NoticeCategory category) {
         this.category = category;
     }

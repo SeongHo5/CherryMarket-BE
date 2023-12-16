@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.goodsReviewReport.repository.ReviewReportMapper">
+    <resultMap id="ReviewReportMapper" type="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
+        <result property="reportId" column="GOODS_REVW_STTEMNT_ID"/>
+        <result property="reviewId" column="GOODS_REVW_ID"/>
+        <result property="userId" column="ACNT_ID"/>
+        <result property="reportType" column="GOODS_REVW_STTEMNT_TYPE"/>
+        <result property="content" column="GOODS_REVW_STTEMNT_CN"/>
+        <result property="answerStatus" column="GOODS_REVW_STTEMNT_STTUS"/>
+        <result property="answerContent" column="GOODS_REVW_STTEMNT_ANSWER"/>
+        <result property="createDate" column="CREAT_DE"/>
+    </resultMap>
+
+    <resultMap id="ReviewReportInfoMapper" type="com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportInfoDto">
+        <result property="reportId" column="GOODS_REVW_STTEMNT_ID"/>
+        <result property="reviewId" column="GOODS_REVW_ID"/>
+        <result property="userId" column="ACNT_ID"/>
+        <result property="reportType" column="GOODS_REVW_STTEMNT_TYPE"/>
+        <result property="content" column="GOODS_REVW_STTEMNT_CN"/>
+        <result property="answerStatus" column="GOODS_REVW_STTEMNT_STTUS"/>
+        <result property="answerContent" column="GOODS_REVW_STTEMNT_ANSWER"/>
+        <result property="createDate" column="CREAT_DE"/>
+    </resultMap>
+
+    <!-- ==================== INSERT ==================== -->
+    <insert id="save" useGeneratedKeys="true"
+            parameterType="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
+        <selectKey keyProperty="reviewId" keyColumn="GOODS_REVW_STTEMNT_ID" resultType="Long" order="AFTER">
+            SELECT MAX(GOODS_REVW_STTEMNT_ID) FROM GOODS_REVW_STTEMNT
+        </selectKey>
+        INSERT INTO GOODS_REVW_STTEMNT
+        (GOODS_REVW_ID,ACNT_ID,GOODS_REVW_STTEMNT_TYPE,GOODS_REVW_STTEMNT_CN,GOODS_REVW_STTEMNT_STTUS,GOODS_REVW_STTEMNT_ANSWER)
+        VALUES (#{reviewId},#{userId},#{reportType},#{content},#{answerStatus},#{answerContent})
+    </insert>
+
+
+    <!-- ==================== SELECT ==================== -->
+    <select id="checkDupulicateReport" resultType="java.lang.Boolean">
+        select count(*)
+        from GOODS_REVW_STTEMNT
+        where GOODS_REVW_STTEMNT_ID in (select GOODS_REVW_STTEMNT_ID
+                                        from GOODS_REVW_STTEMNT
+                                        where GOODS_REVW_ID = #{reviewId}
+                                          AND ACNT_ID = #{userId})
+    </select>
+
+    <select id="findReport" parameterType="Long" resultMap="ReviewReportMapper">
+        SELECT *
+        FROM GOODS_REVW_STTEMNT
+        WHERE GOODS_REVW_STTEMNT_ID = #{reportId}
+    </select>
+
+    <select id="findAll" resultMap="ReviewReportInfoMapper">
+        select *
+        from GOODS_REVW_STTEMNT
+        ORDER BY GOODS_REVW_STTEMNT_ID DESC
+    </select>
+
+    <select id="findAllByStatus" resultMap="ReviewReportInfoMapper">
+        select *
+        from GOODS_REVW_STTEMNT
+        WHERE GOODS_REVW_STTEMNT_STTUS = 'NOT_EXIST'
+    </select>
+
+    <select id="findAnswer" resultMap="ReviewReportInfoMapper">
+        select GOODS_REVW_STTEMNT_ANSWER
+        from GOODS_REVW_STTEMNT
+        WHERE GOODS_REVW_STTEMNT_STTUS != 'NOT_EXIST' AND GOODS_REVW_STTEMNT_ID = #{reportId}
+    </select>
+
+
+
+    <!-- ==================== UPDATE ==================== -->
+    <update id="update" parameterType="com.cherrydev.cherrymarketbe.goodsReviewReport.entity.ReviewReport">
+        UPDATE GOODS_REVW_STTEMNT
+        SET GOODS_REVW_STTEMNT_ANSWER = #{answerContent},
+            GOODS_REVW_STTEMNT_STTUS  = #{answerStatus}
+        WHERE GOODS_REVW_STTEMNT_ID = #{reportId}
+    </update>
+</mapper>

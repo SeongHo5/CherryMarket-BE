@@ -1,40 +1,35 @@
 package com.cherrydev.cherrymarketbe.inquiry.service;
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
+import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryRequestDto;
 import com.cherrydev.cherrymarketbe.inquiry.dto.ModifyInquiryRequestDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 public interface InquiryService {
-    void createInquiry(final InquiryRequestDto inquiryRequestDto);
+    void createInquiry(final InquiryRequestDto inquiryRequestDto, AccountDetails accountDetails);
 
-    void deleteInquiryById(Long inquiryId);
+    void deleteInquiryById(Long inquiryId, AccountDetails accountDetails);
 
-    void deleteInquiryByCode(String inquiryCode);
+    void deleteInquiryByCode(String inquiryCode, AccountDetails accountDetails);
 
-    @Transactional(readOnly = true)
     ResponseEntity<InquiryInfoDto> getInquiryInfoById(Long inquiryId);
 
-    @Transactional(readOnly = true)
     ResponseEntity<InquiryInfoDto> getInquiryInfoByCode(String inquiryCode);
 
-    @Transactional(readOnly = true)
-    ResponseEntity<List<InquiryInfoDto>> findAll();
+    ResponseEntity<MyPage<InquiryInfoDto>> findAll(Pageable pageable);
 
-    @Transactional(readOnly = true)
-    ResponseEntity<List<InquiryInfoDto>> findAllByUser(Long userId);
+    ResponseEntity<MyPage<InquiryInfoDto>> findAllByUser(Pageable pageable, Long userId);
 
-    @Transactional(readOnly = true)
-    ResponseEntity<List<InquiryInfoDto>> findAllByPhone(String phone);
+    ResponseEntity<MyPage<InquiryInfoDto>> findAllByPhone(Pageable pageable, String phone);
 
-    ResponseEntity<InquiryInfoDto> modifyInquiryById(ModifyInquiryRequestDto requestDto);
+    ResponseEntity<InquiryInfoDto> modifyInquiryById(ModifyInquiryRequestDto requestDto,AccountDetails accountDetails);
 
-    ResponseEntity<InquiryInfoDto> modifyInquiryByCode(ModifyInquiryRequestDto requestDto);
+    ResponseEntity<InquiryInfoDto> modifyInquiryByCode(ModifyInquiryRequestDto requestDto, AccountDetails accountDetails);
 
 
-
+    ResponseEntity<MyPage<InquiryInfoDto>> findAllMyList(Pageable pageable, Long accountId);
 }

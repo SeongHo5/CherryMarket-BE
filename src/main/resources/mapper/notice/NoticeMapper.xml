@@ -16,6 +16,19 @@
         <result property="deleteDate" column="DELETED_DE"/>
     </resultMap>
 
+    <resultMap id="noticeInfoMap" type="com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto">
+        <result property="noticeId" column="NOTICE_ID"/>
+        <result property="code" column="NOTICE_CODE"/>
+        <result property="category" column="NOTICE_CTGRY"/>
+        <result property="subject" column="NOTICE_SJ"/>
+        <result property="content" column="NOTICE_CN"/>
+        <result property="status" column="NOTICE_STTUS"/>
+        <result property="displayDate" column="NOTICE_BGNDE"/>
+        <result property="hideDate" column="NOTICE_ENDDE"/>
+        <result property="createDate" column="CREAT_DE"/>
+        <result property="deleteDate" column="DELETED_DE"/>
+    </resultMap>
+
 
     <!--    INSERT-->
     <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.notice.entity.Notice">
@@ -40,7 +53,7 @@
         where NOTICE_CODE = #{code} and NOTICE_STTUS !='DELETED'
     </select>
 
-    <select id="findAll" resultMap="noticeMap">
+    <select id="findAll" resultMap="noticeInfoMap">
         select NOTICE_ID,
                NOTICE_CODE,
                NOTICE_CTGRY,
@@ -49,7 +62,8 @@
                NOTICE_STTUS,
                NOTICE_BGNDE,
                NOTICE_ENDDE,
-               CREAT_DE
+               CREAT_DE,
+               DELETED_DE
         from NOTICE
         WHERE NOTICE_STTUS !='DELETED'
         ORDER BY NOTICE_ID
