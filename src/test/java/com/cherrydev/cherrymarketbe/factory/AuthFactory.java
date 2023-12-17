@@ -5,6 +5,9 @@ import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 
 public class AuthFactory {
 
+//    public static SignInRequestDto createSignInRequestDtoA() {
+//        return new SignInRequestDto("boram17@example.org", "Password12#");
+//    }
     public static SignInRequestDto createSignInRequestDtoA() {
         return new SignInRequestDto("boram17@example.org", "Password12#");
     }
@@ -23,6 +26,10 @@ public class AuthFactory {
 
     public static SignInRequestDto createSignInRequestDtoE() {
         return new SignInRequestDto("test2@marketcherry.com", "Password12#");
+    }
+
+    public static SignInRequestDto createSignInRequestDtoF() {
+        return new SignInRequestDto("noyeongjin@example.org", "Password12#");
     }
 
 }

@@ -8,7 +8,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,7 +72,7 @@ public class FileService {
                 .filter(Objects::nonNull)
                 .forEach(file -> {
                     checkFileSizeLimit(file.getSize());
-                    checkFileFormat(Objects.requireNonNull(file.getOriginalFilename()));
+//                    checkFileFormat(Objects.requireNonNull(file.getOriginalFilename()));
                     fileNames.add(file.getOriginalFilename());
                 });
         checkFileCountLimit(fileNames.size());
@@ -82,7 +81,8 @@ public class FileService {
 
         for (MultipartFile multipartFile : multipartFiles) {
             objectMetadata.setContentLength(multipartFile.getSize());
-            objectMetadata.setContentType(MediaType.IMAGE_JPEG_VALUE);
+//            objectMetadata.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            objectMetadata.setContentType("text/plain");
 
             String fileName = dirName + DIRECTORY_SEPARATOR + multipartFile.getOriginalFilename();
             try {
@@ -107,7 +107,8 @@ public class FileService {
 
     /**
      * 다중 파일 삭제
-     * @param urls 파일 URL 목록
+     *
+     * @param urls    파일 URL 목록
      * @param dirName 삭제할 파일이 있는 디렉토리 이름
      */
     public void deleteMultipleFiles(List<String> urls, String dirName) {

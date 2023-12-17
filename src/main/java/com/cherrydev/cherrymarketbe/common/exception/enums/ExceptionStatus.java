@@ -17,8 +17,13 @@ public enum ExceptionStatus {
     NOT_SOCIAL_ACCOUNT(400, "소셜 가입 계정이 아닙니다."),
     NOT_ALLOWED_CATEGORY_NAME(400, "카테고리 이름은 한글만 가능합니다."),
     NOT_ALLOWED_EMPTY_CONTENT(400, "내용을 입력해주세요."),
+    NOT_ALLOWED_EMPTY_SUBJECT(400, "제목을 입력해주세요."),
+    NOT_ALLOWED_EMPTY_CATEGORY(400, "카테고리를 입력해주세요."),
+    NOT_ALLOWED_EMPTY_DETAIL_CATEGORY(400, "상세카테고리를 입력해주세요."),
+    NOT_ALLOWED_EMPTY_DATE(400, "날짜를 입력해주세요."),
     ADDRESS_COUNT_EXCEEDED(400, "주소는 최대 3개까지 등록할 수 있습니다."),
     DEFAULT_ADDRESS_ALREADY_EXISTS(400, "이미 등록된 기본 주소가 있습니다."),
+
 
     // 401 - Unauthorized : 비인증(인증 수단이 없음)
     NO_AUTHORIZATION(401, "인증 정보가 없습니다."),
@@ -37,6 +42,8 @@ public enum ExceptionStatus {
     EXPIRED_TOKEN(403, "만료된 토큰"),
     EXPIRED_REFRESH_TOKEN(403, "리프레시 토큰 만료"),
     CHANGE_ROLE_FORBIDDEN(403, "소셜 가입 계정은 권한을 변경할 수 없습니다."),
+    REVIEW_NOT_ALLOWED_BEFORE_DELIVERY(403, "배송이 완료된 후 리뷰를 작성해주세요."),
+
 
     // 404 - Not Found : 잘못된 리소스 접근
     NOT_FOUND_ACCOUNT(404, "존재하지 않는 계정입니다."),
@@ -62,6 +69,9 @@ public enum ExceptionStatus {
     LOCAL_ACCOUNT_ALREADY_EXIST(409, "이미 등록된 계정입니다."),
     DELETED_ACCOUNT(409, "이미 탈퇴한 계정입니다."),
     ALREADY_EXIST_COUPON(409, "이미 등록된 쿠폰입니다."),
+    ALREADY_EXIST_REVIEW(409, "이미 등록된 리뷰입니다."),
+    ALREADY_EXIST_ANSWER(409, "이미 등록된 답변입니다."),
+    ALREADY_EXIST_REPORT(409, "이미 등록된 신고입니다."),
 
     // 413 - Payload Too Large
     TOO_MANY_FILES(413, "파일은 최대 3개만 업로드 할 수 있습니다."),

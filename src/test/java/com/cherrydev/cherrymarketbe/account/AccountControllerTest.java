@@ -35,6 +35,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
+
 @Rollback
 @AutoConfigureMockMvc
 @ExtendWith(RestDocumentationExtension.class)
