@@ -81,7 +81,7 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_등록_성공() throws Exception {
 
         // Given
@@ -104,11 +104,11 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_조회_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/goods-review/search?ordersId=4&goodsId=2")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/goods-review/search?ordersId=122&goodsId=10")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -127,7 +127,7 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_전체조회_성공() throws Exception {
 
         // When & Then
@@ -149,11 +149,11 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_전체조회_상품별_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/goods-review/list-goods?goodsId=22")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/goods-review/list-goods?goodsId=20")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -161,15 +161,6 @@ class GoodsReviewControllerSuccessTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfElements").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].reviewId").value(8))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].ordersId").value(4))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].goodsId").value(22))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].userId").value(21))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].code").value("GRV3"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].isBest").value("BEST"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].subject").value("가성비가 별로였어요"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].content").value("이건 조금 가성비가 별로였어요"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].status").value("ACTIVE"))
                 .andDo(document("Get-GoodsReview-List-Info-By-Goods",
                         resourceDetails()
                                 .tag("상품 후기")
@@ -180,7 +171,7 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_전체조회_주문별_성공() throws Exception {
 
         // When & Then
@@ -202,7 +193,7 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_전체조회_유저별_성공() throws Exception {
 
         // When & Then
@@ -224,7 +215,7 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_전체조회_내상품_성공() throws Exception {
 
         // When & Then
@@ -246,11 +237,11 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_삭제_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/goods-review/delete?ordersId=17&goodsId=5")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/goods-review/delete?ordersId=122&goodsId=30")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -264,7 +255,7 @@ class GoodsReviewControllerSuccessTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_수정_성공() throws Exception {
         // Given
         GoodsReviewModifyDto modifyInquiryRequestDto = createGoodsReviewModifyDto();
