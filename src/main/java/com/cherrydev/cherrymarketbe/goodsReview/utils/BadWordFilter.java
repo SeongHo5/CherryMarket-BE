@@ -53,6 +53,7 @@ public class BadWordFilter {
     }
 
     public static String replace(String text, String pattern, String replacement, int index) {
+        System.out.println("대체하기 시작");
         StringBuilder sb = new StringBuilder();
         sb.append(text.substring(0, index));
         sb.append(replacement);
@@ -61,20 +62,22 @@ public class BadWordFilter {
     }
 
     public static String filterAndReplace(String text) {
+        System.out.println("filterAndReplace 진입");
         // 금칙어 목록 로드
         List<String> forbiddenWords = FilterWordsLoader.loadFilterWords();
 
         // 금칙어 검색 및 *로 변경 (KMP 알고리즘 사용)
         for (String forbiddenWord : forbiddenWords) {
+//            System.out.println("반복문 시작");
             int index = kmpSearch(text, forbiddenWord);
             while (index != -1) {
+                System.out.println("while 문 시작");
                 // 금칙어를 찾았을 경우, *로 변경
                 String replacement = "*".repeat(forbiddenWord.length());
                 System.out.println("Found forbidden word: " + forbiddenWord + " at index: " + index);
                 System.out.println("Original text: " + text);
                 System.out.println("Replacement: " + replacement);
                 text = replace(text, forbiddenWord, replacement, index);
-
                 // 변경된 부분 이후의 텍스트에서 금칙어 검색
                 index = kmpSearch(text, forbiddenWord);
             }

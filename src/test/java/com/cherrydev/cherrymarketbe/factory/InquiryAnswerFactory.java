@@ -8,7 +8,7 @@ public class InquiryAnswerFactory {
     //등록 성공
     public static InquiryAnwerRequestDto createInquiryAnswerA() {
         return InquiryAnwerRequestDto.builder()
-                .inquiryId(51L)
+                .inquiryId(279L)
                 .memo("문의 답변 테스트")
                 .content("테스트 성공")
                 .build();
@@ -17,7 +17,7 @@ public class InquiryAnswerFactory {
     //내용 누락
     public static InquiryAnwerRequestDto createInquiryAnswerB() {
         return InquiryAnwerRequestDto.builder()
-                .inquiryId(51L)
+                .inquiryId(277L)
                 .memo("")
                 .content("")
                 .build();
@@ -26,7 +26,7 @@ public class InquiryAnswerFactory {
     //중복
     public static InquiryAnwerRequestDto createInquiryAnswerC() {
         return InquiryAnwerRequestDto.builder()
-                .inquiryId(27L)
+                .inquiryId(276L)
                 .memo("문의 답변 중복 테스트")
                 .content("테스트 성공")
                 .build();

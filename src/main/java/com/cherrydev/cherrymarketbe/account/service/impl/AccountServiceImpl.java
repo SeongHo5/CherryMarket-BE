@@ -1,8 +1,10 @@
 package com.cherrydev.cherrymarketbe.account.service.impl;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
+import com.cherrydev.cherrymarketbe.account.dto.AccountInfoDto;
 import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
 import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.account.entity.Agreement;
 import com.cherrydev.cherrymarketbe.account.enums.ForbiddenUserName;
 import com.cherrydev.cherrymarketbe.account.enums.RegisterType;
@@ -21,15 +23,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.cherrydev.cherrymarketbe.account.dto.AccountInfoDto;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import static com.cherrydev.cherrymarketbe.account.enums.RegisterType.*;
 import static com.cherrydev.cherrymarketbe.account.enums.UserRole.ROLE_CUSTOMER;
-import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.*;
+import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.ACTIVE;
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.generateRandomCode;
 
@@ -147,6 +146,11 @@ public class AccountServiceImpl implements AccountService {
     public Account findAccountByEmail(final String email) {
         return accountMapper.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
+    }
+
+    @Override
+    public void checkDuplicateEmail(String email) {
+        checkEmailIsDuplicated(email);
     }
 
     // =============== PRIVATE METHODS =============== //

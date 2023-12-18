@@ -73,8 +73,18 @@ public class NoticeFactory {
     //공지사항 수정 - 아이디
     public static ModifyNoticeInfoRequestDto createModifyNoticeInfoA() {
         return ModifyNoticeInfoRequestDto.builder()
-                .noticeId(57L)
-                .code("NT8")
+                .noticeId(248L)
+                .category(NoticeCategory.ANNOUNCEMENT.toString())
+                .subject("공지사항 테스트 입니다.")
+                .content("테스트 시작")
+                .displayDate(Timestamp.valueOf("2023-12-05 00:00:00").toString())
+                .hideDate(Timestamp.valueOf("2023-12-05 00:00:00").toString())
+                .build();
+    }
+
+    public static ModifyNoticeInfoRequestDto createModifyNoticeInfoB() {
+        return ModifyNoticeInfoRequestDto.builder()
+                .code("NT39")
                 .category(NoticeCategory.ANNOUNCEMENT.toString())
                 .subject("공지사항 테스트 입니다.")
                 .content("테스트 시작")
