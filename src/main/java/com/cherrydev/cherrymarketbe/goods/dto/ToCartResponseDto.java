@@ -1,8 +1,8 @@
 package com.cherrydev.cherrymarketbe.goods.dto;
 
-
-import lombok.*;
-
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -42,6 +42,4 @@ public class ToCartResponseDto {
     public Integer getDiscountedPrice() {
         return discountRate != null ? price - (price * discountRate / 100) : null;
     }
-
-
 }

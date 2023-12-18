@@ -5,7 +5,6 @@ import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDto;
-import com.cherrydev.cherrymarketbe.goods.dto.GoodsInventoryResponseDto;
 import com.cherrydev.cherrymarketbe.goods.service.GoodsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
