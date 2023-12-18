@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.inquiry.dto;
 
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.inquiry.entity.Inquiry;
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryDetailType;
 import com.cherrydev.cherrymarketbe.inquiry.enums.InquiryType;
@@ -21,7 +22,6 @@ public class InquiryRequestDto {
     String status;
     String phone;
 
-
     public Inquiry toEntity() {
         return Inquiry.builder()
                 .userId(this.getUserId())
@@ -34,4 +34,15 @@ public class InquiryRequestDto {
                 .build();
     }
 
+    public Inquiry toEntity(AccountDetails accountDetails) {
+        return Inquiry.builder()
+                .userId(accountDetails.getAccount().getAccountId())
+                .code("001")
+                .type(InquiryType.valueOf(this.getType()))
+                .detailType(InquiryDetailType.valueOf(this.getDetailType()))
+                .subject(this.getSubject())
+                .content(this.getContent())
+                .status(DisplayStatus.ACTIVE)
+                .build();
+    }
 }

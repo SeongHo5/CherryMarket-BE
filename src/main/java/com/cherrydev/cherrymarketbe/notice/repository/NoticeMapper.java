@@ -1,6 +1,5 @@
 package com.cherrydev.cherrymarketbe.notice.repository;
 
-import com.cherrydev.cherrymarketbe.notice.dto.ModifyNoticeInfoRequestDto;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeInfoDto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,7 +15,7 @@ public interface NoticeMapper {
 
     Notice findByNoticeCode(String noticeCode);
 
-    List<Notice> findAll();
+    List<NoticeInfoDto> findAll();
 
     void deleteById(Long noticeId);
 

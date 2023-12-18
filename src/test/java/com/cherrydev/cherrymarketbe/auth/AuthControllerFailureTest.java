@@ -117,6 +117,7 @@ public class AuthControllerFailureTest {
     @Test
     @Transactional
     void 로그인_실패_비밀번호_불일치() throws Exception {
+
         // Given
         SignInRequestDto signInRequestDto = createSignInRequestDtoB();
         String requestBody = Jackson.toJsonString(signInRequestDto);
