@@ -100,6 +100,7 @@
     <select id = "findToCart" resultType = "com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto" parameterType = "long">
         SELECT G.GOODS_ID as goodsId,
                G.GOODS_NM as goodsName,
+               G.GOODS_CODE as goodsCode,
                G.GOODS_PRICE as price,
                G.GOODS_INVTRY as inventory,
                G.GOODS_CSTDY_TY as storageType,
@@ -180,6 +181,8 @@
             </otherwise>
         </choose>
     </select>
+
+
 
     <!-- Update -->
     <update id = "updateStatusWhenNewGoods" parameterType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
