@@ -181,6 +181,29 @@
             </otherwise>
         </choose>
     </select>
+    
+    <select id = "findInventoryByGoodsId" parameterType="com.cherrydev.cherrymarketbe.goods.dto.GoodsInventoryResponseDto">
+        SELECT GOODS_ID, GOODS_SEL_STTUS, GOODS_INVTRY
+        FROM GOODS
+        WHERE GOODS_ID = #{goodsId}
+    </select>
+
+    
+    <select id = "findNewGoods" parameterType="com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        FROM GOODS G
+                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+        ORDER BY G.CREAT_DE DESC
+        LIMIT 12
+    </select>
+
+    <select id = "findDiscountGoods" parameterType="com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        FROM GOODS G
+                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+        ORDER BY D.DSCNT_RATE DESC
+        LIMIT 12
+    </select>
 
 
 

@@ -34,6 +34,12 @@ public interface GoodsMapper {
 
     List<GoodsBasicInfoDto> findByName(String goodsName, String sortBy);
 
+    GoodsInventoryResponseDto findInventoryByGoodsId(Long goodsId);
+
+    List<GoodsBasicInfoDto> findNewGoods();
+
+    List<GoodsBasicInfoDto> findDiscountGoods();
+
 
     /* Update */
     void updateStatusWhenNewGoods(String goodsCode, String salesStatus);

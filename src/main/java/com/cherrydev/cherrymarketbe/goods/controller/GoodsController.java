@@ -5,6 +5,7 @@ import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDetailResponseDto;
 import com.cherrydev.cherrymarketbe.goods.dto.GoodsDto;
+import com.cherrydev.cherrymarketbe.goods.dto.GoodsInventoryResponseDto;
 import com.cherrydev.cherrymarketbe.goods.service.GoodsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,16 @@ public class GoodsController {
     @GetMapping("/name")
     public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> getInfoByName(final Pageable pageable, @RequestParam String goodsName, @RequestParam(required = false) String sortBy) {
         return ResponseEntity.ok(goodsService.findByName(pageable, goodsName, sortBy));
+    }
+
+    @GetMapping("/findNew")
+    public ResponseEntity<List<GoodsBasicInfoResponseDto>> getNewGoods() {
+        return ResponseEntity.ok(goodsService.findNewGoods());
+    }
+
+    @GetMapping("/findDiscount")
+    public ResponseEntity<List<GoodsBasicInfoResponseDto>> getDiscountGoods() {
+        return ResponseEntity.ok(goodsService.findDiscountGoods());
     }
 
     /* Update */

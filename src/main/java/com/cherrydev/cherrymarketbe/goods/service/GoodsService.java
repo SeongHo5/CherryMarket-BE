@@ -5,6 +5,7 @@ import com.cherrydev.cherrymarketbe.common.service.FileService;
 import com.cherrydev.cherrymarketbe.common.utils.PagingUtil;
 import com.cherrydev.cherrymarketbe.goods.dto.*;
 import com.cherrydev.cherrymarketbe.goods.exception.DiscontinuedGoodsException;
+import com.cherrydev.cherrymarketbe.goods.exception.InsufficientStockException;
 import com.cherrydev.cherrymarketbe.goods.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.goods.exception.OnSaleGoodsException;
 import com.cherrydev.cherrymarketbe.goods.repository.GoodsMapper;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -181,6 +183,87 @@ public class GoodsService {
 
         return pageResult;
     }
+
+    public boolean findInventory(Long goodsId, int requestedQuantity) {
+        GoodsInventoryResponseDto goodsInventory = goodsMapper.findInventoryByGoodsId(goodsId);
+
+        System.out.println("상태 : "+ goodsInventory.getSalesStatus());
+
+        if(goodsInventory == null) {
+            // 상품 조회 실패시 예외 발생
+            throw new NotFoundException(GOODS_NOT_FOUND);
+        } else if(goodsInventory.getSalesStatus().equals("DISCONTINUANCE")) {
+            // 단종된 상품 조회 시 예외 발생
+            throw new DiscontinuedGoodsException(DISCONTINUED_GOODS);
+        } else if(goodsInventory.getSalesStatus().equals("PAUSE")) {
+            // 중단된 상품 조회 시 예외 발생
+            throw new DiscontinuedGoodsException(PAUSE_GOODS);
+        } else if(goodsInventory.getInventory() < requestedQuantity) {
+            // 상품 재고 부족시 예외 발생
+            throw new InsufficientStockException(INSUFFICIENT_STOCK);
+        }
+
+        return true;
+    }
+
+    public List<GoodsBasicInfoResponseDto> findNewGoods() {
+        List<GoodsBasicInfoDto> basicInfoDtoList = goodsMapper.findNewGoods();
+
+        if(basicInfoDtoList == null) {
+            throw new NotFoundException(GOODS_NOT_FOUND);
+        }
+
+        List<GoodsBasicInfoResponseDto> responseDtoList = new ArrayList<>();
+
+        for(GoodsBasicInfoDto basicInfoDto : basicInfoDtoList) {
+
+            // 할인된 금액 계산
+            Integer discountedPrice = calculateDiscountedPrice(basicInfoDto.getPrice(), basicInfoDto.getDiscountRate());
+
+            // 할인된 금액과 함께 Dto 반환
+            GoodsBasicInfoResponseDto responseDto = GoodsBasicInfoResponseDto.builder()
+                                                            .goodsId(basicInfoDto.getGoodsId())
+                                                            .goodsName(basicInfoDto.getGoodsName())
+                                                            .description(basicInfoDto.getDescription())
+                                                            .price(basicInfoDto.getPrice())
+                                                            .discountRate(basicInfoDto.getDiscountRate())
+                                                            .discountedPrice(discountedPrice)
+                                                            .build();
+
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
+    }
+
+    public List<GoodsBasicInfoResponseDto> findDiscountGoods() {
+        List<GoodsBasicInfoDto> basicInfoDtoList = goodsMapper.findDiscountGoods();
+
+        if(basicInfoDtoList == null) {
+            throw new NotFoundException(GOODS_NOT_FOUND);
+        }
+
+        List<GoodsBasicInfoResponseDto> responseDtoList = new ArrayList<>();
+
+        for(GoodsBasicInfoDto basicInfoDto : basicInfoDtoList) {
+
+            // 할인된 금액 계산
+            Integer discountedPrice = calculateDiscountedPrice(basicInfoDto.getPrice(), basicInfoDto.getDiscountRate());
+
+            // 할인된 금액과 함께 Dto 반환
+            GoodsBasicInfoResponseDto responseDto = GoodsBasicInfoResponseDto.builder()
+                                                            .goodsId(basicInfoDto.getGoodsId())
+                                                            .goodsName(basicInfoDto.getGoodsName())
+                                                            .description(basicInfoDto.getDescription())
+                                                            .price(basicInfoDto.getPrice())
+                                                            .discountRate(basicInfoDto.getDiscountRate())
+                                                            .discountedPrice(discountedPrice)
+                                                            .build();
+
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
+    }
+
 
     /* Update */
     @Transactional
