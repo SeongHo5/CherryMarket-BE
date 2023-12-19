@@ -101,4 +101,13 @@
                       WHERE ACNT_ID = #{accountId}
                         AND CSTMR_ADRES_BASS_YN = TRUE)
     </select>
+
+    <select id="findDefaultByAccountId" resultMap="addressMap">
+        SELECT *
+        FROM CSTMR_ADRES
+        WHERE ACNT_ID = #{accountId}
+          AND CSTMR_ADRES_ID = #{addressId}
+          AND CSTMR_ADRES_BASS_YN = TRUE
+    </select>
+
 </mapper>
