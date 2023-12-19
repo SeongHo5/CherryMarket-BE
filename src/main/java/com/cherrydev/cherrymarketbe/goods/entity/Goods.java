@@ -30,7 +30,7 @@ public class Goods {
     public Goods(Long goodsId, String goodsName, String description, int price, int retailPrice, int inventory, String storageType, String capacity,
                  Timestamp expDate, String allergyInfo, String originPlace, String salesStatus
 
-                 ,TestDiscount discount) {
+            ,TestDiscount discount) {
         this.goodsId = goodsId;
         this.goodsName = goodsName;
         this.description = description;

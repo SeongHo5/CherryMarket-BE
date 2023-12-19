@@ -3,9 +3,15 @@ package com.cherrydev.cherrymarketbe.goods.dto;
 import lombok.Value;
 
 @Value
-public class GoodsListDto {
+public class GoodsBasicInfoDto {
 
     Long goodsId;
+
     String goodsName;
+
+    String description;
+
     int price;
+
+    Integer discountRate;
 }
