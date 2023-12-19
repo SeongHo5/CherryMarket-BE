@@ -307,7 +307,7 @@ public class GoodsService {
     }
 
     @Transactional
-    public void updateGoodsInventoryupdateGoodsInventory(Long goodsId, int quantity) {
+    public void updateGoodsInventory(Long goodsId, int quantity) {
         goodsMapper.updateGoodsInventory(goodsId, quantity);
     }
 
