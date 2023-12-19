@@ -9,8 +9,8 @@ public class GoodsReviewReportFactory {
     //등록 성공
     public static ReviewReportRequestDto createReviewReportRequestDtoA() {
         return ReviewReportRequestDto.builder()
-                .reviewId(22L)
-                .userId(159L)
+                .reviewId(209L)
+                .userId(139L)
                 .reportType("FLOODING")
                 .content("테스트 합니다.")
                 .build();
@@ -19,7 +19,7 @@ public class GoodsReviewReportFactory {
     //중복 신고
     public static ReviewReportRequestDto createReviewReportRequestDtoF() {
         return ReviewReportRequestDto.builder()
-                .reviewId(8L)
+                .reviewId(210L)
                 .userId(159L)
                 .reportType("FLOODING")
                 .content("테스트 합니다.")
@@ -29,8 +29,8 @@ public class GoodsReviewReportFactory {
     //내용 누락
     public static ReviewReportRequestDto createReviewReportRequestDtoB() {
         return ReviewReportRequestDto.builder()
-                .reviewId(8L)
-                .userId(159L)
+                .reviewId(208L)
+                .userId(139L)
                 .reportType("FLOODING")
                 .content("")
                 .build();
@@ -39,8 +39,8 @@ public class GoodsReviewReportFactory {
     //신고 카테고리 누락
     public static ReviewReportRequestDto createReviewReportRequestDtoC() {
         return ReviewReportRequestDto.builder()
-                .reviewId(8L)
-                .userId(159L)
+                .reviewId(208L)
+                .userId(139L)
                 .reportType("")
                 .content("테스트 합니다.")
                 .build();
@@ -49,7 +49,7 @@ public class GoodsReviewReportFactory {
     //신고 답변 등록
     public static ReviewReportModifyDto createReviewReportRequestDtoD() {
         return ReviewReportModifyDto.builder()
-                .reportId(11L)
+                .reportId(80L)
                 .answerContent("답변 테스트")
                 .build();
     }
@@ -57,7 +57,7 @@ public class GoodsReviewReportFactory {
     //신고 답변 누락
     public static ReviewReportModifyDto createReviewReportRequestDtoE() {
         return ReviewReportModifyDto.builder()
-                .reportId(11L)
+                .reportId(80L)
                 .answerContent("")
                 .build();
     }

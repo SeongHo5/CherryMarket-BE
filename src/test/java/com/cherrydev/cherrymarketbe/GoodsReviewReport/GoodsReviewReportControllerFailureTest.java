@@ -85,7 +85,7 @@ class GoodsReviewReportControllerFailureTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_신고_중복_실패() throws Exception {
         // Given
         ReviewReportRequestDto reviewReportRequestDto = createReviewReportRequestDtoF();
@@ -112,7 +112,7 @@ class GoodsReviewReportControllerFailureTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_신고_등록_실패_내용누락() throws Exception {
         // Given
         ReviewReportRequestDto reviewReportRequestDto = createReviewReportRequestDtoB();
@@ -138,7 +138,7 @@ class GoodsReviewReportControllerFailureTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_신고_등록_실패_카테고리_누락() throws Exception {
         // Given
         ReviewReportRequestDto reviewReportRequestDto = createReviewReportRequestDtoC();
@@ -165,7 +165,7 @@ class GoodsReviewReportControllerFailureTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "sanghyeongim@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_신고_답변_등록_실패() throws Exception {
         // Given
         ReviewReportModifyDto reviewReportModifyDto = createReviewReportRequestDtoE();

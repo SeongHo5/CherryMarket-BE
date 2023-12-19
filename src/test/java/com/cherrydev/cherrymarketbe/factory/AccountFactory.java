@@ -44,7 +44,7 @@ public class AccountFactory {
     public static SignUpRequestDto createSignUpRequestDtoC() {
         return SignUpRequestDto.builder()
                 .name("김영희")
-                .email("test1818@marketcherry.com")
+                .email("test999999@marketcherry.com")
                 .password("Testuser12#")
                 .contact(("010-1234-5678"))
                 .gender("FEMALE")

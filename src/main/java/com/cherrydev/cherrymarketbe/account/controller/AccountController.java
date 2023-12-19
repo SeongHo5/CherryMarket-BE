@@ -64,4 +64,12 @@ public class AccountController {
         accountService.deleteAccount(accountDetails);
     }
 
+    /**
+     * 이메일 중복체크 확인
+     */
+    @GetMapping("/check-email")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void checkDuplicateEmail(final @Valid @RequestParam String email) {
+        accountService.checkDuplicateEmail(email);
+    }
 }
