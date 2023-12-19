@@ -24,6 +24,21 @@ public class AddressController {
 
     private final AddressService addressService;
 
+
+    /**
+     * 회원가입 시 배송지 추가
+     * @param accountEmail 로그인한 계정 정보
+     * @param addAddressRequestDto 추가할 배송지 정보
+     */
+    @PostMapping("/add-on-signup")
+    @ResponseStatus(HttpStatus.OK)
+    public void addAressOnSignUp(
+            final @RequestParam String accountEmail,
+            final @RequestBody AddAddressRequestDto addAddressRequestDto
+    ) {
+        addressService.addAressOnSignUp(accountEmail, addAddressRequestDto);
+    }
+
     /**
      * 배송지 추가
      * @param accountDetails 로그인한 계정 정보

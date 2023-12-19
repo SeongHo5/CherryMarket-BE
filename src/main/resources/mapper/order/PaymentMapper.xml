@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cherrydev.cherrymarketbe.order.repository.PaymentMapper">
+
+    <resultMap id="PaymentDetailInfoResultMap" type="com.cherrydev.cherrymarketbe.order.domain.PaymentDetailsInfo">
+    <result property="orderCode" column="ORDERS_CODE"/>
+    <result property="totalAmount" column="TOTAL_AMOUNT"/>
+    <result property="discount" column="DSCNT_AMOUNT"/>
+    <result property="deliveryFee" column="PYMNT_DLIV_CT"/>
+    <result property="rewordAmount" column="USE_REWARD"/>
+    <result property="couponAmount" column="USE_COUPON"/>
+    </resultMap>
+    <resultMap id="PaymentDetailResultMap" type="com.cherrydev.cherrymarketbe.order.domain.PaymentDetailsInfo">
+        <result property="accountId" column="ACNT_ID"/>
+        <result property="orderId" column="ORDERS_ID"/>
+        <result property="orderCode" column="ORDERS_CODE"/>
+        <result property="totalAmount" column="TOTAL_AMOUNT"/>
+        <result property="discount" column="DSCNT_AMOUNT"/>
+        <result property="deliveryFee" column="PYMNT_DLIV_CT"/>
+        <result property="rewordAmount" column="USE_REWARD"/>
+        <result property="couponAmount" column="USE_COUPON"/>
+
+        <association property="payment" javaType="com.cherrydev.cherrymarketbe.payments.model.payment.Payment">
+            <result property="status" column="PYMNT_STTUS" javaType="com.cherrydev.cherrymarketbe.payments.model.payment.Status"/>
+            <result property="method" column="PYMNT_MTH"/>
+            <result property="approvedAt" column="PYMNT_DE"/>
+            <association property="card" javaType="com.cherrydev.cherrymarketbe.payments.model.payment.Card">
+                <result property="amount" column="PYMNT_AMOUNT"/>
+                <result property="number" column="PYMNT_NO"/>
+                <result property="acquirerCode" column="PYMNT_KND"/>
+                <result property="installmentPlanMonths" column="PYMNT_INSTLMT"/>
+                <result property="approveNo" column="PYMNT_CONFM_NUMBER"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="getByOrderCode" resultMap="PaymentDetailResultMap">
+        select
+            ACNT_ID,
+            ORDERS_ID,
+            ORDERS_CODE,
+            PYMNT_STTUS,
+            PYMNT_MTH,
+            PYMNT_NO,
+            PYMNT_KND,
+            PYMNT_INSTLMT,
+            PYMNT_DE,
+            PYMNT_AMOUNT,
+            PYMNT_CONFM_NUMBER,
+            TOTAL_AMOUNT,
+            DSCNT_AMOUNT,
+            PYMNT_DLIV_CT,
+            USE_REWARD,
+            USE_COUPON
+        from PYMNT_DETAIL
+        where ORDERS_CODE = #{orderCode}
+    </select>
+
+    <select id="findByOrderCode" resultMap="PaymentDetailInfoResultMap">
+        WITH SumPayments AS (
+            SELECT
+                *,
+                ROW_NUMBER() OVER (PARTITION BY ORDERS_CODE ORDER BY CREATE_DE DESC) AS rn
+            FROM PYMNT_DETAIL
+            WHERE ORDERS_CODE = #{orderCode}
+        )
+        SELECT
+            ORDERS_CODE,
+            MAX(CASE WHEN rn = 1 THEN PYMNT_STTUS ELSE NULL END) as PYMNT_STTUS,
+            MAX(CASE WHEN rn = 1 THEN PYMNT_MTH ELSE NULL END) as PYMNT_MTH,
+            MAX(CASE WHEN rn = 1 THEN PYMNT_NO ELSE NULL END) as PYMNT_NO,
+            MAX(CASE WHEN rn = 1 THEN PYMNT_KND ELSE NULL END) as PYMNT_KND,
+            MAX(CASE WHEN rn = 1 THEN PYMNT_INSTLMT ELSE NULL END) as PYMNT_INSTLMT,
+            MAX(CASE WHEN rn = 1 THEN PYMNT_DE ELSE NULL END) as PYMNT_DE,
+            SUM(PYMNT_AMOUNT) as PYMNT_AMOUNT,
+            MAX(CASE WHEN rn = 1 THEN PYMNT_CONFM_NUMBER ELSE NULL END) as PYMNT_CONFM_NUMBER,
+            SUM(TOTAL_AMOUNT) as TOTAL_AMOUNT,
+            SUM(DSCNT_AMOUNT) as DSCNT_AMOUNT,
+            SUM(PYMNT_DLIV_CT) as PYMNT_DLIV_CT,
+            SUM(USE_REWARD) as USE_REWARD,
+            SUM(USE_COUPON) as USE_COUPON
+        FROM SumPayments
+        GROUP BY ORDERS_CODE;
+    </select>
+
+    <insert id="saveCancelData">
+        insert into PYMNT_DETAIL (
+            ACNT_ID,
+            ORDERS_ID,
+            ORDERS_CODE,
+            PYMNT_STTUS,
+            PYMNT_MTH,
+            PYMNT_NO,
+            PYMNT_KND,
+            PYMNT_INSTLMT,
+            PYMNT_DE,
+            PYMNT_AMOUNT,
+            PYMNT_CONFM_NUMBER,
+            TOTAL_AMOUNT,
+            DSCNT_AMOUNT,
+            PYMNT_DLIV_CT,
+            USE_REWARD,
+            USE_COUPON,
+            CREATE_DE
+        )
+        values (
+                   #{accountId},
+                   #{orderId},
+                   #{orderCode},
+                   #{payment.status},
+                   #{payment.method},
+                   #{payment.card.number},
+                   #{payment.card.acquirerCode},
+                   #{payment.card.installmentPlanMonths},
+                   #{payment.approvedAt},
+                   -#{payment.card.amount},
+                   #{payment.card.approveNo},
+                   -#{amountInfo.totalAmount},
+                   -#{amountInfo.discount},
+                   -#{amountInfo.deliveryFee},
+                   -#{amountInfo.rewordAmount},
+                   -#{amountInfo.couponAmount},
+                   now()
+               )
+    </insert>
+
+    <insert id="save">
+        insert into PYMNT_DETAIL (
+            ACNT_ID,
+            ORDERS_ID,
+            ORDERS_CODE,
+            PYMNT_STTUS,
+            PYMNT_MTH,
+            PYMNT_NO,
+            PYMNT_KND,
+            PYMNT_INSTLMT,
+            PYMNT_DE,
+            PYMNT_AMOUNT,
+            PYMNT_CONFM_NUMBER,
+            TOTAL_AMOUNT,
+            DSCNT_AMOUNT,
+            PYMNT_DLIV_CT,
+            USE_REWARD,
+            USE_COUPON,
+            CREATE_DE
+        )
+        values (
+                   #{accountId},
+                   #{orderId},
+                   #{orderCode},
+                   #{payment.status},
+                   #{payment.method},
+                   #{payment.card.number},
+                   #{payment.card.acquirerCode},
+                   #{payment.card.installmentPlanMonths},
+                   #{payment.approvedAt},
+                   #{payment.card.amount},
+                   #{payment.card.approveNo},
+                   #{amountInfo.totalAmount},
+                   #{amountInfo.discount},
+                   #{amountInfo.deliveryFee},
+                   #{amountInfo.rewordAmount},
+                   #{amountInfo.couponAmount},
+                   now()
+               )
+    </insert>
+
+</mapper>

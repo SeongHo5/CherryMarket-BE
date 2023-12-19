@@ -1,14 +1,18 @@
 package com.cherrydev.cherrymarketbe.order.entity;
 
 
+import com.cherrydev.cherrymarketbe.order.domain.AmountInfo;
+import com.cherrydev.cherrymarketbe.order.domain.GoodsInfo;
 import com.cherrydev.cherrymarketbe.order.enums.OrderStatus;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.cherrydev.cherrymarketbe.payments.model.payment.Payment;
+import lombok.*;
 
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Order {
 
@@ -20,21 +24,25 @@ public class Order {
 
     private OrderStatus orderStatus;
 
+    private String orderName;
 
-    @Builder
-    public Order(Long orderId, Long accountId, String orderCode, OrderStatus orderStatus) {
-        this.orderId = orderId;
-        this.accountId = accountId;
-        this.orderCode = orderCode;
-        this.orderStatus = orderStatus;
-    }
+    private Long representativeGoodsId;
 
-    public static String createOrderCode(){
-        return UUID.randomUUID().toString().substring(16).replace("-","").toUpperCase();
-    }
+    private String representativeGoodsCode;
+
+    private List<GoodsInfo> goodsInfo;
+
+    private AmountInfo amountInfo;
+
+    private Payment payment;
+
+    private Timestamp createdAt;
+
 
     public boolean isDeleted() {
         return this.orderStatus == OrderStatus.DELETED;
     }
+
+
 
 }

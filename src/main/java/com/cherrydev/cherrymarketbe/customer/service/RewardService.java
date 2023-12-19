@@ -6,6 +6,7 @@ import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.customer.dto.reward.AddRewardRequestDto;
 import com.cherrydev.cherrymarketbe.customer.dto.reward.RewardInfoDto;
 import com.cherrydev.cherrymarketbe.customer.entity.CustomerReward;
+import com.cherrydev.cherrymarketbe.customer.enums.RewardGrantType;
 import com.cherrydev.cherrymarketbe.customer.repository.CustomerRewardMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,23 +55,33 @@ public class RewardService {
 
     private RewardInfoDto.RewardSummaryDto generateRewardSummary(final List<CustomerReward> rewards) {
         Integer totalReward = rewards.stream()
-                .mapToInt(CustomerReward::getAmounts)
-                .sum();
-
-        Integer availabledReward = rewards.stream()
-                .filter(credit -> !credit.getIsUsed() && credit.getExpiredAt().isAfter(LocalDate.now()))
+                .filter(reward -> reward.getRewardGrantType() != RewardGrantType.USE)
                 .mapToInt(CustomerReward::getAmounts)
                 .sum();
 
         Integer usedReward = rewards.stream()
-                .filter(CustomerReward::getIsUsed)
+                .filter(reward -> reward.getRewardGrantType() == RewardGrantType.USE)
                 .mapToInt(CustomerReward::getAmounts)
                 .sum();
 
         Integer expiredReward = rewards.stream()
                 .filter(credit -> !credit.getIsUsed() && credit.getExpiredAt().isBefore(LocalDate.now()))
+                .filter(reward -> reward.getRewardGrantType() != RewardGrantType.USE)
                 .mapToInt(CustomerReward::getAmounts)
                 .sum();
+
+        Integer availabledReward = totalReward - usedReward - expiredReward;
+
+//        Integer usedReward = rewards.stream()
+//                .filter(CustomerReward::getIsUsed)
+//                .mapToInt(CustomerReward::getAmounts)
+//                .sum();
+
+//        Integer availabledReward = rewards.stream()
+//                .filter(credit -> !credit.getIsUsed() && credit.getExpiredAt().isBefore(LocalDate.now()))
+//                .filter(reward -> reward.getRewardGrantType() != RewardGrantType.USE)
+//                .mapToInt(CustomerReward::getAmounts)
+//                .sum();
 
         return RewardInfoDto.RewardSummaryDto.builder()
                 .totalRewards(totalReward)

@@ -14,7 +14,7 @@ public record CartsByStorageType(
         this(
                 carts.stream()
                         .filter(Cart::isGoodsAvailable)
-                        .map(CartDetails::addGoods)
+                        .map(CartDetails::getGoodsDetails)
                         .collect(Collectors.groupingBy(CartDetails::storageType))
         );
     }

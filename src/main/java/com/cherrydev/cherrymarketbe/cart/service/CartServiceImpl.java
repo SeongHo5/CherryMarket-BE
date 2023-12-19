@@ -4,6 +4,9 @@ import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.cart.dto.*;
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.cart.repository.CartMapper;
+import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
+import com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto;
+import com.cherrydev.cherrymarketbe.goods.service.GoodsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.CONFLICT_CART_ITEM;
+
 @Service
 @Slf4j
 @Transactional(readOnly = true)
@@ -19,10 +24,12 @@ import java.util.List;
 public class CartServiceImpl implements CartService {
 
     private final CartMapper cartMapper;
+    private final GoodsService goodsService;
 
     @Transactional
     @Override
     public ResponseEntity<CartsByStorageType> getAvailableCarts(AccountDetails accountDetails) {
+
         List<Cart> cartItems = cartMapper.findCartsByAccountId(accountDetails.getAccount().getAccountId());
         return ResponseEntity
                 .ok()
@@ -45,7 +52,14 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public void addCartItem(AddCart requestDto, AccountDetails accountDetails) {
-        Cart cart = requestDto.addCart(accountDetails.getAccount());
+        ToCartResponseDto responseDto = goodsService.findToCart(requestDto.goodsId());
+
+        Cart cart = requestDto.getCart(accountDetails, responseDto);
+
+        if (cartMapper.existsByAccountIdAndGoodsId(accountDetails.getAccount().getAccountId(), requestDto.goodsId())) {
+            throw new DuplicatedException(CONFLICT_CART_ITEM);
+        }
+
         cartMapper.save(cart);
     }
 
@@ -61,6 +75,7 @@ public class CartServiceImpl implements CartService {
     public void deleteCartItem(Long cartId) {
         cartMapper.delete(cartId);
     }
+
 
 
 }

@@ -2,6 +2,7 @@ package com.cherrydev.cherrymarketbe.customer.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
+import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.customer.dto.address.AddAddressRequestDto;
@@ -26,9 +27,21 @@ import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatu
 @RequiredArgsConstructor
 public class AddressService {
 
+    private final AccountServiceImpl accountService;
     private final CustomerAddressMapper customerAddressMapper;
 
     private static final int MAX_ADDRESS_COUNT = 3;
+
+    @Transactional
+    public void addAressOnSignUp(
+            final String accountEmail,
+            final AddAddressRequestDto addAddressRequestDto
+
+    ) {
+        Account findAccount = accountService.findAccountByEmail(accountEmail);
+        CustomerAddress customerAddress = addAddressRequestDto.toEntity(findAccount);
+        customerAddressMapper.save(customerAddress);
+    }
 
     @Transactional
     public void addAddress(
@@ -133,5 +146,6 @@ public class AddressService {
                 .addressDetail(customerAddress.getAddressDetail())
                 .build();
     }
+
 
 }
