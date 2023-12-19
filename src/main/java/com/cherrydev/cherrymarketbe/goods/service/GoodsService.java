@@ -51,11 +51,6 @@ public class GoodsService {
 
     /* Select */
     public MyPage<GoodsBasicInfoResponseDto> findAll(final Pageable pageable, String sortBy) {
-        // return PagingUtil.createPage(pageable, () -> {
-        //     PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
-        //     return goodsMapper.findAll(sortBy);
-        // });
-
 
         MyPage<GoodsBasicInfoResponseDto> pageResult = PagingUtil.createPage(pageable, () -> {
             PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
@@ -68,10 +63,7 @@ public class GoodsService {
         if(pageResult.getContent().isEmpty()) {
             throw new NotFoundException(GOODS_NOT_FOUND);
         }
-
         return pageResult;
-
-
     }
 
 
@@ -375,6 +367,4 @@ public class GoodsService {
             return price;
         }
     }
-
-
 }
