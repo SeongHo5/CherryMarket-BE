@@ -8,22 +8,23 @@
         <result property="cartId" column="CART_ID"/>
         <result property="quantity" column="CART_QY"/>
 
-
-        <association property="goods" javaType="com.cherrydev.cherrymarketbe.goods.entity.Goods">
+        <association property="goods" javaType="com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto">
             <result property="goodsId" column="GOODS_ID"/>
             <result property="goodsName" column="GOODS_NM"/>
+            <result property="goodsCode" column="GOODS_CODE"/>
             <result property="price" column="GOODS_PRICE"/>
             <result property="inventory" column="GOODS_INVTRY"/>
             <result property="storageType" column="GOODS_CSTDY_TY"/>
             <result property="salesStatus" column="GOODS_SEL_STTUS"/>
-
-            <association property="discount" notNullColumn="DSCNT_ID" javaType="com.cherrydev.cherrymarketbe.cart.entity.TestDiscount">
-                <result property="discountId" column="DSCNT_ID"/>
-                <result property="discountType" column="DSCNT_TY"/>
-                <result property="discountRate" column="DSCNT_RATE"/>
-            </association>
+            <result property="discountRate" column="DSCNT_RATE"/>
         </association>
     </resultMap>
+
+    <select id="existsByAccountIdAndGoodsId" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM CART
+        WHERE ACNT_ID = #{accountId} AND GOODS_ID = #{goodsId}
+    </select>
 
     <select id="findCartsByAccountId" parameterType="Long" resultMap="cartResultMap">
         select
@@ -31,12 +32,11 @@
             goods.GOODS_ID,
             goods.GOODS_SEL_STTUS,
             goods.GOODS_NM,
+            goods.GOODS_CODE,
             goods.GOODS_CSTDY_TY,
             cart.CART_QY,
             goods.GOODS_PRICE,
             goods.GOODS_INVTRY,
-            discount.DSCNT_ID,
-            discount.DSCNT_TY,
             discount.DSCNT_RATE
         from  CART cart
                   join GOODS goods on cart.GOODS_ID = goods.GOODS_ID
@@ -45,10 +45,11 @@
     </select>
 
     <select id="findByCartId">
-        select CART_QY
+        select *
         from CART
         where CART_ID = #{cartId}
     </select>
+
 
     <insert id="save" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
         insert into CART (ACNT_ID, GOODS_ID, CART_QY, CREAT_DE, UPDT_DE)

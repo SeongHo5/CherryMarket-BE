@@ -1,39 +1,34 @@
 package com.cherrydev.cherrymarketbe.cart.dto;
 
-import com.cherrydev.cherrymarketbe.account.entity.Account;
+import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus;
-import com.cherrydev.cherrymarketbe.goods.entity.Goods;
+import com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import net.sf.jsqlparser.util.validation.ValidationException;
 
 @Builder
 public record AddCart(
-        @NotNull Long accountId,
         @NotNull Long goodsId,
         @NotNull Integer quantity
 ) {
 
-    public Cart addCart(Account account) {
+    public Cart getCart(AccountDetails accountDetails, ToCartResponseDto responseDto) {
 
         validateFields();
 
-        Goods goods = Goods.fromGoodsId(this.goodsId);
-
         return Cart.builder()
-                .accountId(account.getAccountId())
+                .accountId(accountDetails.getAccount().getAccountId())
                 .quantity(this.quantity)
-                .goods(goods)
+                .goods(responseDto)
                 .build();
+
+
     }
 
     private void validateFields() {
-        if (this.accountId == null) {
-            throw new NotFoundException(ExceptionStatus.NOT_FOUND_ACCOUNT);
-        }
         if (this.goodsId == null) {
             throw new NotFoundException(ExceptionStatus.NOT_FOUND_GOODS);
         }
