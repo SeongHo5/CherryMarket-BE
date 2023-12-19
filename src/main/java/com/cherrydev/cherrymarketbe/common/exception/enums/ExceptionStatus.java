@@ -24,7 +24,6 @@ public enum ExceptionStatus {
     ADDRESS_COUNT_EXCEEDED(400, "주소는 최대 3개까지 등록할 수 있습니다."),
     DEFAULT_ADDRESS_ALREADY_EXISTS(400, "이미 등록된 기본 주소가 있습니다."),
 
-
     // 401 - Unauthorized : 비인증(인증 수단이 없음)
     NO_AUTHORIZATION(401, "인증 정보가 없습니다."),
     INVALID_ID_OR_PW(401, "아이디 혹은 비밀번호가 틀렸습니다."),
@@ -59,6 +58,8 @@ public enum ExceptionStatus {
     NOT_FOUND_COUPON(404, "등록되지 않은 쿠폰 입니다."),
     NOT_FOUND_FILE(404, "파일이 존재하지 않습니다."),
     NOT_FOUND_REDIS_KEY(404, "존재하지 않는 REDIS KEY 입니다."),
+    NOT_FOUND_ORDERCODE(404, "존재하지 않는 주문 입니다."),
+    NOT_FOUND_PAYMENT(404, "존재하지 않는 결제정보 입니다."),
 
     // 405 - Method Not Allowed
     METHOD_NOT_ALLOWED(405, "허용되지 않는 HTTP 메서드입니다."),
@@ -69,6 +70,9 @@ public enum ExceptionStatus {
     LOCAL_ACCOUNT_ALREADY_EXIST(409, "이미 등록된 계정입니다."),
     DELETED_ACCOUNT(409, "이미 탈퇴한 계정입니다."),
     ALREADY_EXIST_COUPON(409, "이미 등록된 쿠폰입니다."),
+    CONFLICT_CART_ITEM(409, "이미 등록된 상품입니다."),
+    CONFLICT_ORDER(409, "이미 존재하는 주문입니다."),
+    CONFLICT_CANCELED_ORDER(409, "이미 취소된 주문입니다."),
     ALREADY_EXIST_REVIEW(409, "이미 등록된 리뷰입니다."),
     ALREADY_EXIST_ANSWER(409, "이미 등록된 답변입니다."),
     ALREADY_EXIST_REPORT(409, "이미 등록된 신고입니다."),

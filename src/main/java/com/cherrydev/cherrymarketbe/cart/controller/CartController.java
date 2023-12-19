@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class CartController {
      */
     @GetMapping ("/refresh-available")
     @ResponseStatus(HttpStatus.OK)
-    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<CartsByStorageType> getAvailableCarts (
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
@@ -36,7 +37,7 @@ public class CartController {
      */
     @GetMapping("/refresh-unavailable")
     @ResponseStatus(HttpStatus.OK)
-    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UnavailableCarts> getUnavailableCarts (
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
@@ -48,11 +49,12 @@ public class CartController {
      */
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public void addItemToCart (
             final @RequestBody AddCart addCart,
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
+
         cartService.addCartItem(addCart, accountDetails);
     }
 
@@ -61,7 +63,7 @@ public class CartController {
      */
     @PatchMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public void updateQuantity (
             final @RequestBody ChangeCart requestChangeDto
     ) {
@@ -73,11 +75,11 @@ public class CartController {
      */
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
-    //@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public void deleteCartItem (
             final @RequestParam Long cartId
     ) {
-       cartService.deleteCartItem(cartId);
+        cartService.deleteCartItem(cartId);
     }
 
 }
