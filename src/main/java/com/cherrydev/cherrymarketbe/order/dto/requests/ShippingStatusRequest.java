@@ -1,27 +1,24 @@
-package com.cherrydev.cherrymarketbe.order.dto;
+package com.cherrydev.cherrymarketbe.order.dto.requests;
 
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus;
-import com.cherrydev.cherrymarketbe.order.entity.Order;
+import com.cherrydev.cherrymarketbe.order.entity.ShippingDetails;
 import com.cherrydev.cherrymarketbe.order.enums.OrderStatus;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record ChangeOrderStatus(
-        @NotNull Long accoungId,
-        @NotNull String orderCode,
-        @NotNull String orderStatus
+public record ShippingStatusRequest(
+        String orderCode,
+        String deliveryStatus
         ) {
 
-    public Order changeOrderStatus() {
+    public ShippingDetails changeDeliveryStatus() {
 
         validateFields();
 
-        return Order.builder()
-                .accountId(this.accoungId)
-                .orderCode(this.orderCode)
-                .orderStatus(OrderStatus.valueOf(orderStatus))
+        return ShippingDetails.builder()
+                .orderCode(orderCode)
+                .deliveryStatus(deliveryStatus)
                 .build();
     }
 
@@ -29,12 +26,12 @@ public record ChangeOrderStatus(
         if (this.orderCode == null) {
             throw new NotFoundException(ExceptionStatus.INVALID_INPUT_VALUE);
         }
-        if (this.orderStatus == null) {
+        if (this.deliveryStatus == null) {
             throw new NotFoundException(ExceptionStatus.INVALID_INPUT_VALUE);
         }
 
         try {
-            OrderStatus.valueOf(orderStatus.toUpperCase());
+            OrderStatus.valueOf(deliveryStatus.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new NotFoundException(ExceptionStatus.INVALID_INPUT_VALUE);
         }

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.order.repository.ShippingMapper">
+
+    <select id="findByOrderCode" parameterType="String" resultType="com.cherrydev.cherrymarketbe.order.domain.ShippingDetailsInfo">
+        SELECT
+            ORDERS_CODE as orderCode,
+            DLVY_STTUS as shippingStatus,
+            DLVY_RECPTR as recipient,
+            DLVY_RECPTR_CTTPC as recipientContact,
+            DLVY_ZIP as zipCode,
+            DLVY_ADRES_RDNM as address,
+            DLVY_ADRES_DETAIL as addressDetail,
+            DLVY_ADRES_PLACE as place,
+            DLVY_ADRES_REQUEST as request
+        FROM DLVY_DETAIL
+        WHERE ORDERS_CODE = #{orderCode}
+          AND CHECK_CHANGE_ADRES = 'N';
+    </select>
+
+
+    <select id="findByDefaultAddress" parameterType="Long" resultType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+        select
+            CSTMR_ADRES_ID as addressId,
+            CSTMR_ADRES_ZIP as zipCode,
+            CSTMR_ADRES_RDNMADR as address,
+            CSTMR_ADRES_DETAIL as addressDetail
+        from CSTMR_ADRES
+        where ACNT_ID=#{accountId} AND CSTMR_ADRES_BASS_YN=1;
+    </select>
+
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.order.entity.ShippingDetails">
+        insert into DLVY_DETAIL
+            (
+             ORDERS_ID,
+             ACNT_ID,
+             ORDERS_CODE,
+             DLVY_STTUS,
+             DLVY_RECPTR,
+             DLVY_RECPTR_CTTPC,
+             DLVY_ZIP,
+             DLVY_ADRES_RDNM,
+             DLVY_ADRES_DETAIL,
+             CREATE_DE
+            )
+        values (
+                   #{orderId},
+                   #{account.accountId},
+                   #{orderCode},
+                   'ORDER_RECEIVED',
+                   #{account.name},
+                   #{account.contact},
+                   #{customerAddress.zipCode},
+                   #{customerAddress.address},
+                   #{customerAddress.addressDetail},
+                   now()
+               );
+    </insert>
+
+    <update id="updateStatus" parameterType="com.cherrydev.cherrymarketbe.order.entity.ShippingDetails">
+        update DLVY_DETAIL
+        set
+            DLVY_STTUS = #{deliveryStatus},
+            UPDT_DE = now()
+        where ORDERS_CODE = #{orderCode}
+    </update>
+
+</mapper>
