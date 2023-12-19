@@ -35,7 +35,7 @@ public class GoodsController {
 
     /* Select */
     @GetMapping("/listAll")
-    public ResponseEntity<MyPage<GoodsDto>> getListAll(final Pageable pageable, @RequestParam(required = false) String sortBy) {
+    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> getListAll(final Pageable pageable, @RequestParam(required = false) String sortBy) {
         return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
     }
 
@@ -93,7 +93,7 @@ public class GoodsController {
 
     /* Delete */
     @DeleteMapping("/delete")
-    public ResponseEntity<MyPage<GoodsDto>> delete(@RequestParam Long goodsId, final Pageable pageable, @RequestParam(required = false) String sortBy) {
+    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> delete(@RequestParam Long goodsId, final Pageable pageable, @RequestParam(required = false) String sortBy) {
         goodsService.deleteById(goodsId);
         return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
     }

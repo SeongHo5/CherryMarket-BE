@@ -12,7 +12,7 @@ public interface GoodsMapper {
     void save(GoodsDto goodsDto);
 
     /* Select */
-    List<GoodsDto> findAll(String sortBy);
+    List<GoodsBasicInfoDto> findAll(String sortBy);
 
     GoodsDto findById(Long goodsId);
 
