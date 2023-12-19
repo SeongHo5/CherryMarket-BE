@@ -3,6 +3,7 @@ package com.cherrydev.cherrymarketbe.notice;
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
+import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
@@ -34,7 +35,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoF;
 import static com.cherrydev.cherrymarketbe.factory.NoticeFactory.createModifyNoticeInfoA;
+import static com.cherrydev.cherrymarketbe.factory.NoticeFactory.createModifyNoticeInfoB;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -85,6 +88,37 @@ class NoticeControllerSuccessTest {
 
     @Test
     @Transactional
+    void 로그인_성공() throws Exception {
+        // Given
+        SignInRequestDto signInRequestDto = createSignInRequestDtoF();
+        String requestBody = Jackson.toJsonString(signInRequestDto);
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
+                        .secure(true)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userName").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userRole").value("ROLE_CUSTOMER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.grantType").value("Bearer "))
+                .andExpect(MockMvcResultMatchers.header().exists("Set-Cookie"))
+                .andDo(document("Sign-In-Success",
+                        resourceDetails()
+                                .tag("인증 관리")
+                                .description("로그인 성공"),
+                        responseFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("userRole").description("사용자 권한"),
+                                fieldWithPath("grantType").description("토큰 타입"),
+                                fieldWithPath("accessToken").description("액세스 토큰"),
+                                fieldWithPath("refreshToken").description("리프레시 토큰"),
+                                fieldWithPath("expiresIn").description("토큰 만료 시간")
+                        )));
+    }
+
+    @Test
+    @Transactional
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 공지사항_등록_성공() throws Exception {
         // Given
@@ -111,7 +145,7 @@ class NoticeControllerSuccessTest {
     void 공지사항_조회_아이디_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/notice/notice-info/search-id?noticeId=19")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/notice/notice-info/search-id?noticeId=248")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -157,7 +191,7 @@ class NoticeControllerSuccessTest {
     void 공지사항_삭제_코드_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/notice/delete-notice-code?code=NT7")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/notice/delete-notice-code?code=NT39")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -175,7 +209,7 @@ class NoticeControllerSuccessTest {
     void 공지사항_삭제_아이디_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/notice/delete-notice-id?noticeId=49")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/notice/delete-notice-id?noticeId=249")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -226,7 +260,7 @@ class NoticeControllerSuccessTest {
     @WithUserDetails(value = "admin@devcherry.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 공지사항_수정_코드_성공() throws Exception {
         // Given
-        ModifyNoticeInfoRequestDto modifyNoticeInfoRequestDto = createModifyNoticeInfoA();
+        ModifyNoticeInfoRequestDto modifyNoticeInfoRequestDto = createModifyNoticeInfoB();
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/notice/modify-code")
                         .secure(true)

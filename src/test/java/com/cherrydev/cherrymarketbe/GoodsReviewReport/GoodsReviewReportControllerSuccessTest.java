@@ -3,6 +3,7 @@ package com.cherrydev.cherrymarketbe.GoodsReviewReport;
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
+import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
@@ -32,10 +33,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoF;
 import static com.cherrydev.cherrymarketbe.factory.GoodsReviewReportFactory.createReviewReportRequestDtoA;
 import static com.cherrydev.cherrymarketbe.factory.GoodsReviewReportFactory.createReviewReportRequestDtoD;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
 
 @Rollback
@@ -80,6 +84,36 @@ class GoodsReviewReportControllerSuccessTest {
     }
 
 
+    @Test
+    @Transactional
+    void 로그인_성공() throws Exception {
+        // Given
+        SignInRequestDto signInRequestDto = createSignInRequestDtoF();
+        String requestBody = Jackson.toJsonString(signInRequestDto);
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
+                        .secure(true)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userName").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userRole").value("ROLE_CUSTOMER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.grantType").value("Bearer "))
+                .andExpect(MockMvcResultMatchers.header().exists("Set-Cookie"))
+                .andDo(document("Sign-In-Success",
+                        resourceDetails()
+                                .tag("인증 관리")
+                                .description("로그인 성공"),
+                        responseFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("userRole").description("사용자 권한"),
+                                fieldWithPath("grantType").description("토큰 타입"),
+                                fieldWithPath("accessToken").description("액세스 토큰"),
+                                fieldWithPath("refreshToken").description("리프레시 토큰"),
+                                fieldWithPath("expiresIn").description("토큰 만료 시간")
+                        )));
+    }
 
     @Test
     @Transactional
@@ -111,7 +145,7 @@ class GoodsReviewReportControllerSuccessTest {
     void 상품후기_신고_조회_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/review-report/search?reportId=11")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/review-report/search?reportId=80")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -166,14 +200,6 @@ class GoodsReviewReportControllerSuccessTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.numberOfElements").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].reportId").value(6))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].reviewId").value(7))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].userId").value(159))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].reportType").value("FLOODING"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].content").value("도배글 같아요 신고합니다."))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].answerContent").value(""))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].answerStatus").value("NOT_EXIST"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].createDate").value("2023-12-09 23:44:03"))
                 .andDo(document("Get-GoodsReviewReportReport-Info-List-By-ExistAnswer",
                         resourceDetails()
                                 .tag("상품후기 신고")

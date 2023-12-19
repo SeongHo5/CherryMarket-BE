@@ -3,6 +3,7 @@ package com.cherrydev.cherrymarketbe.inquiry;
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
+import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
 import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
@@ -32,6 +33,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoF;
 import static com.cherrydev.cherrymarketbe.factory.InquiryFactory.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -79,6 +81,38 @@ class InquiryControllerSuccessTest {
         }
     }
 
+
+    @Test
+    @Transactional
+    void 로그인_성공() throws Exception {
+        // Given
+        SignInRequestDto signInRequestDto = createSignInRequestDtoF();
+        String requestBody = Jackson.toJsonString(signInRequestDto);
+
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
+                        .secure(true)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userName").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userRole").value("ROLE_CUSTOMER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.grantType").value("Bearer "))
+                .andExpect(MockMvcResultMatchers.header().exists("Set-Cookie"))
+                .andDo(document("Sign-In-Success",
+                        resourceDetails()
+                                .tag("인증 관리")
+                                .description("로그인 성공"),
+                        responseFields(
+                                fieldWithPath("userName").description("사용자 이름"),
+                                fieldWithPath("userRole").description("사용자 권한"),
+                                fieldWithPath("grantType").description("토큰 타입"),
+                                fieldWithPath("accessToken").description("액세스 토큰"),
+                                fieldWithPath("refreshToken").description("리프레시 토큰"),
+                                fieldWithPath("expiresIn").description("토큰 만료 시간")
+                        )));
+    }
+
     @Test
     @Transactional
     @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
@@ -108,7 +142,7 @@ class InquiryControllerSuccessTest {
     void 문의_조회_아이디_성공() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/search-id?inquiryId=39")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/search-id?inquiryId=276")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -132,7 +166,7 @@ class InquiryControllerSuccessTest {
         // Given
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/search-code?inquiryCode=INQ8")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/search-code?inquiryCode=INQ14")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -179,7 +213,7 @@ class InquiryControllerSuccessTest {
         // Given
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/list/user?userId=139")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/list/user?userId=137")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -202,7 +236,7 @@ class InquiryControllerSuccessTest {
         // Given
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/list/user?userId=13")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/list/user?userId=137")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -225,7 +259,7 @@ class InquiryControllerSuccessTest {
         // Given
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/list/phone?phone=010-2409-1324")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/inquiry/list/phone?phone=055-253-4723")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
@@ -246,7 +280,7 @@ class InquiryControllerSuccessTest {
     @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_삭제_아이디_성공() throws Exception {
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/id?inquiryId=82")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/id?inquiryId=276")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -261,7 +295,7 @@ class InquiryControllerSuccessTest {
     @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_삭제_코드_성공() throws Exception {
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/code?inquiryCode=INQ11")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/inquiry/delete/code?inquiryCode=INQ14")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())

@@ -24,4 +24,5 @@ public interface AccountService {
 
     Account findAccountByEmail(final String email);
 
+    void checkDuplicateEmail(String email);
 }

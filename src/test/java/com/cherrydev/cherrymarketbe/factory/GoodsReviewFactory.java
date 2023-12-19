@@ -14,8 +14,8 @@ public class GoodsReviewFactory {
     //등록 성공
     public static GoodsReviewRequestDto createGoodsReviewRequestDtoA() {
         return GoodsReviewRequestDto.builder()
-                .ordersId(17L)
-                .goodsId(10L)
+                .ordersId(126L)
+                .goodsId(22L)
                 .code("1")
                 .isBest(GoodsReviewBest.NORMAL.toString())
                 .subject("키보드 받침대 사용후기")
@@ -27,8 +27,8 @@ public class GoodsReviewFactory {
     //제목 누락
     public static GoodsReviewRequestDto createGoodsReviewRequestDtoB() {
         return GoodsReviewRequestDto.builder()
-                .ordersId(4L)
-                .goodsId(2L)
+                .ordersId(126L)
+                .goodsId(44L)
                 .code("1")
                 .isBest(GoodsReviewBest.NORMAL.toString())
                 .subject("")
@@ -40,8 +40,8 @@ public class GoodsReviewFactory {
     //내용 누락
     public static GoodsReviewRequestDto createGoodsReviewRequestDtoC() {
         return GoodsReviewRequestDto.builder()
-                .ordersId(4L)
-                .goodsId(2L)
+                .ordersId(126L)
+                .goodsId(44L)
                 .code("1")
                 .isBest(GoodsReviewBest.NORMAL.toString())
                 .subject("키보드 받침대 사용후기")
@@ -54,8 +54,8 @@ public class GoodsReviewFactory {
     //중복 등록 실패
     public static GoodsReviewRequestDto createGoodsReviewRequestDtoD() {
         return GoodsReviewRequestDto.builder()
-                .ordersId(4L)
-                .goodsId(22L)
+                .ordersId(122L)
+                .goodsId(10L)
                 .code("1")
                 .isBest(GoodsReviewBest.NORMAL.toString())
                 .subject("키보드 받침대 사용후기")
@@ -67,8 +67,8 @@ public class GoodsReviewFactory {
     //배송상태 실패
     public static GoodsReviewRequestDto createGoodsReviewRequestDtoE() {
         return GoodsReviewRequestDto.builder()
-                .ordersId(6L)
-                .goodsId(10L)
+                .ordersId(125L)
+                .goodsId(15L)
                 .code("1")
                 .isBest(GoodsReviewBest.NORMAL.toString())
                 .subject("키보드 받침대 사용후기")
@@ -80,8 +80,8 @@ public class GoodsReviewFactory {
     //수정
     public static GoodsReviewModifyDto createGoodsReviewModifyDto() {
         return GoodsReviewModifyDto.builder()
-                .ordersId(4L)
-                .goodsId(22L)
+                .ordersId(122L)
+                .goodsId(20L)
                 .subject("테스트 수정합니다")
                 .content("테스트 합니다.")
                 .build();

@@ -84,7 +84,7 @@ class GoodsReviewControllerFailureTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_등록_실패_중복리뷰() throws Exception {
 
         // Given
@@ -139,7 +139,7 @@ class GoodsReviewControllerFailureTest {
 
     @Test
     @Transactional
-    @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 상품후기_등록_실패_내용누락() throws Exception {
         // Given
         GoodsReviewRequestDto goodsReviewRequestDto = createGoodsReviewRequestDtoC();
@@ -170,7 +170,7 @@ class GoodsReviewControllerFailureTest {
     void 상품후기_삭제_실패_게시글_권한() throws Exception {
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/goods-review/delete?ordersId=4&goodsId=33")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/goods-review/delete?ordersId=122&goodsId=10")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
                 .andExpect(MockMvcResultMatchers.status().is(403))

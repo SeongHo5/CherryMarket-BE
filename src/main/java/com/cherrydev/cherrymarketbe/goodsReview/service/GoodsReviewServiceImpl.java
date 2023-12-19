@@ -39,6 +39,8 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public void save(final GoodsReviewRequestDto goodsReviewRequestDto, final AccountDetails accountDetails) {
         CheckValidationForInsert(goodsReviewRequestDto,accountDetails);
         goodsReviewMapper.save(goodsReviewRequestDto.toEntity(accountDetails));
+
+
     }
 
     @Override
@@ -127,6 +129,7 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByUser(final Pageable pageable, final Long userId) {
 
 
@@ -140,6 +143,7 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllMyList(Pageable pageable, Long accountId) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllMyList(accountId);
@@ -178,6 +182,7 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     }
 
     private String CheckForForbiddenWordsTest(String content) {
+        System.out.println("CheckForForbiddenWords start");
         return BadWordFilter.filterAndReplace(content);
     }
 
