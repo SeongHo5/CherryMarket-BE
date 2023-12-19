@@ -5,33 +5,78 @@
 <mapper namespace="com.cherrydev.cherrymarketbe.order.repository.OrderMapper">
 
     <resultMap id="orderResultMap" type="com.cherrydev.cherrymarketbe.order.entity.Order">
+        <result property="accountId" column="ACNT_ID"/>
         <result property="orderId" column="ORDERS_ID"/>
         <result property="orderCode" column="ORDERS_CODE"/>
+        <result property="representativeGoodsCode" column="ORDERS_REPRSNT_IMG"/>
         <result property="orderStatus" column="ORDERS_STTUS"/>
+        <result property="orderName" column="ORDERS_NM"/>
+        <result property="createdAt" column="CREAT_DE"/>
+        <result property="payment.method" column="PYMNT_MTH"/>
+        <result property="payment.card.amount" column="PYMNT_AMOUNT"/>
     </resultMap>
 
-    <select id="findAllOrders" parameterType="Long" resultMap="orderResultMap">
-        select
-            ORDERS_ID,
-            ORDERS_CODE,
-            ORDERS_STTUS
-        from  ORDERS
+    <select id="countOrderByOrderCode" resultType="int" parameterType="string">
+        SELECT COUNT(*) FROM ORDERS WHERE ORDERS_CODE = #{orderCode}
     </select>
 
-    <select id="findOrdersByAccountId" parameterType="Long" resultMap="orderResultMap">
-        select
-            ORDERS_ID,
-            ORDERS_CODE,
-            ORDERS_STTUS
-        from  ORDERS
-        where ACNT_ID = #{accountId};
+    <select id="findOrderStatusByOrderCode" resultType="string" parameterType="string">
+        SELECT ORDERS_STTUS FROM ORDERS WHERE ORDERS_CODE = #{orderCode}
     </select>
 
-    <insert id="save">
+    <select id="findOrderByOrderCode" resultMap="orderResultMap" parameterType="string">
+        SELECT * FROM ORDERS WHERE ORDERS_CODE = #{orderCode}
+    </select>
+
+    <select id="findAllOrders" resultMap="orderResultMap">
+        select
+            orders.ACNT_ID,
+            orders.ORDERS_CODE,
+            orders.ORDERS_STTUS,
+            orders.ORDERS_NM,
+            orders.ORDERS_REPRSNT_IMG,
+            paymentDT.PYMNT_MTH,
+            paymentDT.PYMNT_AMOUNT,
+            orders.CREAT_DE
+        from  ORDERS orders
+                  join PYMNT_DETAIL paymentDT on orders.ORDERS_ID = paymentDT.ORDERS_ID
+    </select>
+
+    <select id="findAllOrdersByStatus" parameterType="String" resultMap="orderResultMap">
+        select
+            orders.ACNT_ID,
+            orders.ORDERS_CODE,
+            orders.ORDERS_STTUS,
+            orders.ORDERS_NM,
+            orders.ORDERS_REPRSNT_IMG,
+            paymentDT.PYMNT_MTH,
+            paymentDT.PYMNT_AMOUNT,
+            orders.CREAT_DE
+        from  ORDERS orders
+                  join PYMNT_DETAIL paymentDT on orders.ORDERS_ID = paymentDT.ORDERS_ID
+        where ORDERS_STTUS = #{orderStatus}
+    </select>
+
+    <select id="findOrdersSummaryByAccountId" parameterType="Long" resultMap="orderResultMap">
+        select
+            orders.ORDERS_CODE,
+            orders.ORDERS_STTUS,
+            orders.ORDERS_NM,
+            orders.ORDERS_REPRSNT_IMG,
+            paymentDT.PYMNT_MTH,
+            paymentDT.PYMNT_AMOUNT,
+            orders.CREAT_DE
+        from  ORDERS orders
+                  join PYMNT_DETAIL paymentDT on orders.ORDERS_ID = paymentDT.ORDERS_ID
+        where orders.ACNT_ID = #{accountId};
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="orderId">
         insert into
-            ORDERS (ACNT_ID, ORDERS_ID, ORDERS_CODE, ORDERS_STTUS, CREAT_DE)
+            ORDERS (ACNT_ID, ORDERS_CODE, ORDERS_STTUS, ORDERS_NM, ORDERS_REPRSNT_IMG, CREAT_DE)
         values
-            (#{accountId}, #{orderId}, #{orderCode}, #{orderStatus}, now())
+            (#{accountId}, #{orderCode}, #{orderStatus}, #{orderName},
+             (SELECT GOODS.GOODS_CODE FROM GOODS WHERE GOODS.GOODS_ID = #{representativeGoodsId}), now())
     </insert>
 
     <parameterMap id="orderParamMap" type="com.cherrydev.cherrymarketbe.order.entity.Order">
@@ -40,13 +85,14 @@
         <parameter property="orderStatus" />
     </parameterMap>
 
-    <update id="updateOrderStatus" parameterMap="orderParamMap">
+    <update id="updateStatus" parameterMap="orderParamMap">
         update ORDERS
         <set>
             <if test="orderStatus.name() == 'DELETED'">
                 ORDERS_STTUS = #{orderStatus},
                 DELETED_DE = now()
             </if>
+
             <if test="orderStatus.name() != 'DELETED'">
                 ORDERS_STTUS = #{orderStatus},
                 UPDT_DE = now()
@@ -54,5 +100,18 @@
         </set>
         WHERE ORDERS_CODE = #{orderCode};
     </update>
+
+    <select id="findAccountEmailByOrderCode" parameterType="String" resultType="String">
+        SELECT A.ACNT_EMAIL
+        FROM ACNT A
+                 JOIN ORDERS O ON O.ACNT_ID = A.ACNT_ID
+        WHERE O.ORDERS_CODE = #{orderCode}
+    </select>
+
+    <select id="findAmountByOrderCode" parameterType="String" resultType="Integer">
+        SELECT PYMNT_AMOUNT
+        FROM PYMNT_DETAIL
+        WHERE ORDERS_CODE = #{orderCode}
+    </select>
 
 </mapper>

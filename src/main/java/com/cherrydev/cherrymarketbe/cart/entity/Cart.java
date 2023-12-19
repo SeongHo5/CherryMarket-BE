@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.cart.entity;
 
-import com.cherrydev.cherrymarketbe.goods.entity.Goods;
+import com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto;
+
 import com.cherrydev.cherrymarketbe.goods.enums.SalesStatus;
 
 import lombok.Builder;
@@ -17,10 +18,10 @@ public class Cart {
 
     private Integer quantity;
 
-    private Goods goods;
+    private ToCartResponseDto goods;
 
     @Builder
-    public Cart(Long cartId, Long accountId, Integer quantity, Goods goods) {
+    public Cart(Long cartId, Long accountId, Integer quantity, ToCartResponseDto goods) {
         this.cartId = cartId;
         this.accountId = accountId;
         this.quantity = quantity;
@@ -28,7 +29,10 @@ public class Cart {
     }
 
     public boolean isGoodsAvailable() {
+
         return SalesStatus.ON_SALE.name().equals(this.getGoods().getSalesStatus());
     }
+
+
 
 }

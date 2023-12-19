@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.order.dto;
+package com.cherrydev.cherrymarketbe.order.dto.requests;
 
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus;
@@ -8,8 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record ChangeOrderStatus(
-        @NotNull Long accoungId,
+public record OrderStatusRequest(
         @NotNull String orderCode,
         @NotNull String orderStatus
         ) {
@@ -19,7 +18,6 @@ public record ChangeOrderStatus(
         validateFields();
 
         return Order.builder()
-                .accountId(this.accoungId)
                 .orderCode(this.orderCode)
                 .orderStatus(OrderStatus.valueOf(orderStatus))
                 .build();
