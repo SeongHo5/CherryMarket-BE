@@ -50,11 +50,28 @@ public class GoodsService {
     }
 
     /* Select */
-    public MyPage<GoodsDto> findAll(final Pageable pageable, String sortBy) {
-        return PagingUtil.createPage(pageable, () -> {
+    public MyPage<GoodsBasicInfoResponseDto> findAll(final Pageable pageable, String sortBy) {
+        // return PagingUtil.createPage(pageable, () -> {
+        //     PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
+        //     return goodsMapper.findAll(sortBy);
+        // });
+
+
+        MyPage<GoodsBasicInfoResponseDto> pageResult = PagingUtil.createPage(pageable, () -> {
             PageMethod.startPage(pageable.getPageNumber() + 1, pageable.getPageSize());
-            return goodsMapper.findAll(sortBy);
+
+            return goodsMapper.findAll(sortBy).stream()
+                           .map(this::convertToDiscountCalcDto)
+                           .collect(Collectors.toList());
         });
+
+        if(pageResult.getContent().isEmpty()) {
+            throw new NotFoundException(GOODS_NOT_FOUND);
+        }
+
+        return pageResult;
+
+
     }
 
 
@@ -72,6 +89,7 @@ public class GoodsService {
         return GoodsBasicInfoResponseDto.builder()
                        .goodsId(basicInfoDto.getGoodsId())
                        .goodsName(basicInfoDto.getGoodsName())
+                       .goodsCode(basicInfoDto.getGoodsCode())
                        .description(basicInfoDto.getDescription())
                        .price(basicInfoDto.getPrice())
                        .discountRate(basicInfoDto.getDiscountRate())
@@ -187,7 +205,7 @@ public class GoodsService {
     public boolean findInventory(Long goodsId, int requestedQuantity) {
         GoodsInventoryResponseDto goodsInventory = goodsMapper.findInventoryByGoodsId(goodsId);
 
-        System.out.println("상태 : "+ goodsInventory.getSalesStatus());
+        System.out.println("상태 : " + goodsInventory.getSalesStatus());
 
         if(goodsInventory == null) {
             // 상품 조회 실패시 예외 발생
@@ -224,6 +242,7 @@ public class GoodsService {
             GoodsBasicInfoResponseDto responseDto = GoodsBasicInfoResponseDto.builder()
                                                             .goodsId(basicInfoDto.getGoodsId())
                                                             .goodsName(basicInfoDto.getGoodsName())
+                                                            .goodsCode(basicInfoDto.getGoodsCode())
                                                             .description(basicInfoDto.getDescription())
                                                             .price(basicInfoDto.getPrice())
                                                             .discountRate(basicInfoDto.getDiscountRate())
@@ -253,6 +272,7 @@ public class GoodsService {
             GoodsBasicInfoResponseDto responseDto = GoodsBasicInfoResponseDto.builder()
                                                             .goodsId(basicInfoDto.getGoodsId())
                                                             .goodsName(basicInfoDto.getGoodsName())
+                                                            .goodsCode(basicInfoDto.getGoodsCode())
                                                             .description(basicInfoDto.getDescription())
                                                             .price(basicInfoDto.getPrice())
                                                             .discountRate(basicInfoDto.getDiscountRate())
@@ -339,6 +359,7 @@ public class GoodsService {
         return GoodsBasicInfoResponseDto.builder()
                        .goodsId(basicInfoDto.getGoodsId())
                        .goodsName(basicInfoDto.getGoodsName())
+                       .goodsCode(basicInfoDto.getGoodsCode())
                        .description(basicInfoDto.getDescription())
                        .price(basicInfoDto.getPrice())
                        .discountRate(basicInfoDto.getDiscountRate())

@@ -11,6 +11,8 @@ public class GoodsBasicInfoResponseDto {
 
     String goodsName;
 
+    String goodsCode;
+
     String description;
 
     int price;

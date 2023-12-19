@@ -9,25 +9,27 @@
     </insert>
 
     <!-- Select -->
-    <select id = "findAll" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsDto">
-        SELECT *
-        FROM GOODS
-        WHERE GOODS_SEL_STTUS != 'DISCONTINUANCE'
+    <select id = "findAll" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
+
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        FROM GOODS G
+            LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+        WHERE G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
         <choose>
             <when test = "sortBy == 'priceAsc'">
-                ORDER BY GOODS_PRICE ASC
+                ORDER BY G.GOODS_PRICE ASC
             </when>
             <when test = "sortBy == 'priceDesc'">
-                ORDER BY GOODS_PRICE DESC
+                ORDER BY G.GOODS_PRICE DESC
             </when>
             <when test = "sortBy == 'dateAsc'">
-                ORDER BY CREAT_DE ASC
+                ORDER BY G.CREAT_DE ASC
             </when>
             <when test = "sortBy == 'dateDesc'">
-                ORDER BY CREAT_DE DESC
+                ORDER BY G.CREAT_DE DESC
             </when>
             <otherwise>
-                ORDER BY CREAT_DE DESC
+                ORDER BY G.CREAT_DE DESC
             </otherwise>
         </choose>
     </select>
@@ -62,14 +64,14 @@
     </select>
 
     <select id = "findBasicInfo" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_ID = #{goodsId}
     </select>
 
     <select id = "findByCategoryId" resultType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
         LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE (G.CTGRY_ID = #{categoryId}
@@ -158,7 +160,7 @@
     </select>
 
     <select id = "findByName" parameterType = "com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
         LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_NM LIKE CONCAT('%', #{goodsName}, '%')
@@ -190,7 +192,7 @@
 
     
     <select id = "findNewGoods" parameterType="com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         ORDER BY G.CREAT_DE DESC
@@ -198,7 +200,7 @@
     </select>
 
     <select id = "findDiscountGoods" parameterType="com.cherrydev.cherrymarketbe.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         ORDER BY D.DSCNT_RATE DESC
