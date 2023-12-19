@@ -116,16 +116,20 @@ class InquiryControllerFailureTest {
     @Transactional
     @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 문의_등록_실패_카테고리_누락() throws Exception {
+
         // Given
         InquiryRequestDto inquiryRequestDto = createInquiryB();
         String requestBody = Jackson.toJsonString(inquiryRequestDto);
+
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/inquiry/add")
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(NOT_ALLOWED_EMPTY_CATEGORY.getStatusCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(NOT_ALLOWED_EMPTY_CATEGORY.getMessage()))
                 .andDo(document("Failed-Add-Inquiry-Empty-Category",
                         resourceDetails()
                                 .tag("1:1문의")
@@ -146,7 +150,7 @@ class InquiryControllerFailureTest {
         String requestBody = Jackson.toJsonString(inquiryRequestDto);
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/inquiry/add")
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -171,7 +175,7 @@ class InquiryControllerFailureTest {
         String requestBody = Jackson.toJsonString(inquiryRequestDto);
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/inquiry/add")
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -191,13 +195,13 @@ class InquiryControllerFailureTest {
     @Test
     @Transactional
     @WithUserDetails(value = "noyeongjin@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 공지사항_등록_실패_내용_누락() throws Exception {
+    void 문의_등록_실패_내용_누락() throws Exception {
         // Given
         InquiryRequestDto inquiryRequestDto = createInquiryE();
         String requestBody = Jackson.toJsonString(inquiryRequestDto);
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/notice/add-notice")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/inquiry/add")
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .secure(true)
                         .contentType(MediaType.APPLICATION_JSON)

@@ -54,5 +54,9 @@ public class GoodsReviewInfoDto {
         this.content = content;
     }
 
+    public void updateSubject(String subject){
+        this.subject = subject;
+    }
+
 
 }
