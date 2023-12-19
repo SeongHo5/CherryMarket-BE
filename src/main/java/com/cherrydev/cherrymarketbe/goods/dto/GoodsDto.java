@@ -1,43 +1,64 @@
 package com.cherrydev.cherrymarketbe.goods.dto;
 
-import com.cherrydev.cherrymarketbe.goods.entity.Goods;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Value;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 @Value
 @Builder
 public class GoodsDto {
 
     Long goodsId;
+
+    @NotNull
+    Long makerId;
+
+    @NotNull
+    Long categoryId;
+
+    @Pattern(regexp = "\\d{7}", message = "상품 코드는 7자리 정수여야 합니다.")
+    String goodsCode;
+
+    @NotNull
     String goodsName;
+
+    @NotNull
     String description;
+
+    Long discountId;
+
+    @NotNull
     int price;
+
+    @NotNull
     int retailPrice;
+
+    @NotNull
     int inventory;
+
+    @Pattern(regexp = "^(REFRIGERATION|FROZEN|ROOM_TEMPERATURE)$", message = "보관 타입 형식에 맞지 않습니다")
+    @NotNull
     String storageType;
+
+    @NotNull
     String capacity;
-    Timestamp expDate;
+
+    @NotNull
+    String expDate;
+
     String allergyInfo;
+
+    @NotNull
     String originPlace;
+
+    @Pattern(regexp = "^(ON_SALE|PAUSE|DISCONTINUANCE)$", message = "상품 판매 상태 형식에 맞지 않습니다")
+    @NotNull
     String salesStatus;
 
+    Date createDate;
 
-    public Goods toEntity() {
-        return Goods.builder()
-                       .goodsId(this.getGoodsId())
-                       .goodsName(this.getGoodsName())
-                       .description(this.getDescription())
-                       .price(this.getPrice())
-                       .retailPrice(this.getRetailPrice())
-                       .inventory(this.getInventory())
-                       .storageType(this.getStorageType())
-                       .capacity(this.getCapacity())
-                       .expDate(this.getExpDate())
-                       .allergyInfo(this.getAllergyInfo())
-                       .originPlace(this.getOriginPlace())
-                       .salesStatus(this.getSalesStatus())
-                       .build();
-    }
+    Date updateDate;
 }

@@ -1,46 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace = "com.cherrydev.cherrymarketbe.maker.repository.MakerMapper">
-    <resultMap id = "makerMap" type = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
-        <result property = "makerId" column = "MAKR_ID"/>
-        <result property = "makerName" column = "MAKR_NM"/>
-        <result property = "businessNumber" column = "MAKR_BIZRNO"/>
-        <result property = "companyPhoneNumber" column = "MAKR_CTTPC"/>
-        <result property = "businessEmail" column = "MAKR_EMAIL"/>
-    </resultMap>
-
-    <select id = "findAll" resultMap="makerMap">
-        select *
-        from MAKR
-        order by MAKR_ID
-    </select>
-
-    <select id = "findByBusinessNumber" resultMap="makerMap">
-        select *
-        from MAKR
-        where MAKR_BIZRNO = #{businessNumber}
-    </select>
-
-    <insert id = "save" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
-        insert into MAKR (MAKR_NM, MAKR_BIZRNO, MAKR_CTTPC, MAKR_EMAIL, CREAT_DE, UPDT_DE)
-        values (#{makerName}, #{businessNumber}, #{companyPhoneNumber}, #{businessEmail}, now(), now())
+    <!-- Insert -->
+    <insert id = "save" parameterType = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        INSERT INTO MAKR (MAKR_NM, MAKR_BIZRNO, MAKR_CTTPC, MAKR_EMAIL, CREAT_DE, UPDT_DE)
+        VALUES (#{makerName}, #{businessNumber}, #{companyPhoneNumber}, #{businessEmail}, NOW(), NOW())
     </insert>
 
-    <delete id = "deleteById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
-        delete
-        from MAKR
-        where MAKR_ID = #{makerId}
-    </delete>
+    <!-- Select -->
+    <select id = "findAll" resultType = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        SELECT *
+        FROM MAKR
+        <choose>
+            <when test = "sortBy == 'idAsc'">
+            ORDER BY MAKR_ID ASC
+            </when>
+            <when test = "sortBy == 'idDesc'">
+            ORDER BY MAKR_ID DESC
+            </when>
+            <when test = "sortBy == 'nameAsc'">
+                ORDER BY MAKR_NM ASC
+            </when>
+            <when test = "sortBy == 'nameDesc'">
+                ORDER BY MAKR_NM DESC
+            </when>
+            <when test = "sortBy == 'businessNumberAsc'">
+                ORDER BY MAKR_BIZRNO ASC
+            </when>
+            <when test = "sortBy == 'businessNumberDesc'">
+                ORDER BY MAKR_BIZRNO DESC
+            </when>
+            <otherwise>
+                ORDER BY MAKR_ID
+            </otherwise>
+        </choose>
+    </select>
 
-    <update id = "updateById" parameterType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
-        update MAKR
+    <select id = "findById" resultType = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        SELECT *
+        FROM MAKR
+        WHERE MAKR_ID = #{makerId}
+    </select>
+
+    <select id = "findByName" resultType="com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        SELECT *
+        FROM MAKR
+        WHERE MAKR_NM LIKE CONCAT('%',#{makerName}, '%')
+        ORDER BY CREAT_DE DESC
+    </select>
+
+    <select id = "findByBusinessNumber" resultType = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        SELECT *
+        FROM MAKR
+        WHERE MAKR_BIZRNO = #{businessNumber}
+        ORDER BY CREAT_DE DESC
+    </select>
+
+    <!-- Update -->
+    <update id = "updateById" parameterType = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        UPDATE MAKR
         <set>
             <if test = "makerName != null">MAKR_NM = #{makerName},</if>
             <if test = "businessNumber != null">MAKR_BIZRNO = #{businessNumber},</if>
             <if test = "companyPhoneNumber != null">MAKR_CTTPC = #{companyPhoneNumber},</if>
             <if test = "businessEmail != null">MAKR_EMAIL = #{businessEmail},</if>
         </set>
-        where MAKR_ID = #{makerId}
+        WHERE MAKR_ID = #{makerId}
     </update>
 
+    <!-- Delete -->
+    <delete id = "deleteById" parameterType = "com.cherrydev.cherrymarketbe.maker.dto.MakerDto">
+        DELETE
+        FROM MAKR
+        WHERE MAKR_ID = #{makerId}
+    </delete>
 </mapper>
