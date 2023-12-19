@@ -2,6 +2,7 @@ package com.cherrydev.cherrymarketbe.inquiry.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.goodsReview.utils.BadWordFilter;
 import com.cherrydev.cherrymarketbe.inquiry.dto.InquiryInfoDto;
@@ -242,16 +243,16 @@ public class InquiryServiceImpl implements InquiryService {
 
     private void CheckValidationForInsert(InquiryRequestDto inquiryRequestDto) {
         if (inquiryRequestDto.getContent() == null || inquiryRequestDto.getContent().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_CONTENT);
         }
         if (inquiryRequestDto.getSubject() == null || inquiryRequestDto.getSubject().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_SUBJECT);
         }
         if (inquiryRequestDto.getType() == null || inquiryRequestDto.getType().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_CATEGORY);
         }
         if (inquiryRequestDto.getDetailType() == null || inquiryRequestDto.getDetailType().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
         }
     }
 
@@ -259,16 +260,16 @@ public class InquiryServiceImpl implements InquiryService {
         //등록된 userId 와 동일한지 확인한다
         CheckUserValidation(modifydto.getInquiryId(), userId);
         if (modifydto.getContent() == null || modifydto.getContent().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_CONTENT);
         }
         if (modifydto.getSubject() == null || modifydto.getSubject().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_SUBJECT);
         }
         if (modifydto.getType() == null || modifydto.getType().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_CATEGORY);
         }
         if (modifydto.getDetailType() == null || modifydto.getDetailType().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
         }
     }
 
@@ -276,16 +277,16 @@ public class InquiryServiceImpl implements InquiryService {
         //등록된 userId 와 동일한지 확인한다
         CheckUserValidation(modifydto.getCode(),userId);
         if (modifydto.getContent() == null || modifydto.getContent().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CONTENT);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_CONTENT);
         }
         if (modifydto.getSubject() == null || modifydto.getSubject().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_SUBJECT);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_SUBJECT);
         }
         if (modifydto.getType() == null || modifydto.getType().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_CATEGORY);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_CATEGORY);
         }
         if (modifydto.getDetailType() == null || modifydto.getDetailType().equals("")) {
-            throw new ServiceFailedException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
+            throw new NotFoundException(NOT_ALLOWED_EMPTY_DETAIL_CATEGORY);
         }
     }
 }
