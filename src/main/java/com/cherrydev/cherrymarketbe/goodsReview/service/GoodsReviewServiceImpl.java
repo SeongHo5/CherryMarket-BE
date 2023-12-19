@@ -93,7 +93,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAll(final Pageable pageable) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAll();
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -106,7 +109,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByGoodsId(final Pageable pageable, final Long goodsId) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByGoodsId(goodsId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -120,7 +126,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByOrderId(final Pageable pageable, final Long ordersId) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByOrderId(ordersId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -134,7 +143,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
 
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByUserId(userId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -147,7 +159,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllMyList(Pageable pageable, Long accountId) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllMyList(accountId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()

@@ -75,7 +75,10 @@ public class InquiryServiceImpl implements InquiryService {
     public ResponseEntity<MyPage<InquiryInfoDto>> findAll(final Pageable pageable) {
 
         List<InquiryInfoDto> getDto = inquiryMapper.findAll();
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+                    dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+                    dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+                });
         MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return getListCheckAnswer(infoPage);
@@ -87,7 +90,10 @@ public class InquiryServiceImpl implements InquiryService {
     public ResponseEntity<MyPage<InquiryInfoDto>> findAllByUser(final Pageable pageable, final Long userId) {
 
         List<InquiryInfoDto> getDto = inquiryMapper.findAllByUser(userId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return getListCheckAnswer(infoPage);
@@ -98,7 +104,10 @@ public class InquiryServiceImpl implements InquiryService {
     public ResponseEntity<MyPage<InquiryInfoDto>> findAllByPhone(final Pageable pageable, final String phone) {
 
         List<InquiryInfoDto> getDto = inquiryMapper.findAllByPhone(phone);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return getListCheckAnswer(infoPage);
@@ -110,7 +119,10 @@ public class InquiryServiceImpl implements InquiryService {
     public ResponseEntity<MyPage<InquiryInfoDto>> findAllMyList(Pageable pageable, Long accountId) {
 
         List<InquiryInfoDto> getDto = inquiryMapper.findAllMyList(accountId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<InquiryInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return getListCheckAnswer(infoPage);
