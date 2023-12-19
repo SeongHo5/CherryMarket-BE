@@ -35,6 +35,7 @@ public interface GoodsReviewMapper {
     List<GoodsReviewInfoDto> findAllMyList(Long accountId);
 
     boolean existReview(GoodsReview goodsReview);
+    boolean existReview(Long ordersId, Long goodsId);
 
     boolean checkDeliveryStatus(GoodsReview goodsReview);
 
@@ -42,4 +43,5 @@ public interface GoodsReviewMapper {
     boolean getUserId(Long ordersId, Long goodsId, Long userId);
 
     boolean getUserIdByCode(String code, Long userId);
+
 }

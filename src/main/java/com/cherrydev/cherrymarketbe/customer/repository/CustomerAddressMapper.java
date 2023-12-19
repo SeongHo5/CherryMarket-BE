@@ -37,4 +37,7 @@ public interface CustomerAddressMapper {
     boolean existByAccountIdAndIsDefault(CustomerAddress customerAddress);
 
 
+    CustomerAddress findDefaultByAccountId(CustomerAddress customerAddress);
+
+    void updateDefaultAddress(CustomerAddress customerAddress);
 }

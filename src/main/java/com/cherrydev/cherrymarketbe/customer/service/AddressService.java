@@ -108,9 +108,18 @@ public class AddressService {
     }
 
     private void checkDefaultAddressAlreadyExists(final CustomerAddress customerAddress) {
-        boolean isExist = customerAddressMapper.existByAccountIdAndIsDefault(customerAddress);
-        if (isExist) {
-            throw new ServiceFailedException(DEFAULT_ADDRESS_ALREADY_EXISTS);
+        // 넘어온 값중에 isDefault 값이 true 인지 확인한다.
+        if (customerAddress.getIsDefault()) {
+            boolean isExist = customerAddressMapper.existByAccountIdAndIsDefault(customerAddress);
+            if (isExist) {
+//                throw new ServiceFailedException(DEFAULT_ADDRESS_ALREADY_EXISTS);
+
+//            //이 회원의 기본 배송지를 찾는다.
+                CustomerAddress defaultAddress = customerAddressMapper.findDefaultByAccountId(customerAddress);
+//            //기본배송지의 값을 0으로 변경한다.
+//
+                customerAddressMapper.updateDefaultAddress(defaultAddress);
+            }
         }
     }
 

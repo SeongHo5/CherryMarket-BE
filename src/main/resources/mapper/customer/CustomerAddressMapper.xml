@@ -101,4 +101,21 @@
                       WHERE ACNT_ID = #{accountId}
                         AND CSTMR_ADRES_BASS_YN = TRUE)
     </select>
+
+    <select id="findDefaultByAccountId" resultMap="addressMap">
+        SELECT *
+        FROM CSTMR_ADRES
+        WHERE ACNT_ID = #{accountId}
+          AND CSTMR_ADRES_BASS_YN = TRUE;
+    </select>
+
+    <update id="updateDefaultAddress" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+        UPDATE CSTMR_ADRES
+        <set>
+            CSTMR_ADRES_BASS_YN = FALSE,
+        </set>
+        WHERE
+        CSTMR_ADRES_ID = #{addressId}
+    </update>
+
 </mapper>

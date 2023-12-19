@@ -1,9 +1,13 @@
 package com.cherrydev.cherrymarketbe.goodsReview.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
+import com.cherrydev.cherrymarketbe.account.entity.Account;
+import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.common.dto.MyPage;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
+import com.cherrydev.cherrymarketbe.customer.dto.reward.AddRewardRequestDto;
+import com.cherrydev.cherrymarketbe.customer.repository.CustomerRewardMapper;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewInfoDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
 import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
@@ -19,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
@@ -33,6 +38,9 @@ import static com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus.DELETED;
 public class GoodsReviewServiceImpl implements GoodsReviewService {
 
     private final GoodsReviewMapper goodsReviewMapper;
+    private final CustomerRewardMapper customerRewardMapper;
+//    private final AddRewardRequestDto addRewardRequestDto;
+    private final AccountServiceImpl accountService;
 
     @Override
     @Transactional
@@ -40,7 +48,16 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
         CheckValidationForInsert(goodsReviewRequestDto,accountDetails);
         goodsReviewMapper.save(goodsReviewRequestDto.toEntity(accountDetails));
 
+        AddRewardRequestDto rewardRequestDto = AddRewardRequestDto.builder()
+                .email(accountDetails.getAccount().getEmail())
+                .rewardGrantType("REVIEW")
+                .amounts(50)
+                .earnedAt((LocalDate.now()).toString())
+                .expiredAt((LocalDate.now()).plusMonths(6).toString())
+                .build();
 
+        Account account = accountService.findAccountByEmail(accountDetails.getUsername());
+        customerRewardMapper.save(rewardRequestDto.toEntity(account));
     }
 
     @Override
@@ -76,8 +93,20 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     @Override
     @Transactional
     public void delete(Long ordersId, Long goodsId, AccountDetails accountDetails) {
+        CheckExistReviewForDelete(ordersId, goodsId);
         CheckUserValidation(ordersId, goodsId, accountDetails.getAccount().getAccountId());
         goodsReviewMapper.delete(ordersId, goodsId);
+
+        AddRewardRequestDto rewardRequestDto = AddRewardRequestDto.builder()
+                .email(accountDetails.getAccount().getEmail())
+                .rewardGrantType("REVIEW")
+                .amounts(-50)
+                .earnedAt((LocalDate.now()).toString())
+                .expiredAt((LocalDate.now()).plusMonths(6).toString())
+                .build();
+
+        Account account = accountService.findAccountByEmail(accountDetails.getUsername());
+        customerRewardMapper.save(rewardRequestDto.toEntity(account));
     }
 
     @Override
@@ -93,7 +122,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAll(final Pageable pageable) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAll();
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -106,7 +138,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByGoodsId(final Pageable pageable, final Long goodsId) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByGoodsId(goodsId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -120,7 +155,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllByOrderId(final Pageable pageable, final Long ordersId) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByOrderId(ordersId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -134,7 +172,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
 
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllByUserId(userId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -147,7 +188,10 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
     public ResponseEntity<MyPage<GoodsReviewInfoDto>> findAllMyList(Pageable pageable, Long accountId) {
 
         List<GoodsReviewInfoDto> getDto = goodsReviewMapper.findAllMyList(accountId);
-        getDto.forEach(dto -> dto.updateContent(CheckForForbiddenWordsTest(dto.getContent())));
+        getDto.forEach(dto -> {
+            dto.updateContent(CheckForForbiddenWordsTest(dto.getContent()));
+            dto.updateSubject(CheckForForbiddenWordsTest(dto.getSubject()));
+        });
         MyPage<GoodsReviewInfoDto> infoPage = createPage(pageable, () -> getDto);
 
         return ResponseEntity.ok()
@@ -162,6 +206,12 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
             throw new DuplicatedException(ALREADY_EXIST_REVIEW);
         }
     }
+    private void CheckExistReviewForDelete(Long ordersId, Long goodsId) {
+        if (!goodsReviewMapper.existReview(ordersId, goodsId)) {
+            throw new DuplicatedException(NOT_FOUND_POST);
+        }
+    }
+
 
     private void CheckUserValidation(Long goodsId, Long ordersId, Long userId) {
         if (!goodsReviewMapper.getUserId(goodsId, ordersId, userId)) {
