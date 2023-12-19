@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cherrydev.cherrymarketbe.order.repository.ProductMapper">
+
+    <insert id="save">
+        insert into ORDER_DETAIL (
+            ORDERS_ID,
+            GOODS_ID,
+            ORDERS_CODE,
+            ACNT_ID,
+            ORDERS_QY,
+            CREATE_DE
+        )
+        values (
+                   #{orderId},
+                   #{goodsId},
+                   (select ORDERS_CODE from ORDERS where ORDERS_ID = #{orderId}),
+                   #{accountId},
+                   #{quantity},
+                   now()
+               )
+    </insert>
+
+    <select id="findByOrderCode" parameterType="String" resultType="com.cherrydev.cherrymarketbe.order.domain.GoodsInfo">
+        select
+            od.GOODS_ID as goodsId,
+            od.ORDERS_QY as quantity,
+            goods.GOODS_CODE as goodsCode
+        from ORDER_DETAIL od
+        join GOODS goods on od.GOODS_ID = goods.GOODS_ID
+        where ORDERS_CODE = #{orderCode};
+    </select>
+
+
+
+</mapper>

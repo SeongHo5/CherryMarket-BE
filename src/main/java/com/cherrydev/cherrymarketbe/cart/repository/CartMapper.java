@@ -2,6 +2,7 @@ package com.cherrydev.cherrymarketbe.cart.repository;
 
 import com.cherrydev.cherrymarketbe.cart.entity.Cart;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -12,4 +13,8 @@ public interface CartMapper {
    List<Cart> findCartsByAccountId(Long accountId);
    void update(Cart cart);
    void delete(Long cartId);
+
+   Cart findByCartId(Long cartId);
+
+   boolean existsByAccountIdAndGoodsId(@Param("accountId") Long accountId, @Param("goodsId") Long goodsId);
 }
