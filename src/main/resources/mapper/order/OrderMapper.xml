@@ -20,7 +20,7 @@
         SELECT COUNT(*) FROM ORDERS WHERE ORDERS_CODE = #{orderCode}
     </select>
 
-    <select id="findOrderStatusByOrderCode" resultType="string" parameterType="string">
+    <select id="findOrderStatusByOrderCode" resultType="com.cherrydev.cherrymarketbe.order.enums.OrderStatus" parameterType="string">
         SELECT ORDERS_STTUS FROM ORDERS WHERE ORDERS_CODE = #{orderCode}
     </select>
 
