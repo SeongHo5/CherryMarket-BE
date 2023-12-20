@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.order.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
+import com.cherrydev.cherrymarketbe.account.service.AccountService;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.common.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.common.exception.ServiceFailedException;
@@ -49,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductService productService;
     private final GoodsService goodsService;
     private final RewardService rewardService;
+    private final AccountService accountService;
 
     private final ApplicationEventPublisher eventPublisher;
 
@@ -172,7 +174,6 @@ public class OrderServiceImpl implements OrderService {
         if (orderCode == null) {
             throw new NotFoundException(NOT_FOUND_ORDERCODE);
         }
-
         OrderStatus orderStatus = getOrderStatusByOrderCode(orderCode);
 
         if (orderStatus == OrderStatus.CANCELED) {
@@ -201,7 +202,10 @@ public class OrderServiceImpl implements OrderService {
             orderMapper.updateStatus(order);
         }
 
-        OrderCancelEvent event = new OrderCancelEvent(this, orderCode, paymentResponse);
+        Integer orderAmount= orderMapper.findAmountByOrderCode(orderCode);
+        String accountEmail = orderMapper.findAccountEmailByOrderCode(orderCode);
+
+        OrderCancelEvent event = new OrderCancelEvent(this, accountEmail, orderAmount, orderCode, paymentResponse);
         eventPublisher.publishEvent(event);
     }
 

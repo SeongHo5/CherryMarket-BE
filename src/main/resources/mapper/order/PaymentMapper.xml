@@ -13,6 +13,7 @@
     <result property="rewordAmount" column="USE_REWARD"/>
     <result property="couponAmount" column="USE_COUPON"/>
     </resultMap>
+
     <resultMap id="PaymentDetailResultMap" type="com.cherrydev.cherrymarketbe.order.domain.PaymentDetailsInfo">
         <result property="accountId" column="ACNT_ID"/>
         <result property="orderId" column="ORDERS_ID"/>
@@ -27,8 +28,8 @@
             <result property="status" column="PYMNT_STTUS" javaType="com.cherrydev.cherrymarketbe.payments.model.payment.Status"/>
             <result property="method" column="PYMNT_MTH"/>
             <result property="approvedAt" column="PYMNT_DE"/>
+            <result property="totalAmount" column="PYMNT_AMOUNT"/>
             <association property="card" javaType="com.cherrydev.cherrymarketbe.payments.model.payment.Card">
-                <result property="amount" column="PYMNT_AMOUNT"/>
                 <result property="number" column="PYMNT_NO"/>
                 <result property="acquirerCode" column="PYMNT_KND"/>
                 <result property="installmentPlanMonths" column="PYMNT_INSTLMT"/>

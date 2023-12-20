@@ -20,10 +20,10 @@
           AND CHECK_CHANGE_ADRES = 'N';
     </select>
 
-
     <select id="findByDefaultAddress" parameterType="Long" resultType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
         select
             CSTMR_ADRES_ID as addressId,
+            CSTMR_ADRES_NM as name,
             CSTMR_ADRES_ZIP as zipCode,
             CSTMR_ADRES_RDNMADR as address,
             CSTMR_ADRES_DETAIL as addressDetail
@@ -50,7 +50,7 @@
                    #{account.accountId},
                    #{orderCode},
                    'ORDER_RECEIVED',
-                   #{account.name},
+                   #{customerAddress.name},
                    #{account.contact},
                    #{customerAddress.zipCode},
                    #{customerAddress.address},
