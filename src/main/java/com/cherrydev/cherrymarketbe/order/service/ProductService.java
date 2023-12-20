@@ -2,10 +2,8 @@ package com.cherrydev.cherrymarketbe.order.service;
 
 import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
 import com.cherrydev.cherrymarketbe.order.domain.GoodsInfo;
-import com.cherrydev.cherrymarketbe.order.domain.PaymentDetailsInfo;
 import com.cherrydev.cherrymarketbe.order.dto.responses.OrderReceiptResponse;
 import com.cherrydev.cherrymarketbe.order.dto.requests.OrderCreationRequest;
-import com.cherrydev.cherrymarketbe.order.entity.ProductDetails;
 import com.cherrydev.cherrymarketbe.order.repository.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

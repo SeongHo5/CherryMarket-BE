@@ -19,11 +19,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/customer/address")
-@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
 public class AddressController {
 
     private final AddressService addressService;
-
 
     /**
      * 회원가입 시 배송지 추가
@@ -46,6 +44,7 @@ public class AddressController {
      */
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public void addAddress(
             final @AuthenticationPrincipal AccountDetails accountDetails,
             final @RequestBody AddAddressRequestDto addAddressRequestDto
@@ -59,6 +58,7 @@ public class AddressController {
      * @return 배송지 목록
      */
     @GetMapping("/my-list")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<AddressInfoDto>> getMyAddress(
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
@@ -72,6 +72,7 @@ public class AddressController {
      */
     @PatchMapping("/modify")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<AddressInfoDto> modifyAddress(
             final @AuthenticationPrincipal AccountDetails accountDetails,
             final @RequestBody ModifyAddressRequestDto modifyAddressRequestDto
@@ -86,6 +87,7 @@ public class AddressController {
      */
     @DeleteMapping("/drop")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
     public void deleteAddress(
             final @AuthenticationPrincipal AccountDetails accountDetails,
             final @RequestParam Long addressId

@@ -29,7 +29,6 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public ResponseEntity<CartsByStorageType> getAvailableCarts(AccountDetails accountDetails) {
-
         List<Cart> cartItems = cartMapper.findCartsByAccountId(accountDetails.getAccount().getAccountId());
         return ResponseEntity
                 .ok()
@@ -56,8 +55,15 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = requestDto.getCart(accountDetails, responseDto);
 
-        if (cartMapper.existsByAccountIdAndGoodsId(accountDetails.getAccount().getAccountId(), requestDto.goodsId())) {
+        boolean isExist = cartMapper.existsByAccountIdAndGoodsId(accountDetails.getAccount().getAccountId(), requestDto.goodsId());
+
+        if (isExist) {
             throw new DuplicatedException(CONFLICT_CART_ITEM);
+        }
+
+        boolean checkInventory = goodsService.findInventory(requestDto.goodsId(), requestDto.quantity());
+        if(checkInventory) {
+            goodsService.updateGoodsInventory(requestDto.goodsId(), requestDto.quantity());
         }
 
         cartMapper.save(cart);
@@ -67,6 +73,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public void updateQuantity(ChangeCart requestChangeDto) {
         Cart cart = requestChangeDto.toEntity();
+        Long findGoodsId = cartMapper.findGoodsIdByCartId(requestChangeDto.cartId());
+
+        boolean checkInventory = goodsService.findInventory(findGoodsId, requestChangeDto.quantity());
+        if(checkInventory) {
+            goodsService.updateGoodsInventory(findGoodsId, requestChangeDto.quantity());
+        }
         cartMapper.update(cart);
     }
 
@@ -75,7 +87,5 @@ public class CartServiceImpl implements CartService {
     public void deleteCartItem(Long cartId) {
         cartMapper.delete(cartId);
     }
-
-
 
 }
