@@ -26,6 +26,12 @@
         WHERE ACNT_ID = #{accountId} AND GOODS_ID = #{goodsId}
     </select>
 
+    <select id="findGoodsIdByCartId" resultType="long">
+        SELECT GOODS_ID
+        FROM CART
+        WHERE CART_ID = #{cartId}
+    </select>
+
     <select id="findCartsByAccountId" parameterType="Long" resultMap="cartResultMap">
         select
             cart.CART_ID,
