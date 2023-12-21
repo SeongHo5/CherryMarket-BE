@@ -42,7 +42,7 @@ public class OrderEventListner {
         AddRewardRequestDto rewardRequestDto = AddRewardRequestDto.builder()
                 .email(accountDetails.getAccount().getEmail())
                 .rewardGrantType("USE")
-                .amounts(requestDto.amountInfo().rewordAmount())
+                .amounts((int)(Math.round(payment.getTotalAmount() * 0.1)))
                 .earnedAt(String.valueOf(LocalDate.now()))
                 .expiredAt(String.valueOf(LocalDate.now()))
                 .build();
