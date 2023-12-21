@@ -54,6 +54,7 @@
           and GOODS_REVW_STTUS != 'DELETED'
     </select>
 
+
     <select id="getUserId" parameterType="Long" resultType="Boolean">
         SELECT count(*) > 0
         FROM ORDER_DETAIL

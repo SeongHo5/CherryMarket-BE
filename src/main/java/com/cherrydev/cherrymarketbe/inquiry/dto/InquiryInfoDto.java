@@ -56,4 +56,8 @@ public class InquiryInfoDto {
     public void updateContent(String content){
         this.content = content;
     }
+
+    public void updateSubject(String subject){
+        this.subject = subject;
+    }
 }
