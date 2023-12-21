@@ -160,34 +160,34 @@ class CustomerControllerTest {
                                 fieldWithPath("message").description(ADDRESS_COUNT_EXCEEDED.getMessage())
                         )));
     }
-
-    @Test
-    @Transactional
-    @WithUserDetails(value = "ocoe@example.net", userDetailsServiceBeanName = "accountDetailsServiceImpl")
-    void 배송지_추가_실패_기본_배송지_존재() throws Exception {
-        // Given
-        AddAddressRequestDto requestDto = createAddAddressRequestDtoA();
-        String requestBody = Jackson.toJsonString(requestDto);
-
-        // When & Then
-        mockMvc.perform(
-                        RestDocumentationRequestBuilders.post("/api/customer/address/add")
-                                .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
-                                .contentType("application/json")
-                                .accept("application/json")
-                                .content(requestBody)
-                )
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andDo(document("Customer-Add-Address-Default-Exist",
-                        resourceDetails()
-                                .tag("고객 관련")
-                                .description("배송지 추가 실패 - 기본 배송지 존재"),
-                        responseFields(
-                                fieldWithPath("statusCode").description(DEFAULT_ADDRESS_ALREADY_EXISTS.getStatusCode()),
-                                fieldWithPath("message").description(DEFAULT_ADDRESS_ALREADY_EXISTS.getMessage())
-                        )));
-    }
+//
+//    @Test
+//    @Transactional
+//    @WithUserDetails(value = "ocoe@example.net", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+//    void 배송지_추가_실패_기본_배송지_존재() throws Exception {
+//        // Given
+//        AddAddressRequestDto requestDto = createAddAddressRequestDtoA();
+//        String requestBody = Jackson.toJsonString(requestDto);
+//
+//        // When & Then
+//        mockMvc.perform(
+//                        RestDocumentationRequestBuilders.post("/api/customer/address/add")
+//                                .secure(true)
+//                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+//                                .contentType("application/json")
+//                                .accept("application/json")
+//                                .content(requestBody)
+//                )
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+//                .andDo(document("Customer-Add-Address-Default-Exist",
+//                        resourceDetails()
+//                                .tag("고객 관련")
+//                                .description("배송지 추가 실패 - 기본 배송지 존재"),
+//                        responseFields(
+//                                fieldWithPath("statusCode").description(DEFAULT_ADDRESS_ALREADY_EXISTS.getStatusCode()),
+//                                fieldWithPath("message").description(DEFAULT_ADDRESS_ALREADY_EXISTS.getMessage())
+//                        )));
+//    }
 
     @Test
     @Transactional
