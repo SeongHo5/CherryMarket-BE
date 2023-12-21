@@ -57,6 +57,25 @@ public class FileService {
         }
     }
 
+    public String uploadSingleFile(MultipartFile multipartFile, String dirName, String controllerName) {
+        checkFileExist(multipartFile);
+        checkFileFormat(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+        checkFileSizeLimit(multipartFile.getSize());
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        multipartFile.getOriginalFilename();
+        objectMetadata.setContentLength(multipartFile.getSize());
+        objectMetadata.setContentType(multipartFile.getContentType());
+
+        String fileName = dirName + DIRECTORY_SEPARATOR +  controllerName + DIRECTORY_SEPARATOR + multipartFile.getOriginalFilename();
+
+        try {
+            return putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
+        } catch (IOException e) {
+            throw new ServiceFailedException(FAILED_TO_UPLOAD_FILE);
+        }
+    }
+
     /**
      * 다중 파일 업로드
      *
@@ -85,6 +104,37 @@ public class FileService {
             objectMetadata.setContentType("text/plain");
 
             String fileName = dirName + DIRECTORY_SEPARATOR + multipartFile.getOriginalFilename();
+            try {
+                log.info("Upload Image to Object Storage : " + fileName);
+                putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);
+            } catch (IOException e) {
+                throw new ServiceFailedException(FAILED_TO_UPLOAD_FILE);
+            }
+        }
+    }
+
+    public void uploadMultipleFiles(List<MultipartFile> multipartFiles, String dirName, Long userId,Long revwId) {
+
+        checkFileExist(multipartFiles);
+
+        List<String> fileNames = new ArrayList<>();
+        multipartFiles.stream()
+                .filter(Objects::nonNull)
+                .forEach(file -> {
+                    checkFileSizeLimit(file.getSize());
+//                    checkFileFormat(Objects.requireNonNull(file.getOriginalFilename()));
+                    fileNames.add(file.getOriginalFilename());
+                });
+        checkFileCountLimit(fileNames.size());
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+
+        for (MultipartFile multipartFile : multipartFiles) {
+            objectMetadata.setContentLength(multipartFile.getSize());
+//            objectMetadata.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            objectMetadata.setContentType("text/plain");
+
+            String fileName = dirName + DIRECTORY_SEPARATOR +  userId + DIRECTORY_SEPARATOR +  revwId + DIRECTORY_SEPARATOR + multipartFile.getOriginalFilename();
             try {
                 log.info("Upload Image to Object Storage : " + fileName);
                 putFileToBucket(multipartFile.getInputStream(), fileName, objectMetadata);

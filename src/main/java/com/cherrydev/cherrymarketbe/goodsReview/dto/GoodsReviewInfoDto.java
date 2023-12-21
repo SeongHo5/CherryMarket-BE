@@ -14,6 +14,7 @@ public class GoodsReviewInfoDto {
     Long ordersId;
     Long goodsId;
     Long userId;
+    String userName;
     String code;
     String isBest;
     String subject;
