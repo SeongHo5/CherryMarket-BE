@@ -214,5 +214,29 @@ class AccountControllerTest {
                                 .description("회원 탈퇴")));
     }
 
+
+
+    @Test
+    @Transactional
+    @WithUserDetails(value = "ogja39@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
+    void 이메일중복_검사_성공() throws Exception {
+        // Given
+        // When & Then
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/account/check-email?email=noyeongjin@example.org")
+                        .secure(true)
+                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(409))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(CONFLICT_ACCOUNT.getStatusCode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(CONFLICT_ACCOUNT.getMessage()))
+                .andDo(document("Get-Duplicate-Email-Info",
+                        resourceDetails()
+                                .tag("계정 관리")
+                                .description("이메일 중복검사"),
+                        responseFields(
+                                fieldWithPath("statusCode").description(CONFLICT_ACCOUNT.getStatusCode()),
+                                fieldWithPath("message").description(CONFLICT_ACCOUNT.getMessage())
+                        )));
+    }
 }
 

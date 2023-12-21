@@ -21,6 +21,7 @@
         <result property="ordersId" column="ORDERS_ID"/>
         <result property="goodsId" column="GOODS_ID"/>
         <result property="userId" column="ACNT_ID"/>
+        <result property="userName" column="ACNT_NM"/>
         <result property="code" column="GOODS_REVW_CODE"/>
         <result property="isBest" column="GOODS_REVW_BEST_YN"/>
         <result property="subject" column="GOODS_REVW_SJ"/>
@@ -100,9 +101,10 @@
     </select>
 
     <select id="findAllByGoodsId" resultMap="GoodsReviewInfoMapper">
-        SELECT GR.*, O.ACNT_ID
+        SELECT GR.*, O.ACNT_ID, A.ACNT_NM
         FROM GOODS_REVW GR
                  LEFT JOIN ORDERS O ON GR.ORDERS_ID = O.ORDERS_ID
+                 LEFT JOIN ACNT A ON O.ACNT_ID = A.ACNT_ID
         WHERE GR.GOODS_ID = #{goodsId}
           AND GR.GOODS_REVW_STTUS != 'DELETED'
         ORDER BY CASE WHEN GR.GOODS_REVW_BEST_YN = 'BEST' THEN 1 ELSE 2 END, GR.GOODS_REVW_ID
