@@ -40,8 +40,8 @@ public class GoodsReviewController {
     @PostMapping("/add-image")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
-    public void addImage(@RequestPart("imageFiles") List<MultipartFile> imageFiles, String dirName) {
-        fileService.uploadMultipleFiles(imageFiles, dirName);
+    public void addImage(@RequestPart("imageFiles") List<MultipartFile> imageFiles, final @AuthenticationPrincipal AccountDetails accountDetails, @RequestParam Long revwId) {
+        fileService.uploadMultipleFiles(imageFiles, "goodReview", accountDetails.getAccount().getAccountId(), revwId);
     }
 
 
