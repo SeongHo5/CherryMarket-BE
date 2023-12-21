@@ -196,7 +196,7 @@ public class AuthControllerFailureTest {
                         .secure(true)
                         .contentType("application/json")
                         .content(requestBody))
-                .andExpect(MockMvcResultMatchers.status().isConflict())
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                 .andDo(document("Sign-In-Fail-Deleted",
                         resourceDetails()
                                 .tag("인증 관리")

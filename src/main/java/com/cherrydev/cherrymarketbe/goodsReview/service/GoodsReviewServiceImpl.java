@@ -39,7 +39,6 @@ public class GoodsReviewServiceImpl implements GoodsReviewService {
 
     private final GoodsReviewMapper goodsReviewMapper;
     private final CustomerRewardMapper customerRewardMapper;
-//    private final AddRewardRequestDto addRewardRequestDto;
     private final AccountServiceImpl accountService;
 
     @Override
