@@ -39,6 +39,11 @@ public class GoodsController {
         return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
     }
 
+    @GetMapping("/listA")
+    public ResponseEntity<List<GoodsBasicInfoResponseDto>> getListA(String sortBy) {
+        return ResponseEntity.ok(goodsService.findA(sortBy));
+    }
+
     @GetMapping("/basicInfo")
     public ResponseEntity<GoodsBasicInfoResponseDto> getBasicInfo(@RequestParam Long goodsId) {
         return ResponseEntity.ok(goodsService.findBasicInfo(goodsId));
