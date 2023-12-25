@@ -4,6 +4,7 @@ import com.cherrydev.cherrymarketbe.account.enums.RegisterType;
 import com.cherrydev.cherrymarketbe.account.service.impl.AccountServiceImpl;
 import com.cherrydev.cherrymarketbe.auth.dto.SignInResponseDto;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto;
+import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto2;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthTokenResponseDto;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
@@ -30,7 +31,19 @@ public class CommonOAuthService {
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
 
+    public ResponseEntity<SignInResponseDto> processSignInForKakao(final OAuthAccountInfoDto2 accountInfo, final String provider) {
+//        String email = accountInfo.getEmail();
+        String email = accountInfo.getId();
+        String userName = accountInfo.getName();
+
+        checkAndProcessOAuthRegistration(accountInfo, provider);
+        JwtResponseDto jwtResponseDto = issueJwtToken(email);
+
+        return createSignInResponse(jwtResponseDto, userName);
+    }
+
     public ResponseEntity<SignInResponseDto> processSignIn(final OAuthAccountInfoDto accountInfo, final String provider) {
+//        String email = accountInfo.getEmail();
         String email = accountInfo.getEmail();
         String userName = accountInfo.getName();
 
@@ -67,6 +80,17 @@ public class CommonOAuthService {
      */
     private void checkAndProcessOAuthRegistration(final OAuthAccountInfoDto accountInfo, final String provider) {
         String email = accountInfo.getEmail();
+        RegisterType type = accountMapper.getRegisterTypeByEmail(email);
+
+        checkOAuthAccountType(type, provider);
+
+        if (!accountMapper.existByEmail(email)) {
+            accountService.createAccountByOAuth(accountInfo, provider);
+        }
+    }
+
+    private void checkAndProcessOAuthRegistration(final OAuthAccountInfoDto2 accountInfo, final String provider) {
+        String email = accountInfo.getId();
         RegisterType type = accountMapper.getRegisterTypeByEmail(email);
 
         checkOAuthAccountType(type, provider);

@@ -15,7 +15,9 @@ public final class AuthConstant {
     public static final String KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me";
     public static final String KAKAO_USER_ADDRESS_URL = "https://kapi.kakao.com/v1/user/shipping_address";
     public static final String KAKAO_USER_LOGOUT_URL = "https://kapi.kakao.com/v1/user/logout";
-    public static final String KAKAO_REDIRECT_URI = "http://social.s3-website.kr.object.ncloudstorage.com/login.html";
+
+//    public static final String KAKAO_REDIRECT_URI = "http://social.s3-website.kr.object.ncloudstorage.com/login.html";
+    public static final String KAKAO_REDIRECT_URI = "http://localhost:3000/oauth/callback/kakao";
     public static final String OAUTH_KAKAO_PREFIX = "OAUTH::KAKAO::";
     public static final String OAUTH_KAKAO_REFRESH_PREFIX = "OAUTH::KAKAO::REFRESH::";
     public static final String GRANT_TYPE_AUTHORIZATION = "authorization_code";
