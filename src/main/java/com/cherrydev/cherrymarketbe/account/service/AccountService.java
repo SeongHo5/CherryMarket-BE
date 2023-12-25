@@ -6,8 +6,10 @@ import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
 import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
 import com.cherrydev.cherrymarketbe.account.entity.Account;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto;
+import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public interface AccountService {
@@ -19,6 +21,9 @@ public interface AccountService {
     ResponseEntity<AccountInfoDto> modifyAccount(final @AuthenticationPrincipal AccountDetails accountDetails, final ModifyAccountInfoRequestDto requestDto);
 
     void deleteAccount(final @AuthenticationPrincipal AccountDetails accountDetails);
+
+    @Transactional
+    void createAccountByOAuth(OAuthAccountInfoDto2 oAuthAccountInfoDto, String provider);
 
     ResponseEntity<AccountInfoDto> getAccountInfo(final @AuthenticationPrincipal AccountDetails accountDetails);
 
