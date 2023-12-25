@@ -29,8 +29,8 @@ public class OAuthAccountInfoDto {
     @Nullable
     String contact;
 
-    @Nullable
-    Gender gender;
+//    @Nullable
+//    Gender gender;
 
     @Builder
     public OAuthAccountInfoDto(KakaoAccountResponse kakaoResponse, KakaoAccountResponse.KakaoAccount kakaoAccount) {
@@ -38,7 +38,7 @@ public class OAuthAccountInfoDto {
         this.name = kakaoAccount.getName();
         this.email = kakaoAccount.getEmail();
         this.contact = kakaoAccount.getPhoneNumber();
-        this.gender = Gender.valueOf(kakaoAccount.getGender().toUpperCase());
+//        this.gender = Gender.valueOf(kakaoAccount.getGender().toUpperCase());
     }
 
     public OAuthAccountInfoDto(NaverAccountResponse naverAccount) {
@@ -47,7 +47,7 @@ public class OAuthAccountInfoDto {
         this.name = naverAccountResponse.getName();
         this.email = naverAccountResponse.getEmail();
         this.contact = naverAccountResponse.getContact();
-        this.gender = toEnum(naverAccountResponse.getGender());
+//        this.gender = toEnum(naverAccountResponse.getGender());
     }
 
     private Gender toEnum(String gender) {
