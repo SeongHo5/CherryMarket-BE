@@ -209,7 +209,7 @@ public class OrderServiceImpl implements OrderService {
         eventPublisher.publishEvent(event);
     }
 
-    public Payment getOrderWithPayment(String orderCode) {
+    private Payment getOrderWithPayment(String orderCode) {
         Payment payment = tossPaymentsService.findPaymentByOrderId(orderCode);
 
         if (payment == null) {
@@ -217,7 +217,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return payment;
 
-        //TODO : private로 변경하기
     }
 
     private boolean isOrderCodeExists(String orderCode) {
