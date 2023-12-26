@@ -66,6 +66,14 @@ public class GoodsService {
         return pageResult;
     }
 
+    public List<GoodsBasicInfoResponseDto> findA(String sortBy) {
+        goodsMapper.findAll(sortBy);
+
+        return goodsMapper.findAll(sortBy).stream()
+                .map(this::convertToDiscountCalcDto)
+                .collect(Collectors.toList());
+    }
+
 
     public GoodsBasicInfoResponseDto findBasicInfo(Long goodsId) {
         GoodsBasicInfoDto basicInfoDto = goodsMapper.findBasicInfo(goodsId);

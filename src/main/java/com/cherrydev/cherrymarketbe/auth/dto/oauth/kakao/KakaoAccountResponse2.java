@@ -3,12 +3,11 @@ package com.cherrydev.cherrymarketbe.auth.dto.oauth.kakao;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 //@Value
 @Data
 @NoArgsConstructor(force = true)
-public class KakaoAccountResponse {
+public class KakaoAccountResponse2 {
 
     String id;
     String connectedAt;
@@ -19,8 +18,8 @@ public class KakaoAccountResponse {
 
     // getters, setters, constructors
 
-    @Value
-//@Data
+//    @Value
+@Data
     public static class KakaoAccount {
 
         @JsonProperty("name_needs_agreement")
