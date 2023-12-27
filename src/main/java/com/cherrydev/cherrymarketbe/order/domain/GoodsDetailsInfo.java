@@ -1,13 +1,14 @@
 package com.cherrydev.cherrymarketbe.order.domain;
 
 import com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto;
-import com.cherrydev.cherrymarketbe.order.entity.ProductDetails;
+
 
 
 public record GoodsDetailsInfo(
     Long goodsId,
     String storageType,
     String goodsName,
+    String goodsCode,
     Integer quantity,
     int price,
     Integer inventory,
@@ -21,6 +22,7 @@ public record GoodsDetailsInfo(
                     responseDto.getGoodsId(),
                     responseDto.getStorageType(),
                     responseDto.getGoodsName(),
+                    responseDto.getGoodsCode(),
                     goodsInfo.quantity(),
                     responseDto.getPrice(),
                     responseDto.getInventory(),
