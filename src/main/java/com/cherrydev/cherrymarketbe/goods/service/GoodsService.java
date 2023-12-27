@@ -121,6 +121,7 @@ public class GoodsService {
         return ToCartResponseDto.builder()
                        .goodsId(toCartResponseDto.getGoodsId())
                        .goodsName(toCartResponseDto.getGoodsName())
+                       .goodsCode(toCartResponseDto.getGoodsCode())
                        .price(toCartResponseDto.getPrice())
                        .inventory(toCartResponseDto.getInventory())
                        .storageType(toCartResponseDto.getStorageType())

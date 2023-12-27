@@ -77,9 +77,8 @@ public class CartServiceImpl implements CartService {
 
         boolean checkInventory = goodsService.findInventory(findGoodsId, requestChangeDto.quantity());
         if(checkInventory) {
-            goodsService.updateGoodsInventory(findGoodsId, requestChangeDto.quantity());
+            cartMapper.update(cart);
         }
-        cartMapper.update(cart);
     }
 
     @Transactional
