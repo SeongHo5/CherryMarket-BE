@@ -12,6 +12,7 @@ import com.cherrydev.cherrymarketbe.account.repository.AccountMapper;
 import com.cherrydev.cherrymarketbe.account.repository.AgreementMapper;
 import com.cherrydev.cherrymarketbe.account.service.AccountService;
 import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto;
+import com.cherrydev.cherrymarketbe.auth.dto.oauth.OAuthAccountInfoDto2;
 import com.cherrydev.cherrymarketbe.common.event.AccountRegistrationEvent;
 import com.cherrydev.cherrymarketbe.common.exception.AuthException;
 import com.cherrydev.cherrymarketbe.common.exception.DuplicatedException;
@@ -87,6 +88,33 @@ public class AccountServiceImpl implements AccountService {
         accountMapper.save(account);
         publishWelcomeEvent(account);
     }
+
+    @Override
+    @Transactional
+    public void createAccountByOAuth(final OAuthAccountInfoDto2 oAuthAccountInfoDto, final String provider) {
+        String email = oAuthAccountInfoDto.getId();
+        String name = oAuthAccountInfoDto.getName();
+        String encodedPassword = passwordEncoder.encode(generateRandomCode(10));
+
+        checkUsernameIsProhibited(name);
+        checkEmailIsDuplicated(email);
+
+        Account account = Account.builder()
+                .oauthId(oAuthAccountInfoDto.getId())
+                .email(email)
+                .name(name)
+                .password(encodedPassword)
+                .contact("010-0000-0000")
+                .userStatus(ACTIVE)
+                .userRole(ROLE_CUSTOMER)
+                .registerType(RegisterType.valueOf(provider.toUpperCase()))
+                .build();
+
+        accountMapper.save(account);
+        publishWelcomeEvent(account);
+    }
+
+
 
     @Override
     @Transactional(readOnly = true)
