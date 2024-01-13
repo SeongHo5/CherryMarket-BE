@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.common.config;
+package com.cherrydev.cherrymarketbe.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

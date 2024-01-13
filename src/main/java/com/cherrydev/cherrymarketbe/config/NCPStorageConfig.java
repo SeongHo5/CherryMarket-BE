@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.common.config;
+package com.cherrydev.cherrymarketbe.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

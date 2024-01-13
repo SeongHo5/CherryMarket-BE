@@ -1,9 +1,10 @@
-package com.cherrydev.cherrymarketbe.common.config;
+package com.cherrydev.cherrymarketbe.config;
 
 import com.cherrydev.cherrymarketbe.common.jwt.JwtAuthFilter;
 import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
 import com.cherrydev.cherrymarketbe.common.security.CustomAccessDeniedHandler;
 import com.cherrydev.cherrymarketbe.common.security.CustomAuthEntryPoint;
+import com.cherrydev.cherrymarketbe.common.security.RateLimitFilter;
 import com.cherrydev.cherrymarketbe.common.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 
 
@@ -34,7 +34,6 @@ public class SecurityConfig {
     private final RedisService redisService;
 
     public static final String ALLOWED_ORIGINS = "marketcherry.store";
-    public static final String ALLOWED_METHODS = "GET, POST, DELETE, PATCH";
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -50,15 +49,17 @@ public class SecurityConfig {
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
+                        .requestMatchers(("/api/**")).permitAll()
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(new JwtAuthFilter(jwtProvider, redisService),
                         UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new CustomAuthEntryPoint())
-                )
+                .addFilterBefore(new RateLimitFilter(redisService), JwtAuthFilter.class)
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(new CustomAccessDeniedHandler())
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new CustomAuthEntryPoint())
                 );
         return http.build();
     }
@@ -78,4 +79,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
+
 }
