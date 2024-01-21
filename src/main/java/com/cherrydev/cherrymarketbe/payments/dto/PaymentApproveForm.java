@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Value
-public class PaymentConfirmForm implements Serializable {
+public class PaymentApproveForm implements Serializable {
 
     @NotNull
     String paymentKey;
@@ -19,7 +19,7 @@ public class PaymentConfirmForm implements Serializable {
     @NotNull
     Number amount;
 
-    public PaymentConfirmForm(String paymentKey, String orderId, Number amount) {
+    public PaymentApproveForm(String paymentKey, String orderId, Number amount) {
         this.paymentKey = paymentKey;
         this.orderId = orderId;
         this.amount = amount;

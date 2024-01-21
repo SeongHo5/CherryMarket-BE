@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.payments.controller;
 import com.cherrydev.cherrymarketbe.payments.model.cardpromotion.CardPromotion;
 import com.cherrydev.cherrymarketbe.payments.service.TossPaymentsService;
 import com.cherrydev.cherrymarketbe.payments.dto.PaymentCancelForm;
-import com.cherrydev.cherrymarketbe.payments.dto.PaymentConfirmForm;
+import com.cherrydev.cherrymarketbe.payments.dto.PaymentApproveForm;
 import com.cherrydev.cherrymarketbe.payments.model.payment.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,35 +18,43 @@ public class TossPaymentsController {
 
     private final TossPaymentsService tossPaymentsService;
 
-    @GetMapping ("/find-orderId")
+    @GetMapping ("/find/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public Payment getPaymentByOrderId(
-            @RequestParam String orderId
+            final @PathVariable String orderId
     ) {
         return tossPaymentsService.findPaymentByOrderId(orderId);
+    }
+
+    @GetMapping ("/find/{paymentKey}")
+    @ResponseStatus(HttpStatus.OK)
+    public Payment getPaymentByPaymentKey(
+            final @PathVariable String paymentKey
+    ) {
+        return tossPaymentsService.findPaymentByPaymentKey(paymentKey);
     }
 
     @PostMapping("/confirm")
     @ResponseStatus(HttpStatus.OK)
     public Payment confirmPayment(
-            @RequestBody PaymentConfirmForm form
+            final @RequestBody PaymentApproveForm form
             ) {
-        return tossPaymentsService.paymentConfirm(form);
+        return tossPaymentsService.approvePayment(form);
     }
 
     @PostMapping("/cancel")
     @ResponseStatus(HttpStatus.OK)
     public Payment cancelPayment(
-            @RequestParam String paymentKey,
-            @RequestBody PaymentCancelForm form
+            final @RequestParam String paymentKey,
+            final @RequestBody PaymentCancelForm form
     ) {
-        return tossPaymentsService.paymentCancel(paymentKey, form);
+        return tossPaymentsService.cancelPayment(paymentKey, form);
     }
 
     @GetMapping("/card-promotion")
     @ResponseStatus(HttpStatus.OK)
     public CardPromotion getCardPromotion(){
-        return tossPaymentsService.cardPromotion();
+        return tossPaymentsService.getCardPromotionInfo();
     }
 
 
