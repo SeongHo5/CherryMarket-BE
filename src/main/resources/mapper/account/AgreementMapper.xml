@@ -2,14 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.account.repository.AgreementMapper">
-    <resultMap id="AgreementMap" type="com.cherrydev.cherrymarketbe.account.entity.Agreement">
+<mapper namespace="com.cherrydev.cherrymarketbe.infrastructure.repository.AgreementMapper">
+    <resultMap id="AgreementMap" type="com.cherrydev.cherrymarketbe.server.domain.account.entity.Agreement">
         <result property="accountId" column="ACNT_ID"/>
         <result property="termsOfService" column="CSTMR_SVC_USE_STPLAT_AGRE_YN" javaType="boolean" jdbcType="TINYINT"/>
         <result property="privacyPolicy" column="CSTMR_INDVDLINFO_PROCESS_POILC_AGRE_YN" javaType="boolean" jdbcType="TINYINT"/>
         <result property="marketing" column="CSTMR_MARKET_INFO_RECPTN_AGRE_YN" javaType="boolean" jdbcType="TINYINT"/>
     </resultMap>
-    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.account.entity.Agreement">
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Agreement">
         INSERT INTO CSTMR_STPLAT_AGRE_YN (
             ACNT_ID,
             CSTMR_SVC_USE_STPLAT_AGRE_YN,
@@ -32,7 +32,7 @@
         WHERE ACNT_ID = #{accountId}
     </select>
 
-    <update id="update" parameterType="com.cherrydev.cherrymarketbe.account.entity.Agreement">
+    <update id="update" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Agreement">
         UPDATE CSTMR_STPLAT_AGRE_YN
         SET CSTMR_SVC_USE_STPLAT_AGRE_YN = #{serviceAgreement},
             CSTMR_INDVDLINFO_PROCESS_POILC_AGRE_YN = #{processPolicyAgreement},

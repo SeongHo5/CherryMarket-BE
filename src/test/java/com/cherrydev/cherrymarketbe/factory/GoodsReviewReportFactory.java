@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.factory;
 
-import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportModifyDto;
-import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportRequestDto;
+import com.cherrydev.cherrymarketbe.goodsreviewreport.dto.ReviewReportModifyDto;
+import com.cherrydev.cherrymarketbe.goodsreviewreport.dto.ReviewReportRequestDto;
 
 public class GoodsReviewReportFactory {
 

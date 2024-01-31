@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.order.repository.OrderMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.OrderMapper">
 
-    <resultMap id="orderResultMap" type="com.cherrydev.cherrymarketbe.order.entity.Order">
+    <resultMap id="orderResultMap" type="com.cherrydev.cherrymarketbe.server.domain.order.entity.Order">
         <result property="accountId" column="ACNT_ID"/>
         <result property="orderId" column="ORDERS_ID"/>
         <result property="orderCode" column="ORDERS_CODE"/>
@@ -20,7 +20,7 @@
         SELECT COUNT(*) FROM ORDERS WHERE ORDERS_CODE = #{orderCode}
     </select>
 
-    <select id="findOrderStatusByOrderCode" resultType="com.cherrydev.cherrymarketbe.order.enums.OrderStatus" parameterType="string">
+    <select id="findOrderStatusByOrderCode" resultType="com.cherrydev.cherrymarketbe.server.domain.order.enums.OrderStatus" parameterType="string">
         SELECT ORDERS_STTUS FROM ORDERS WHERE ORDERS_CODE = #{orderCode}
     </select>
 
@@ -79,7 +79,7 @@
              (SELECT GOODS.GOODS_CODE FROM GOODS WHERE GOODS.GOODS_ID = #{representativeGoodsId}), now())
     </insert>
 
-    <parameterMap id="orderParamMap" type="com.cherrydev.cherrymarketbe.order.entity.Order">
+    <parameterMap id="orderParamMap" type="com.cherrydev.cherrymarketbe.server.domain.order.entity.Order">
         <parameter property="accountId" />
         <parameter property="orderCode" />
         <parameter property="orderStatus" />

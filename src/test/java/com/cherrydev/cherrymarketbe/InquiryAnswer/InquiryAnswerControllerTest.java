@@ -1,14 +1,14 @@
 package com.cherrydev.cherrymarketbe.InquiryAnswer;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
 import com.cherrydev.cherrymarketbe.factory.InquiryAnswerFactory;
-import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
+import com.cherrydev.cherrymarketbe.inquiryanswer.dto.InquiryAnwerRequestDto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +33,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_ANSWER;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
+import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.ALREADY_EXIST_ANSWER;
+import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
 import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoF;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -88,8 +88,8 @@ class InquiryAnswerControllerTest {
     @Transactional
     void 로그인_성공() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoF();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoF();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")

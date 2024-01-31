@@ -1,12 +1,12 @@
 package com.cherrydev.cherrymarketbe.notice;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
 import com.cherrydev.cherrymarketbe.factory.NoticeFactory;
 import com.cherrydev.cherrymarketbe.notice.dto.NoticeRequestDto;
 import com.cherrydev.cherrymarketbe.notice.entity.Notice;
@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoF;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -87,8 +86,8 @@ class NoticeControllerFailureTest {
     @Transactional
     void 로그인_성공() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoF();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoF();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")

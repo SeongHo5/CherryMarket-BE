@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.account.repository.AccountMapper">
-    <resultMap id="accountMap" type="com.cherrydev.cherrymarketbe.account.entity.Account">
+<mapper namespace="com.cherrydev.cherrymarketbe.infrastructure.repository.AccountMapper">
+    <resultMap id="accountMap" type="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         <result property="accountId" column="ACNT_ID"/>
         <result property="oauthId" column="ACNT_OAUTH_ID"/>
         <result property="registType" column="ACNT_REGIST_TYPE"/>
@@ -18,7 +18,7 @@
         <result property="updatedAt" column="UPDT_DE"/>
         <result property="deletedAt" column="DELETED_DE"/>
     </resultMap>
-    <resultMap id="AdminUserInfoDtoMap" type="com.cherrydev.cherrymarketbe.admin.dto.AdminUserInfoDto">
+    <resultMap id="AdminUserInfoDtoMap" type="com.cherrydev.cherrymarketbe.server.domain.admin.dto.response.AdminUserInfo">
         <result property="accountId" column="ACNT_ID"/>
         <result property="registType" column="ACNT_REGIST_TYPE"/>
         <result property="name" column="ACNT_NM"/>
@@ -66,7 +66,7 @@
     </select>
 
     <select id="getRegisterTypeByEmail" parameterType="String"
-            resultType="com.cherrydev.cherrymarketbe.account.enums.RegisterType">
+            resultType="com.cherrydev.cherrymarketbe.server.domain.account.enums.RegisterType">
         select ACNT_REGIST_TYPE
         from ACNT
         where ACNT_EMAIL = #{email}
@@ -80,7 +80,7 @@
     </select>
 
     <!--    INSERT-->
-    <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+    <insert id="save" useGeneratedKeys="true" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         <selectKey keyProperty="accountId" keyColumn="ACNT_ID" resultType="Long" order="AFTER">
             select last_insert_id()
         </selectKey>
@@ -93,7 +93,7 @@
     </insert>
 
     <!--    UPDATE-->
-    <update id="updateAccountInfo" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+    <update id="updateAccountInfo" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         UPDATE ACNT
         <set>
             <if test="password != null">ACNT_PASSWORD = #{password},</if>
@@ -103,13 +103,13 @@
         WHERE ACNT_EMAIL = #{email}
     </update>
 
-    <update id="updateAccountRole" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+    <update id="updateAccountRole" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         UPDATE ACNT
         SET ACNT_ROLE = #{userRole}
         WHERE ACNT_EMAIL = #{email}
     </update>
 
-    <update id="updateAccountStatus" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+    <update id="updateAccountStatus" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         UPDATE ACNT
         SET ACNT_STTUS       = #{userStatus},
             ACNT_USE_LMTT_DE = #{restrictedUntil}
@@ -117,7 +117,7 @@
     </update>
 
     <!--    DELETE-->
-    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         UPDATE ACNT
         SET ACNT_STTUS = 'DELETED',
             DELETED_DE = now()

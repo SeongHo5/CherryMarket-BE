@@ -1,11 +1,11 @@
 package com.cherrydev.cherrymarketbe.customer;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
-import com.cherrydev.cherrymarketbe.customer.dto.address.AddAddressRequestDto;
-import com.cherrydev.cherrymarketbe.customer.dto.address.ModifyAddressRequestDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAddAddress;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestModifyAddress;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.factory.CustomerFactory.createAddAddressRequestDtoA;
 import static com.cherrydev.cherrymarketbe.factory.CustomerFactory.createModifyAddressRequestDtoA;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -115,7 +114,7 @@ class CustomerControllerTest {
     @WithUserDetails(value = "jeongung18@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 배송지_추가_성공() throws Exception {
         // Given
-        AddAddressRequestDto requestDto = createAddAddressRequestDtoA();
+        RequestAddAddress requestDto = createAddAddressRequestDtoA();
         String requestBody = Jackson.toJsonString(requestDto);
 
         // When & Then
@@ -139,7 +138,7 @@ class CustomerControllerTest {
     @WithUserDetails(value = "bagsunja@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 배송지_추가_실패_최대_개수_초과() throws Exception {
         // Given
-        AddAddressRequestDto requestDto = createAddAddressRequestDtoA();
+        RequestAddAddress requestDto = createAddAddressRequestDtoA();
         String requestBody = Jackson.toJsonString(requestDto);
 
         // When & Then
@@ -217,7 +216,7 @@ class CustomerControllerTest {
     @WithUserDetails(value = "bagsunja@example.org", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 배송지_수정_성공() throws Exception {
         // Given
-        ModifyAddressRequestDto requestDto = createModifyAddressRequestDtoA();
+        RequestModifyAddress requestDto = createModifyAddressRequestDtoA();
         String requestBody = Jackson.toJsonString(requestDto);
 
         // When & Then

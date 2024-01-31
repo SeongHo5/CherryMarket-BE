@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.CustomerAddressMapper">
-    <resultMap id="addressMap" type="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.CustomerAddressMapper">
+    <resultMap id="addressMap" type="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress">
         <result property="addressId" column="CSTMR_ADRES_ID"/>
         <result property="accountId" column="ACNT_ID"/>
         <result property="isDefault" column="CSTMR_ADRES_BASS_YN"/>
@@ -14,7 +14,7 @@
         <result property="createdAt" column="CREAT_DE"/>
         <result property="deletedAt" column="DELETED_DE"/>
     </resultMap>
-    <resultMap id="addressInfoDtoMap" type="com.cherrydev.cherrymarketbe.customer.dto.address.AddressInfoDto">
+    <resultMap id="addressInfoDtoMap" type="com.cherrydev.cherrymarketbe.server.domain.goods.dto.AddressInfo">
         <result property="addressId" column="CSTMR_ADRES_ID"/>
         <result property="isDefault" column="CSTMR_ADRES_BASS_YN"/>
         <result property="name" column="CSTMR_ADRES_NM"/>
@@ -24,7 +24,7 @@
         <result property="createdAt" column="CREAT_DE"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress">
         INSERT INTO CSTMR_ADRES (ACNT_ID,
                                  CSTMR_ADRES_BASS_YN,
                                  CSTMR_ADRES_NM,
@@ -39,7 +39,7 @@
                 #{addressDetail})
     </insert>
 
-    <update id="update" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+    <update id="update" parameterType="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress">
         UPDATE CSTMR_ADRES
         <set>
             <if test="isDefault != null">
@@ -62,14 +62,14 @@
         CSTMR_ADRES_ID = #{addressId}
     </update>
 
-    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress">
         DELETE
         FROM CSTMR_ADRES
         WHERE CSTMR_ADRES_ID = #{addressId}
           AND ACNT_ID = #{accountId}
     </delete>
 
-    <delete id="deleteAllByAccountId" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+    <delete id="deleteAllByAccountId" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         DELETE
         FROM CSTMR_ADRES
         WHERE ACNT_ID = #{accountId}
@@ -95,7 +95,7 @@
     </select>
 
     <select id="existByAccountIdAndIsDefault" resultType="java.lang.Boolean"
-            parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+            parameterType="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress">
         SELECT EXISTS(SELECT 1
                       FROM CSTMR_ADRES
                       WHERE ACNT_ID = #{accountId}
@@ -109,7 +109,7 @@
           AND CSTMR_ADRES_BASS_YN = TRUE;
     </select>
 
-    <update id="updateDefaultAddress" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerAddress">
+    <update id="updateDefaultAddress" parameterType="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress">
         UPDATE CSTMR_ADRES
         <set>
             CSTMR_ADRES_BASS_YN = FALSE,

@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.factory;
 
-import com.cherrydev.cherrymarketbe.inquiryAnswer.dto.InquiryAnwerRequestDto;
+import com.cherrydev.cherrymarketbe.inquiryanswer.dto.InquiryAnwerRequestDto;
 
 public class InquiryAnswerFactory {
 

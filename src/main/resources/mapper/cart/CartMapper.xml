@@ -2,13 +2,13 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.cart.repository.CartMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.CartMapper">
 
-    <resultMap id="cartResultMap" type="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+    <resultMap id="cartResultMap" type="com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart">
         <result property="cartId" column="CART_ID"/>
         <result property="quantity" column="CART_QY"/>
 
-        <association property="goods" javaType="com.cherrydev.cherrymarketbe.goods.dto.ToCartResponseDto">
+        <association property="goods" javaType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.ToCartResponse">
             <result property="goodsId" column="GOODS_ID"/>
             <result property="goodsName" column="GOODS_NM"/>
             <result property="goodsCode" column="GOODS_CODE"/>
@@ -57,13 +57,13 @@
     </select>
 
 
-    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart">
         insert into CART (ACNT_ID, GOODS_ID, CART_QY, CREAT_DE, UPDT_DE)
         values (#{accountId}, #{goods.goodsId}, #{quantity}, now(), now())
     </insert>
 
 
-    <update id="update" parameterType="com.cherrydev.cherrymarketbe.cart.entity.Cart">
+    <update id="update" parameterType="com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart">
         update CART
         SET CART_QY = #{quantity}, UPDT_DE = now()
         WHERE CART_ID = #{cartId};

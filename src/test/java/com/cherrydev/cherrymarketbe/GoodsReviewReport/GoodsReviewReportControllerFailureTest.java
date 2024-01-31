@@ -1,14 +1,14 @@
 package com.cherrydev.cherrymarketbe.GoodsReviewReport;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
-import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
-import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportModifyDto;
-import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportRequestDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.goodsreview.entity.GoodsReview;
+import com.cherrydev.cherrymarketbe.goodsreviewreport.dto.ReviewReportModifyDto;
+import com.cherrydev.cherrymarketbe.goodsreviewreport.dto.ReviewReportRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,8 +32,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.ALREADY_EXIST_REPORT;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
+import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.ALREADY_EXIST_REPORT;
+import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.NOT_ALLOWED_EMPTY_CONTENT;
 import static com.cherrydev.cherrymarketbe.factory.GoodsReviewReportFactory.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;

@@ -1,12 +1,12 @@
 package com.cherrydev.cherrymarketbe.auth;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
 import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,9 +41,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Objects;
 
-import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.*;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.DELETED_ACCOUNT;
+import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.DELETED_ACCOUNT;
 import static com.cherrydev.cherrymarketbe.factory.AuthFactory.*;
 import static com.cherrydev.cherrymarketbe.factory.AuthFactory.createSignInRequestDtoE;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -119,8 +117,8 @@ public class AuthControllerFailureTest {
     void 로그인_실패_비밀번호_불일치() throws Exception {
 
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoB();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoB();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
@@ -142,8 +140,8 @@ public class AuthControllerFailureTest {
     @Transactional
     void 로그인_실패_존재하지_않는_이메일() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoC();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoC();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
@@ -165,8 +163,8 @@ public class AuthControllerFailureTest {
     @Transactional
     void 로그인_실패_제한된_사용자() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoD();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoD();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")
@@ -188,8 +186,8 @@ public class AuthControllerFailureTest {
     @Transactional
     void 로그인_실패_탈퇴한_사용자() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoE();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoE();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")

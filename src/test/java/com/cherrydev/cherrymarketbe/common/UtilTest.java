@@ -9,11 +9,9 @@ import org.springframework.http.MediaType;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
-import static com.cherrydev.cherrymarketbe.common.constant.AuthConstant.AUTHORIZATION_HEADER;
-import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.VERIFICATION_CODE_LENGTH;
-import static com.cherrydev.cherrymarketbe.common.utils.CodeGenerator.*;
-import static com.cherrydev.cherrymarketbe.common.utils.HttpEntityUtils.createHttpEntity;
-import static com.cherrydev.cherrymarketbe.common.utils.TimeFormatter.*;
+import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.AUTHORIZATION_HEADER;
+import static com.cherrydev.cherrymarketbe.server.application.common.constant.EmailConstant.VERIFICATION_CODE_LENGTH;
+import static com.cherrydev.cherrymarketbe.server.application.common.utils.HttpEntityUtils.createHttpEntity;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.order.repository.ProductMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.ProductMapper">
 
     <insert id="save">
         insert into ORDER_DETAIL (
@@ -23,7 +23,7 @@
                )
     </insert>
 
-    <select id="findByOrderCode" parameterType="String" resultType="com.cherrydev.cherrymarketbe.order.domain.GoodsInfo">
+    <select id="findByOrderCode" parameterType="String" resultType="com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.GoodsInfo">
         select
             od.GOODS_ID as goodsId,
             od.ORDERS_QY as quantity,

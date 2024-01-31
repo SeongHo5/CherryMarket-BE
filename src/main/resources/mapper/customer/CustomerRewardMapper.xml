@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.CustomerRewardMapper">
-    <resultMap id="rewardMap" type="com.cherrydev.cherrymarketbe.customer.entity.CustomerReward">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.CustomerRewardMapper">
+    <resultMap id="rewardMap" type="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerReward">
         <result property="rewardId" column="CSTMR_REWARD_ID"/>
         <result property="accountId" column="ACNT_ID"/>
         <result property="rewardGrantType" column="CSTMR_REWARD_TY"/>
@@ -16,7 +16,7 @@
         <result property="updatedAt" column="UPDT_DE"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerReward">
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerReward">
         INSERT INTO CSTMR_REWARD (ACNT_ID,
                                   CSTMR_REWARD_TY,
                                   CSTMR_REWARD_AMOUNT,
@@ -31,7 +31,7 @@
                 #{isUsed})
     </insert>
 
-    <select id="findAllByAccount" resultMap="rewardMap" parameterType="com.cherrydev.cherrymarketbe.account.entity.Account">
+    <select id="findAllByAccount" resultMap="rewardMap" parameterType="com.cherrydev.cherrymarketbe.server.domain.account.entity.Account">
         SELECT CSTMR_REWARD_ID,
                ACNT_ID,
                CSTMR_REWARD_TY,

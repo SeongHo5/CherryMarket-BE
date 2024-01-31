@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.common;
 
-import com.cherrydev.cherrymarketbe.common.service.RedisService;
+import com.cherrydev.cherrymarketbe.server.application.common.service.RedisService;
 import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

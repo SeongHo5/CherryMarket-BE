@@ -1,12 +1,12 @@
 package com.cherrydev.cherrymarketbe.auth;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
 import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Objects;
 
-import static com.cherrydev.cherrymarketbe.common.constant.EmailConstant.*;
 import static com.cherrydev.cherrymarketbe.factory.AuthFactory.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -115,8 +114,8 @@ class AuthControllerSuccessTest {
     @Transactional
     void 로그인_성공() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoA();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoA();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")

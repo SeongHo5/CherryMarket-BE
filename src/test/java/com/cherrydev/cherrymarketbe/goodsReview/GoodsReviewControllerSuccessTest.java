@@ -1,14 +1,14 @@
 package com.cherrydev.cherrymarketbe.goodsReview;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
-import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
-import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
-import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.goodsreview.dto.GoodsReviewModifyDto;
+import com.cherrydev.cherrymarketbe.goodsreview.dto.GoodsReviewRequestDto;
+import com.cherrydev.cherrymarketbe.goodsreview.entity.GoodsReview;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

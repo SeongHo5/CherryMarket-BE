@@ -1,8 +1,8 @@
 package com.cherrydev.cherrymarketbe.factory;
 
-import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewModifyDto;
-import com.cherrydev.cherrymarketbe.goodsReview.dto.GoodsReviewRequestDto;
-import com.cherrydev.cherrymarketbe.goodsReview.enums.GoodsReviewBest;
+import com.cherrydev.cherrymarketbe.goodsreview.dto.GoodsReviewModifyDto;
+import com.cherrydev.cherrymarketbe.goodsreview.dto.GoodsReviewRequestDto;
+import com.cherrydev.cherrymarketbe.goodsreview.enums.GoodsReviewBest;
 import com.cherrydev.cherrymarketbe.notice.enums.DisplayStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;

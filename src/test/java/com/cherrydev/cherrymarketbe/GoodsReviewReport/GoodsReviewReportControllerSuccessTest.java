@@ -1,15 +1,15 @@
 package com.cherrydev.cherrymarketbe.GoodsReviewReport;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.AccountDetails;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.auth.dto.SignInRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
-import com.cherrydev.cherrymarketbe.goodsReview.entity.GoodsReview;
-import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportModifyDto;
-import com.cherrydev.cherrymarketbe.goodsReviewReport.dto.ReviewReportRequestDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.goodsreview.entity.GoodsReview;
+import com.cherrydev.cherrymarketbe.goodsreviewreport.dto.ReviewReportModifyDto;
+import com.cherrydev.cherrymarketbe.goodsreviewreport.dto.ReviewReportRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -88,8 +88,8 @@ class GoodsReviewReportControllerSuccessTest {
     @Transactional
     void 로그인_성공() throws Exception {
         // Given
-        SignInRequestDto signInRequestDto = createSignInRequestDtoF();
-        String requestBody = Jackson.toJsonString(signInRequestDto);
+        RequestSignIn requestSignIn = createSignInRequestDtoF();
+        String requestBody = Jackson.toJsonString(requestSignIn);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/sign-in")

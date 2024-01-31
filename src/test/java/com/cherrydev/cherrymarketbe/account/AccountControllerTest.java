@@ -1,10 +1,12 @@
 package com.cherrydev.cherrymarketbe.account;
 
 import com.amazonaws.util.json.Jackson;
-import com.cherrydev.cherrymarketbe.account.dto.*;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
+import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.request.RequestModifyAccountInfo;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.request.RequestSignUp;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +31,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.cherrydev.cherrymarketbe.common.exception.enums.ExceptionStatus.*;
 import static com.cherrydev.cherrymarketbe.factory.AccountFactory.*;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.resourceDetails;
@@ -77,8 +78,8 @@ class AccountControllerTest {
     @WithAnonymousUser
     void 회원가입_성공() throws Exception {
         // Given
-        SignUpRequestDto signUpRequestDto = createSignUpRequestDtoC();
-        String requestBody = Jackson.toJsonString(signUpRequestDto);
+        RequestSignUp requestSignUp = createSignUpRequestDtoC();
+        String requestBody = Jackson.toJsonString(requestSignUp);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/account/sign-up")
@@ -98,8 +99,8 @@ class AccountControllerTest {
     @WithAnonymousUser
     void 회원가입_실패_금지된_이름() throws Exception {
         // Given
-        SignUpRequestDto signUpRequestDto = createSignUpRequestDtoB();
-        String requestBody = Jackson.toJsonString(signUpRequestDto);
+        RequestSignUp requestSignUp = createSignUpRequestDtoB();
+        String requestBody = Jackson.toJsonString(requestSignUp);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/account/sign-up")
@@ -123,8 +124,8 @@ class AccountControllerTest {
     @WithAnonymousUser
     void 회원가입_실패_이메일_중복() throws Exception {
         // Given
-        SignUpRequestDto signUpRequestDto = createSignUpRequestDtoA();
-        String requestBody = Jackson.toJsonString(signUpRequestDto);
+        RequestSignUp requestSignUp = createSignUpRequestDtoA();
+        String requestBody = Jackson.toJsonString(requestSignUp);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/account/sign-up")
@@ -174,14 +175,14 @@ class AccountControllerTest {
     @WithUserDetails(value = "ubag@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 내정보_수정_성공() throws Exception {
         // Given
-        ModifyAccountInfoRequestDto modifyAccountInfoRequestDto = createModifyAccountInfoRequestDtoA();
+        RequestModifyAccountInfo requestModifyAccountInfo = createModifyAccountInfoRequestDtoA();
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/account/my-info/modify")
                         .secure(true)
                         .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(Jackson.toJsonString(modifyAccountInfoRequestDto)))
+                        .content(Jackson.toJsonString(requestModifyAccountInfo)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(account.getName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(account.getEmail()))

@@ -1,20 +1,20 @@
 package com.cherrydev.cherrymarketbe.factory;
 
-import com.cherrydev.cherrymarketbe.account.dto.ModifyAccountInfoRequestDto;
-import com.cherrydev.cherrymarketbe.account.entity.Account;
-import com.cherrydev.cherrymarketbe.account.dto.SignUpRequestDto;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.request.RequestModifyAccountInfo;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.request.RequestSignUp;
 
 import java.time.LocalDate;
 
-import static com.cherrydev.cherrymarketbe.account.enums.Gender.MALE;
-import static com.cherrydev.cherrymarketbe.account.enums.UserRole.ROLE_CUSTOMER;
-import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.DELETED;
-import static com.cherrydev.cherrymarketbe.account.enums.UserStatus.RESTRICTED;
+import static com.cherrydev.cherrymarketbe.server.domain.account.enums.Gender.MALE;
+import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole.ROLE_CUSTOMER;
+import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus.DELETED;
+import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus.RESTRICTED;
 
 public class AccountFactory {
 
-    public static SignUpRequestDto createSignUpRequestDtoA() {
-        return SignUpRequestDto.builder()
+    public static RequestSignUp createSignUpRequestDtoA() {
+        return RequestSignUp.builder()
                 .name("김영희")
                 .email("test1@marketcherry.com")
                 .password("Testuser12#")
@@ -27,8 +27,8 @@ public class AccountFactory {
                 .build();
     }
 
-    public static SignUpRequestDto createSignUpRequestDtoB() {
-        return SignUpRequestDto.builder()
+    public static RequestSignUp createSignUpRequestDtoB() {
+        return RequestSignUp.builder()
                 .name("관리자")
                 .email("test@example.com")
                 .password("Testuser12#")
@@ -41,8 +41,8 @@ public class AccountFactory {
                 .build();
     }
 
-    public static SignUpRequestDto createSignUpRequestDtoC() {
-        return SignUpRequestDto.builder()
+    public static RequestSignUp createSignUpRequestDtoC() {
+        return RequestSignUp.builder()
                 .name("김영희")
                 .email("test999999@marketcherry.com")
                 .password("Testuser12#")
@@ -81,8 +81,8 @@ public class AccountFactory {
                 .build();
     }
 
-    public static ModifyAccountInfoRequestDto createModifyAccountInfoRequestDtoA() {
-        return ModifyAccountInfoRequestDto.builder()
+    public static RequestModifyAccountInfo createModifyAccountInfoRequestDtoA() {
+        return RequestModifyAccountInfo.builder()
                 .password("Testuser12#")
                 .contact("010-1234-5678")
                 .birthdate("1990-01-01")

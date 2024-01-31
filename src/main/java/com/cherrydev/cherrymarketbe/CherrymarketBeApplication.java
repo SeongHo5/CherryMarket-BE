@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.TimeZone;
 
-import static com.cherrydev.cherrymarketbe.common.log.CherryLogger.logServerStart;
+import static com.cherrydev.cherrymarketbe.server.application.common.log.CherryLogger.logServerStart;
 
 @EnableScheduling
 @SpringBootApplication

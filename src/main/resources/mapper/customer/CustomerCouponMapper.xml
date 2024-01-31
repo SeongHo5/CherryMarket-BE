@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.customer.repository.CustomerCouponMapper">
-    <resultMap id="customerCouponMap" type="com.cherrydev.cherrymarketbe.customer.entity.CustomerCoupon">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.CustomerCouponMapper">
+    <resultMap id="customerCouponMap" type="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerCoupon">
         <result property="couponId" column="COUPON_ID"/>
         <result property="accountId" column="ACNT_ID"/>
         <result property="isUsed" column="COUPON_USE_YN"/>
@@ -13,7 +13,7 @@
         <result property="updatedAt" column="UPDT_DE"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.customer.entity.CustomerCoupon">
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerCoupon">
         INSERT INTO CSTMR_COUPON (COUPON_ID,
                                   ACNT_ID)
         VALUES (#{couponId},

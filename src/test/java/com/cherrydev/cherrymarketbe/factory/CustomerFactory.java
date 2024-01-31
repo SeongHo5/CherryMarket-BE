@@ -1,12 +1,12 @@
 package com.cherrydev.cherrymarketbe.factory;
 
-import com.cherrydev.cherrymarketbe.customer.dto.address.AddAddressRequestDto;
-import com.cherrydev.cherrymarketbe.customer.dto.address.ModifyAddressRequestDto;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAddAddress;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestModifyAddress;
 
 public class CustomerFactory {
 
-    public static AddAddressRequestDto createAddAddressRequestDtoA() {
-        return new AddAddressRequestDto(
+    public static RequestAddAddress createAddAddressRequestDtoA() {
+        return new RequestAddAddress(
                 false,
                 "name",
                 "51234",
@@ -15,8 +15,8 @@ public class CustomerFactory {
         );
     }
 
-    public static AddAddressRequestDto createAddAddressRequestDtoB() {
-        return new AddAddressRequestDto(
+    public static RequestAddAddress createAddAddressRequestDtoB() {
+        return new RequestAddAddress(
                 true,
                 "name",
                 "51234",
@@ -25,8 +25,8 @@ public class CustomerFactory {
         );
     }
 
-    public static ModifyAddressRequestDto createModifyAddressRequestDtoA() {
-        return new ModifyAddressRequestDto(
+    public static RequestModifyAddress createModifyAddressRequestDtoA() {
+        return new RequestModifyAddress(
                 1L,
                 false,
                 "name",

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.admin.repository.CouponMapper">
-    <resultMap id="couponMap" type="com.cherrydev.cherrymarketbe.admin.entity.Coupon">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.CouponMapper">
+    <resultMap id="couponMap" type="com.cherrydev.cherrymarketbe.server.domain.admin.entity.Coupon">
         <result property="id" column="COUPON_ID"/>
         <result property="code" column="COUPON_CODE"/>
         <result property="type" column="COUPON_TY"/>
@@ -12,7 +12,7 @@
         <result property="createdAt" column="CREAT_DE"/>
         <result property="updatedAt" column="UPDT_DE"/>
     </resultMap>
-    <resultMap id="couponInfoMap" type="com.cherrydev.cherrymarketbe.admin.dto.CouponInfoDto">
+    <resultMap id="couponInfoMap" type="com.cherrydev.cherrymarketbe.server.domain.admin.dto.response.CouponInfo">
         <result property="code" column="COUPON_CODE"/>
         <result property="type" column="COUPON_TY"/>
         <result property="minimumOrderAmount" column="COUPON_MIN_AMOUNT"/>
@@ -21,7 +21,7 @@
         <result property="endDate" column="COUPON_ENDDE"/>
     </resultMap>
 
-    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.admin.entity.Coupon">
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.server.domain.admin.entity.Coupon">
         insert into COUPON (COUPON_CODE,
                             COUPON_TY,
                             COUPON_MIN_AMOUNT,
@@ -36,7 +36,7 @@
                 #{endDate})
     </insert>
 
-    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.admin.entity.Coupon">
+    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.server.domain.admin.entity.Coupon">
         delete
         from COUPON
         where COUPON_ID = #{id}
@@ -53,7 +53,7 @@
         ORDER BY COUPON_ID
     </select>
 
-    <select id="findAllByType" parameterType="com.cherrydev.cherrymarketbe.admin.enums.CouponType">
+    <select id="findAllByType" parameterType="com.cherrydev.cherrymarketbe.server.domain.admin.enums.CouponType">
         select *
         from COUPON
         where COUPON_TY = #{type}
