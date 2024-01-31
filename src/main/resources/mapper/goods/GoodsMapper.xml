@@ -1,113 +1,135 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace = "com.cherrydev.cherrymarketbe.server.infrastructure.repository.GoodsMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.goods.GoodsMapper">
+    <resultMap id="goodsMap" type="com.cherrydev.cherrymarketbe.server.domain.goods.entity.Goods">
+        <id column="GOODS_ID" property="id"/>
+        <result column="MAKR_ID" property="makerId"/>
+        <result column="MAKR_NM" property="makerName"/>
+        <result column="CTGRY_ID" property="categoryId"/>
+        <result column="GOODS_CODE" property="code"/>
+        <result column="GOODS_NM" property="name"/>
+        <result column="GOODS_DC" property="description"/>
+        <result column="GOODS_DSCNT_ID" property="discountId"/>
+        <result column="DSCNT_RATE" property="discountRate"/>
+        <result column="GOODS_PRICE" property="price"/>
+        <result column="GOODS_SPLPC" property="specialPrice"/>
+        <result column="GOODS_INVTRY" property="inventory"/>
+        <result column="GOODS_CSTDY_TY" property="custodyType"/>
+        <result column="GOODS_CPCY" property="capacity"/>
+        <result column="GOODS_EXPR_DE" property="expiredAt"/>
+        <result column="GOODS_ALLERGY_INFO" property="allergyInformation"/>
+        <result column="GOODS_ORGPLCE" property="originPlace"/>
+        <result column="GOODS_SEL_STTUS" property="salesStatus"/>
+        <result column="CREAT_DE" property="createdAt"/>
+        <result column="UPDT_DE" property="updatedAt"/>
+    </resultMap>
+
     <!-- Insert -->
-    <insert id = "save" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
+    <insert id="save" parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.RequestAddGoods">
         INSERT INTO GOODS
-            VALUE (NULL, #{makerId}, #{categoryId}, #{goodsCode}, #{goodsName}, #{description}, #{discountId}, #{price}, #{retailPrice}, #{inventory}, #{storageType}, #{capacity},
+            VALUE (NULL, #{makerId}, #{categoryId}, #{goodsCode}, #{goodsName}, #{description}, #{discountId}, #{price},
+                   #{retailPrice}, #{inventory}, #{storageType}, #{capacity},
                    #{expDate}, #{allergyInfo}, #{originPlace}, #{salesStatus}, NOW(), NOW())
     </insert>
-
     <!-- Select -->
-    <select id = "findAll" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsBasicInfoDto">
-
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+    <select id="findAll" resultMap="goodsMap">
+        SELECT G.GOODS_ID,
+               G.GOODS_NM,
+               G.GOODS_CODE,
+               G.GOODS_DC,
+               G.GOODS_PRICE,
+               G.GOODS_SEL_STTUS,
+               G.CREAT_DE,
+               G.UPDT_DE,
+               G.GOODS_INVTRY,
+               G.GOODS_CSTDY_TY,
+               G.GOODS_CPCY,
+               G.GOODS_EXPR_DE,
+               G.GOODS_ALLERGY_INFO,
+               G.GOODS_ORGPLCE,
+               G.MAKR_ID,
+               G.CTGRY_ID,
+               G.GOODS_DSCNT_ID,
+               G.GOODS_SPLPC,
+               D.DSCNT_RATE,
+               M.MAKR_NM
         FROM GOODS G
-            LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
+                 LEFT JOIN MAKR M ON G.MAKR_ID = M.MAKR_ID
         WHERE G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
-        <choose>
-            <when test = "sortBy == 'priceAsc'">
-                ORDER BY G.GOODS_PRICE ASC
-            </when>
-            <when test = "sortBy == 'priceDesc'">
-                ORDER BY G.GOODS_PRICE DESC
-            </when>
-            <when test = "sortBy == 'dateAsc'">
-                ORDER BY G.CREAT_DE ASC
-            </when>
-            <when test = "sortBy == 'dateDesc'">
-                ORDER BY G.CREAT_DE DESC
-            </when>
-            <otherwise>
-                ORDER BY G.CREAT_DE DESC
-            </otherwise>
-        </choose>
     </select>
 
-    <select id = "findById" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
-        SELECT *
+    <select id="searchGoods" resultMap="goodsMap">
+        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, G.GOODS_SEL_STTUS, G.CREAT_DE,
+        G.UPDT_DE, G.GOODS_INVTRY, G.GOODS_CSTDY_TY, G.GOODS_CPCY, G.GOODS_EXPR_DE, G.GOODS_ALLERGY_INFO,
+        G.GOODS_ORGPLCE,
+        G.MAKR_ID, G.CTGRY_ID, G.GOODS_DSCNT_ID, G.GOODS_SPLPC, D.DSCNT_RATE, M.MAKR_NM
         FROM GOODS
-        WHERE GOODS_ID = #{goodsId}
-    </select>
-
-    <select id = "findByMakerForDiscount" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
-        SELECT *
-        FROM GOODS
-        WHERE MAKR_ID = #{makerId}
-          AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        LEFT JOIN marketcherry.DSCNT D on D.DSCNT_ID = GOODS.GOODS_DSCNT_ID
+        LEFT JOIN marketcherry.MAKR M on M.MAKR_ID = GOODS.MAKR_ID
+        <where>
+            <if test="goodsId != null">
+                AND GOODS_ID = #{goodsId}
+            </if>
+            <if test="goodsCode != null">
+                AND GOODS_CODE = #{goodsCode}
+            </if>
+            <if test="goodsName != null">
+                AND GOODS_NM LIKE CONCAT('%', #{goodsName}, '%')
+            </if>
+            <if test="categoryId != null">
+                AND CTGRY_ID = #{categoryId}
+            </if>
+            <if test="makerId != null">
+                AND MAKR_ID = #{makerId}
+            </if>
+            <if test="salesStatus != null">
+                AND GOODS_SEL_STTUS = #{salesStatus}
+            </if>
+        </where>
         ORDER BY CREAT_DE DESC
     </select>
 
-    <select id = "findByCategoryForDiscount" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
-        SELECT *
-        FROM GOODS
-        WHERE CTGRY_ID = #{categoryId}
-          AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
-        ORDER BY CREAT_DE DESC
-    </select>
-
-    <select id = "findByGoodsIdForDiscount" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
-        SELECT *
-        FROM GOODS
-        WHERE GOODS_ID = #{goodsId}
-        ORDER BY CREAT_DE DESC
-    </select>
-
-    <select id = "findBasicInfo" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
+    <select id="findDiscountedGoods " resultMap="goodsMap">
+        SELECT G.GOODS_ID,
+               G.GOODS_NM,
+               G.GOODS_CODE,
+               G.GOODS_DC,
+               G.GOODS_PRICE,
+               G.GOODS_SEL_STTUS,
+               G.CREAT_DE,
+               G.UPDT_DE,
+               G.GOODS_INVTRY,
+               G.GOODS_CSTDY_TY,
+               G.GOODS_CPCY,
+               G.GOODS_EXPR_DE,
+               G.GOODS_ALLERGY_INFO,
+               G.GOODS_ORGPLCE,
+               G.MAKR_ID,
+               G.CTGRY_ID,
+               G.GOODS_DSCNT_ID,
+               G.GOODS_SPLPC,
+               D.DSCNT_RATE,
+               M.MAKR_NM
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
-        WHERE G.GOODS_ID = #{goodsId}
+                 LEFT JOIN MAKR M ON G.MAKR_ID = M.MAKR_ID
+        WHERE G.GOODS_DSCNT_ID IS NOT NULL
+          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        ORDER BY G.CREAT_DE DESC
     </select>
 
-    <select id = "findByCategoryId" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
-        FROM GOODS G
-        LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
-        WHERE (G.CTGRY_ID = #{categoryId}
-        OR G.CTGRY_ID IN (SELECT C.CTGRY_ID
-        FROM CTGRY C
-        WHERE C.CTGRY_UPPER = #{categoryId}
-        AND C.CTGRY_UPPER IS NOT NULL))
-        AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
-        <choose>
-            <when test = "sortBy == 'priceAsc'">
-                ORDER BY G.GOODS_PRICE ASC
-            </when>
-            <when test = "sortBy == 'priceDesc'">
-                ORDER BY G.GOODS_PRICE DESC
-            </when>
-            <when test = "sortBy == 'dateAsc'">
-                ORDER BY G.CREAT_DE ASC
-            </when>
-            <when test = "sortBy == 'dateDesc'">
-                ORDER BY G.CREAT_DE DESC
-            </when>
-            <otherwise>
-                ORDER BY G.CREAT_DE DESC
-            </otherwise>
-        </choose>
-    </select>
 
-    <select id = "findToCart" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.ToCartResponse" parameterType = "long">
-        SELECT G.GOODS_ID as goodsId,
-               G.GOODS_NM as goodsName,
-               G.GOODS_CODE as goodsCode,
-               G.GOODS_PRICE as price,
-               G.GOODS_INVTRY as inventory,
-               G.GOODS_CSTDY_TY as storageType,
+    <select id="findToCart" resultType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.ToCartResponse"
+            parameterType="long">
+        SELECT G.GOODS_ID        as goodsId,
+               G.GOODS_NM        as goodsName,
+               G.GOODS_CODE      as goodsCode,
+               G.GOODS_PRICE     as price,
+               G.GOODS_INVTRY    as inventory,
+               G.GOODS_CSTDY_TY  as storageType,
                G.GOODS_SEL_STTUS as salesStatus,
-               D.DSCNT_RATE as discountRate
+               D.DSCNT_RATE      as discountRate
         FROM GOODS G
                  LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
         WHERE G.GOODS_ID = #{goodsId}
@@ -115,140 +137,68 @@
         ORDER BY G.CREAT_DE DESC
     </select>
 
-    <select id = "findDetailById" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDetailDto">
-        SELECT G.GOODS_ID,
-               G.GOODS_CODE,
-               G.GOODS_NM,
-               G.GOODS_DC,
-               G.GOODS_PRICE,
-               G.GOODS_INVTRY,
-               G.GOODS_CSTDY_TY,
-               G.GOODS_CPCY,
-               G.GOODS_EXPR_DE,
-               G.GOODS_ALLERGY_INFO,
-               G.GOODS_ORGPLCE,
-               G.GOODS_SEL_STTUS,
-               D.DSCNT_RATE,
-               M.MAKR_NM
-        FROM GOODS G
-                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
-                 LEFT JOIN MAKR M ON G.MAKR_ID = M.MAKR_ID
-        WHERE G.GOODS_ID = #{goodsId}
-          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
-    </select>
-
-    <select id = "findDetailByCode" resultType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDetailDto">
-        SELECT G.GOODS_ID,
-               G.GOODS_CODE,
-               G.GOODS_NM,
-               G.GOODS_DC,
-               G.GOODS_PRICE,
-               G.GOODS_INVTRY,
-               G.GOODS_CSTDY_TY,
-               G.GOODS_CPCY,
-               G.GOODS_EXPR_DE,
-               G.GOODS_ALLERGY_INFO,
-               G.GOODS_ORGPLCE,
-               G.GOODS_SEL_STTUS,
-               D.DSCNT_RATE,
-               M.MAKR_NM
-        FROM GOODS G
-                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
-                 LEFT JOIN MAKR M ON G.MAKR_ID = M.MAKR_ID
-        WHERE G.GOODS_CODE = #{goodsCode}
-          AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
-    </select>
-
-    <select id = "findByName" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
-        FROM GOODS G
-        LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
-        WHERE G.GOODS_NM LIKE CONCAT('%', #{goodsName}, '%')
-        AND G.GOODS_SEL_STTUS != 'DISCONTINUANCE'
-        <choose>
-            <when test = "sortBy == 'priceAsc'">
-                ORDER BY G.GOODS_PRICE ASC
-            </when>
-            <when test = "sortBy == 'priceDesc'">
-                ORDER BY G.GOODS_PRICE DESC
-            </when>
-            <when test = "sortBy == 'dateAsc'">
-                ORDER BY G.CREAT_DE ASC
-            </when>
-            <when test = "sortBy == 'dateDesc'">
-                ORDER BY G.CREAT_DE DESC
-            </when>
-            <otherwise>
-                ORDER BY G.CREAT_DE DESC
-            </otherwise>
-        </choose>
-    </select>
-
-    <select id = "findInventoryByGoodsId" parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsInventoryResponseDto">
-        SELECT GOODS_ID, GOODS_SEL_STTUS, GOODS_INVTRY
-        FROM GOODS
-        WHERE GOODS_ID = #{goodsId}
-    </select>
-
-
-    <select id = "findNewGoods" parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
-        FROM GOODS G
-                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
-        ORDER BY G.CREAT_DE DESC
-        LIMIT 12
-    </select>
-
-    <select id = "findDiscountGoods" parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsBasicInfoDto">
-        SELECT G.GOODS_ID, G.GOODS_NM, G.GOODS_CODE, G.GOODS_DC, G.GOODS_PRICE, D.DSCNT_RATE
-        FROM GOODS G
-                 LEFT JOIN DSCNT D ON G.GOODS_DSCNT_ID = D.DSCNT_ID
-        ORDER BY D.DSCNT_RATE DESC
-        LIMIT 12
-    </select>
-
-
+    <update id="updateDiscount">
+        UPDATE GOODS
+        SET GOODS_DSCNT_ID = #{discountId}
+        <where>
+            <if test="criteria.makerId != null">
+                AND MAKR_ID = #{criteria.makerId}
+            </if>
+            <if test="criteria.categoryId != null">
+                AND CTGRY_ID = #{criteria.categoryId}
+            </if>
+            <if test="criteria.goodsId != null">
+                AND GOODS_ID = #{criteria.goodsId}
+            </if>
+            AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
+        </where>
+    </update>
 
     <!-- Update -->
-    <update id = "updateStatusWhenNewGoods" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
+    <update id="updateStatusWhenNewGoods"
+            parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.RequestAddGoods">
         UPDATE GOODS
         SET GOODS_SEL_STTUS = #{salesStatus}
         WHERE GOODS_CODE = #{goodsCode}
     </update>
 
-    <update id = "updateDiscountByMaker" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
+    <update id="updateDiscountByMaker"
+            parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.RequestAddGoods">
         UPDATE GOODS
         SET GOODS_DSCNT_ID = #{discountId}
         WHERE MAKR_ID = #{makerId}
           AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
     </update>
 
-    <update id = "updateDiscountByCategory" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
+    <update id="updateDiscountByCategory"
+            parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.RequestAddGoods">
         UPDATE GOODS
         SET GOODS_DSCNT_ID = #{discountId}
         WHERE CTGRY_ID = #{categoryId}
           AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
     </update>
 
-    <update id = "updateDiscountByGoodsId" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
+    <update id="updateDiscountByGoodsId"
+            parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.dto.RequestAddGoods">
         UPDATE GOODS
         SET GOODS_DSCNT_ID = #{discountId}
         WHERE GOODS_ID = #{goodsId}
           AND GOODS_SEL_STTUS != 'DISCONTINUANCE'
     </update>
 
-    <update id = "updateGoodsInventory">
+    <update id="updateGoodsInventory">
         UPDATE GOODS
         SET GOODS_INVTRY = GOODS_INVTRY - #{quantity}
         WHERE GOODS_ID = #{goodsId}
 
     </update>
 
-
     <!-- Delete -->
-    <delete id = "deleteById" parameterType = "com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto">
+    <delete id="delete" parameterType="com.cherrydev.cherrymarketbe.server.domain.goods.entity.Goods">
         DELETE
         FROM GOODS
         WHERE GOODS_ID = #{goodsId};
     </delete>
+
+
 </mapper>

@@ -1,11 +1,12 @@
 package com.cherrydev.cherrymarketbe.server.application.goods.controller;
 
-import com.cherrydev.cherrymarketbe.server.application.common.dto.MyPage;
-import com.cherrydev.cherrymarketbe.server.application.common.service.FileService;
 import com.cherrydev.cherrymarketbe.server.application.goods.service.GoodsService;
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsBasicInfoResponseDto;
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDetailResponseDto;
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.MyPage;
+import com.cherrydev.cherrymarketbe.server.domain.discount.dto.request.UpdateDiscountCondition;
+import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsDetailInfo;
+import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsInfo;
+import com.cherrydev.cherrymarketbe.server.domain.goods.dto.RequestAddGoods;
+import com.cherrydev.cherrymarketbe.server.domain.goods.dto.SearchCondition;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,83 +24,67 @@ import java.util.List;
 public class GoodsController {
 
     private final GoodsService goodsService;
-    private final FileService fileService;
 
-    /* Insert */
     @PostMapping("/save")
-    public ResponseEntity<String> save(@Valid @ModelAttribute GoodsDto goodsDto,
-                                       @RequestParam List<MultipartFile> images) {
-        goodsService.save(goodsDto, images);
-        return ResponseEntity.ok("상품이 정상적으로 등록되었습니다");
+    public ResponseEntity<Void> save(
+            @RequestBody @Valid RequestAddGoods requestAddGoods,
+            @RequestParam List<MultipartFile> images
+    ) {
+        goodsService.save(requestAddGoods, images);
+        return ResponseEntity.ok().build();
     }
 
-    /* Select */
-    @GetMapping("/listAll")
-    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> getListAll(final Pageable pageable, @RequestParam(required = false) String sortBy) {
-        return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
+    @GetMapping("/list-all")
+    public ResponseEntity<MyPage<GoodsInfo>> getListAll(Pageable pageable) {
+        return ResponseEntity.ok(goodsService.findAll(pageable));
     }
 
-    @GetMapping("/listA")
-    public ResponseEntity<List<GoodsBasicInfoResponseDto>> getListA(String sortBy) {
-        return ResponseEntity.ok(goodsService.findA(sortBy));
+    @GetMapping("/list-all/conditions")
+    public ResponseEntity<MyPage<GoodsInfo> > getAllListByConditions(
+            Pageable pageable,
+            @RequestParam(name = "goods_name", required = false) final String goodsName,
+            @RequestParam(name = "category_id",required = false) final Long categoryId,
+            @RequestParam(name = "maker_id",required = false) final Long makerId,
+            @RequestParam(name = "goods_code",required = false) final String goodsCode,
+            @RequestParam(name = "sales_status",required = false) final String salesStatus
+    ) {
+        SearchCondition searchCondition = new SearchCondition(goodsName, categoryId, makerId, goodsCode, salesStatus);
+        return ResponseEntity.ok(goodsService.findAllByConditions(pageable, searchCondition));
     }
 
-    @GetMapping("/basicInfo")
-    public ResponseEntity<GoodsBasicInfoResponseDto> getBasicInfo(@RequestParam Long goodsId) {
-        return ResponseEntity.ok(goodsService.findBasicInfo(goodsId));
+    @GetMapping("/list-all/detail/conditions")
+    public ResponseEntity<MyPage<GoodsDetailInfo> > getDetailedListByConditions(
+            Pageable pageable,
+            @RequestParam(name = "goods_name", required = false) final String goodsName,
+            @RequestParam(name = "category_id",required = false) final Long categoryId,
+            @RequestParam(name = "maker_id",required = false) final Long makerId,
+            @RequestParam(name = "goods_code",required = false) final String goodsCode,
+            @RequestParam(name = "sales_status",required = false) final String salesStatus
+    ) {
+        SearchCondition searchCondition = new SearchCondition(goodsName, categoryId, makerId, goodsCode, salesStatus);
+        return ResponseEntity.ok(goodsService.findAllDetailedByConditions(pageable, searchCondition));
     }
 
-    @GetMapping("/category")
-    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> getCategoryGoods(final Pageable pageable, @RequestParam Long categoryId, @RequestParam(required = false) String sortBy) {
-        return ResponseEntity.ok(goodsService.findByCategoryId(pageable, categoryId, sortBy));
+    @GetMapping("/on-sale")
+    public ResponseEntity<MyPage<GoodsInfo>> getDiscountGoods(Pageable pageable) {
+        return ResponseEntity.ok(goodsService.getDiscountedGoods(pageable));
     }
 
-    @GetMapping("/detail")
-    public ResponseEntity<GoodsDetailResponseDto> getDetailById(@RequestParam Long goodsId) {
-        return ResponseEntity.ok(goodsService.findDetailById(goodsId));
-    }
-
-    @GetMapping("/{goodsCode}")
-    public ResponseEntity<GoodsDetailResponseDto> getDetailByCode(@PathVariable String goodsCode) {
-        return ResponseEntity.ok(goodsService.findDetailByCode(goodsCode));
-    }
-
-    @GetMapping("/name")
-    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> getInfoByName(final Pageable pageable, @RequestParam String goodsName, @RequestParam(required = false) String sortBy) {
-        return ResponseEntity.ok(goodsService.findByName(pageable, goodsName, sortBy));
-    }
-
-    @GetMapping("/findNew")
-    public ResponseEntity<List<GoodsBasicInfoResponseDto>> getNewGoods() {
-        return ResponseEntity.ok(goodsService.findNewGoods());
-    }
-
-    @GetMapping("/findDiscount")
-    public ResponseEntity<List<GoodsBasicInfoResponseDto>> getDiscountGoods() {
-        return ResponseEntity.ok(goodsService.findDiscountGoods());
-    }
-
-    /* Update */
-    @PatchMapping("/update/discount/maker")
-    public ResponseEntity<List<GoodsDto>> updateDiscountByMaker(@RequestParam Long discountId, @RequestParam Long makerId) {
-
-        return ResponseEntity.ok(goodsService.updateDiscountByMaker(discountId, makerId));
-    }
-
-    @PatchMapping("/update/discount/category")
-    public ResponseEntity<List<GoodsDto>> updateDiscountByCategory(@RequestParam Long discountId, @RequestParam Long categoryId) {
-        return ResponseEntity.ok(goodsService.updateDiscountByCategory(discountId, categoryId));
-    }
-
-    @PatchMapping("/update/discount/goodsId")
-    public ResponseEntity<GoodsDto> updateDiscountByGoodsId(@RequestParam Long discountId, @RequestParam Long goodsId) {
-        return ResponseEntity.ok(goodsService.updateDiscountByGoodsId(discountId, goodsId));
+    @PatchMapping("/update/condition")
+    public ResponseEntity<Integer> updateDiscountByCondition(
+            @RequestParam(name = "discount_id", required = true) Long discountId,
+            @RequestParam(name = "maker_id", required = false) Long makerId,
+            @RequestParam(name = "category_id", required = false) Long categoryId,
+            @RequestParam(name = "goods_id", required = false) Long goodsId
+    ) {
+        UpdateDiscountCondition condition = new UpdateDiscountCondition(makerId, categoryId, goodsId);
+        return ResponseEntity.ok(goodsService.updateDiscountByConditions(discountId, condition));
     }
 
     /* Delete */
     @DeleteMapping("/delete")
-    public ResponseEntity<MyPage<GoodsBasicInfoResponseDto>> delete(@RequestParam Long goodsId, final Pageable pageable, @RequestParam(required = false) String sortBy) {
+    public ResponseEntity<Void> delete(@RequestParam final Long goodsId) {
         goodsService.deleteById(goodsId);
-        return ResponseEntity.ok(goodsService.findAll(pageable, sortBy));
+        return ResponseEntity.ok().build();
     }
 }

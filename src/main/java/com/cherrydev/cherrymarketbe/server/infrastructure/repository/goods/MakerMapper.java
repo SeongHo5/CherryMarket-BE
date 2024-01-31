@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.infrastructure.repository;
+package com.cherrydev.cherrymarketbe.server.infrastructure.repository.goods;
 
 import com.cherrydev.cherrymarketbe.server.domain.maker.dto.response.MakerInfo;
 import org.apache.ibatis.annotations.Mapper;

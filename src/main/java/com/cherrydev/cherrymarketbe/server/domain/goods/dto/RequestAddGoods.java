@@ -9,7 +9,7 @@ import java.sql.Date;
 
 @Value
 @Builder
-public class GoodsDto {
+public class RequestAddGoods {
 
     Long goodsId;
 
