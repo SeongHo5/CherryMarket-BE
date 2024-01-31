@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.domain.goods.dto;
+package com.cherrydev.cherrymarketbe.server.domain.customer.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

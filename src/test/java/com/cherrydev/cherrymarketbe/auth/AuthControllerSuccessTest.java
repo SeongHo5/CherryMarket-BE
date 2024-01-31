@@ -5,8 +5,8 @@ import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDe
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.RequestJwt;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,8 +69,8 @@ class AuthControllerSuccessTest {
 
     private Account account;
     private AccountDetails accountDetails;
-    private JwtResponseDto jwtResponseDto;
-    private JwtRequestDto jwtRequestDto;
+    private JwtResponse jwtResponse;
+    private RequestJwt requestJwt;
 
     @Container
     private static final RedisContainer container = new RedisContainer(
@@ -104,8 +104,8 @@ class AuthControllerSuccessTest {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountDetails) {
             accountDetails = (AccountDetails) authentication.getPrincipal();
-            jwtResponseDto = jwtProvider.createJwtToken(accountDetails.getUsername());
-            jwtRequestDto = new JwtRequestDto(jwtResponseDto.getAccessToken(), jwtResponseDto.getRefreshToken());
+            jwtResponse = jwtProvider.createJwtToken(accountDetails.getUsername());
+            requestJwt = new RequestJwt(jwtResponse.accessToken(), jwtResponse.refreshToken());
             account = accountDetails.getAccount();
         }
     }
@@ -146,7 +146,7 @@ class AuthControllerSuccessTest {
     @WithUserDetails(value = "yeongsun80@example.com", userDetailsServiceBeanName = "accountDetailsServiceImpl")
     void 로그아웃_성공() throws Exception {
         // Given
-        String requestBody = Jackson.toJsonString(jwtRequestDto);
+        String requestBody = Jackson.toJsonString(requestJwt);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/auth/sign-out")
@@ -166,10 +166,10 @@ class AuthControllerSuccessTest {
     void 토큰_재발급_성공() throws Exception {
         // Given
         String email = accountDetails.getUsername();
-        String requestBody = Jackson.toJsonString(jwtRequestDto);
+        String requestBody = Jackson.toJsonString(requestJwt);
 
         // When & Then
-        redisTemplate.opsForValue().set(email, jwtResponseDto.getRefreshToken());
+        redisTemplate.opsForValue().set(email, jwtResponse.refreshToken());
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/re-issue")
                         .secure(true)
                         .contentType("application/json")

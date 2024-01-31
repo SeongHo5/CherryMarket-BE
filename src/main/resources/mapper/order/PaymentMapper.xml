@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.PaymentMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.payment.PaymentMapper">
 
     <resultMap id="PaymentDetailInfoResultMap" type="com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.PaymentDetailsInfo">
     <result property="orderCode" column="ORDERS_CODE"/>
     <result property="totalAmount" column="TOTAL_AMOUNT"/>
-    <result property="discount" column="DSCNT_AMOUNT"/>
+    <result property="tossDiscount" column="DSCNT_AMOUNT"/>
     <result property="deliveryFee" column="PYMNT_DLIV_CT"/>
     <result property="rewordAmount" column="USE_REWARD"/>
     <result property="couponAmount" column="USE_COUPON"/>
@@ -19,7 +19,7 @@
         <result property="orderId" column="ORDERS_ID"/>
         <result property="orderCode" column="ORDERS_CODE"/>
         <result property="totalAmount" column="TOTAL_AMOUNT"/>
-        <result property="discount" column="DSCNT_AMOUNT"/>
+        <result property="tossDiscount" column="DSCNT_AMOUNT"/>
         <result property="deliveryFee" column="PYMNT_DLIV_CT"/>
         <result property="rewordAmount" column="USE_REWARD"/>
         <result property="couponAmount" column="USE_COUPON"/>
@@ -120,7 +120,7 @@
                    -#{payment.card.amount},
                    #{payment.card.approveNo},
                    -#{amountInfo.totalAmount},
-                   -#{amountInfo.discount},
+                   -#{amountInfo.tossDiscount},
                    -#{amountInfo.deliveryFee},
                    -#{amountInfo.rewordAmount},
                    -#{amountInfo.couponAmount},
@@ -161,7 +161,7 @@
                    #{payment.card.amount},
                    #{payment.card.approveNo},
                    #{amountInfo.totalAmount},
-                   #{amountInfo.discount},
+                   #{amountInfo.tossDiscount},
                    #{amountInfo.deliveryFee},
                    #{amountInfo.rewordAmount},
                    #{amountInfo.couponAmount},

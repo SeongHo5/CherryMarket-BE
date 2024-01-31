@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.server.application.customer.controller;
 import com.cherrydev.cherrymarketbe.server.application.customer.service.AddressService;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAddAddress;
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.AddressInfo;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.response.AddressInfo;
 import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestModifyAddress;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

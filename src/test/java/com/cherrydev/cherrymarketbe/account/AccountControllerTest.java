@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.account;
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.request.RequestModifyAccountInfo;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.request.RequestSignUp;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
@@ -55,7 +55,7 @@ class AccountControllerTest {
 
     private Account account;
     private AccountDetails accountDetails;
-    private JwtResponseDto jwtResponseDto;
+    private JwtResponse jwtResponse;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider restDocumentation) {
@@ -68,7 +68,7 @@ class AccountControllerTest {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountDetails) {
             accountDetails = (AccountDetails) authentication.getPrincipal();
-            jwtResponseDto = jwtProvider.createJwtToken(accountDetails.getUsername());
+            jwtResponse = jwtProvider.createJwtToken(accountDetails.getUsername());
             account = accountDetails.getAccount();
         }
     }
@@ -152,7 +152,7 @@ class AccountControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/account/my-info")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(account.getName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(account.getEmail()))
@@ -180,7 +180,7 @@ class AccountControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/account/my-info/modify")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Jackson.toJsonString(requestModifyAccountInfo)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -207,7 +207,7 @@ class AccountControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/account/drop-out")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken()))
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(document("Drop-Out",
                         resourceDetails()
@@ -225,7 +225,7 @@ class AccountControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/account/check-email?email=noyeongjin@example.org")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(409))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.statusCode").value(CONFLICT_ACCOUNT.getStatusCode()))

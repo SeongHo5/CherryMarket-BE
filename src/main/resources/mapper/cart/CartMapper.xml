@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.CartMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.cart.CartMapper">
 
     <resultMap id="cartResultMap" type="com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart">
         <result property="cartId" column="CART_ID"/>
@@ -43,10 +43,10 @@
             cart.CART_QY,
             goods.GOODS_PRICE,
             goods.GOODS_INVTRY,
-            discount.DSCNT_RATE
+            tossDiscount.DSCNT_RATE
         from  CART cart
                   join GOODS goods on cart.GOODS_ID = goods.GOODS_ID
-                  left join DSCNT discount on goods.GOODS_DSCNT_ID = discount.DSCNT_ID
+                  left join DSCNT tossDiscount on goods.GOODS_DSCNT_ID = tossDiscount.DSCNT_ID
         where ACNT_ID = #{accountId};
     </select>
 

@@ -7,7 +7,7 @@ import com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddres
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.requests.ShippingStatusRequest;
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.requests.ShippingDetailRequest;
 import com.cherrydev.cherrymarketbe.server.domain.order.entity.ShippingDetails;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.ShippingMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.payment.ShippingMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

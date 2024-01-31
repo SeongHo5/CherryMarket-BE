@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.server.application.customer.controller;
 
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.RewardInfo;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.response.RewardInfo;
 import com.cherrydev.cherrymarketbe.server.application.customer.service.RewardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

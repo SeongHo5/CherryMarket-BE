@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Discount {
+public class TossDiscount {
     @JsonProperty("amount")
     private long amount;
 }

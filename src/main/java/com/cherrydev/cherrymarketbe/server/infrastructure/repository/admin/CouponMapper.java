@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.infrastructure.repository;
+package com.cherrydev.cherrymarketbe.server.infrastructure.repository.admin;
 
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.response.CouponInfo;
 import com.cherrydev.cherrymarketbe.server.domain.admin.entity.Coupon;

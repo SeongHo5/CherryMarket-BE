@@ -30,15 +30,8 @@ public interface GoodsMapper {
 
     Integer updateDiscount(Long discountId, UpdateDiscountCondition condition);
 
-
     /* Update */
     void updateStatusWhenNewGoods(String goodsCode, String salesStatus);
-
-    void updateDiscountByMaker(Long discountId, Long makerId);
-
-    void updateDiscountByCategory(Long discountId, Long categoryId);
-
-    void updateDiscountByGoodsId(Long discountId, Long goodsId);
 
     void updateGoodsInventory(Long goodsId, int quantity);
 

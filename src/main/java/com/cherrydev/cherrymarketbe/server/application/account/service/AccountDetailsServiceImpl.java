@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.server.application.account.service;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.AccountMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.account.AccountMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

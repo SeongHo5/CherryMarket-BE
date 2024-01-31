@@ -5,7 +5,7 @@ import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDe
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.ModifyUserRole;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.ModifyUserStatus;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +54,7 @@ class AdminControllerTest {
     JwtProvider jwtProvider;
 
     private AccountDetails accountDetails;
-    private JwtResponseDto jwtResponseDto;
+    private JwtResponse jwtResponse;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider restDocumentation) {
@@ -67,7 +67,7 @@ class AdminControllerTest {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountDetails) {
             accountDetails = (AccountDetails) authentication.getPrincipal();
-            jwtResponseDto = jwtProvider.createJwtToken(accountDetails.getUsername());
+            jwtResponse = jwtProvider.createJwtToken(accountDetails.getUsername());
         }
     }
 
@@ -81,7 +81,7 @@ class AdminControllerTest {
                         .secure(true)
                         .queryParam("page", "0")
                         .queryParam("size", "10")
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").exists())
@@ -109,7 +109,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/admin/modify/account/role")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -130,7 +130,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/admin/modify/account/status")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -151,7 +151,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/admin/modify/account/status")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -176,7 +176,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/admin/modify/account/status")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -200,7 +200,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/admin/grant-reward")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -219,7 +219,7 @@ class AdminControllerTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/admin/grant-reward")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -243,7 +243,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/admin/issue-coupon")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -263,7 +263,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/admin/issue-coupon")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -284,7 +284,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/admin/coupon-list")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").exists())
@@ -308,7 +308,7 @@ class AdminControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/admin/grant-reward")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())

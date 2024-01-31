@@ -2,7 +2,6 @@ package com.cherrydev.cherrymarketbe.server.domain.order.dto.requests;
 
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.order.entity.ProductDetails;
-import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.GoodsInfo;
 import lombok.Builder;
 
 @Builder

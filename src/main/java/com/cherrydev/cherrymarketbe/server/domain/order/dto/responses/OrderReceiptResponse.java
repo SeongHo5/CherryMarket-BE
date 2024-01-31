@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.server.domain.order.dto.responses;
 
+import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsInfo;
 import com.cherrydev.cherrymarketbe.server.domain.order.entity.Order;
 import com.cherrydev.cherrymarketbe.server.domain.order.enums.OrderStatus;
 import com.cherrydev.cherrymarketbe.server.domain.payment.model.payment.Payment;

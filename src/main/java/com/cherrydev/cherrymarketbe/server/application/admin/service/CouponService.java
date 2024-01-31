@@ -10,13 +10,12 @@ import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.IssueCoupon;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.response.CouponInfo;
 import com.cherrydev.cherrymarketbe.server.domain.admin.entity.Coupon;
 import com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerCoupon;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.AccountMapper;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.CouponMapper;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.CustomerCouponMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.account.AccountMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.admin.CouponMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.customer.CustomerCouponMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

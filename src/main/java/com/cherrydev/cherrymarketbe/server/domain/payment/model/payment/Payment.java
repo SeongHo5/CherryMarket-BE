@@ -105,7 +105,7 @@ public class Payment {
 
     private CashReceipt cashReceipt;
 
-    private Discount discount;
+    private TossDiscount tossDiscount;
 
     @Builder
     public Payment(String version,
@@ -142,7 +142,7 @@ public class Payment {
                    String country,
                    Failure failure,
                    CashReceipt cashReceipt,
-                   Discount discount
+                   TossDiscount tossDiscount
     ) {
         this.version = version;
         this.paymentKey = paymentKey;
@@ -178,6 +178,6 @@ public class Payment {
         this.country = country;
         this.failure = failure;
         this.cashReceipt = cashReceipt;
-        this.discount = discount;
+        this.tossDiscount = tossDiscount;
     }
 }

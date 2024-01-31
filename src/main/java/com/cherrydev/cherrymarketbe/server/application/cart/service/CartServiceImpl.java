@@ -1,8 +1,9 @@
 package com.cherrydev.cherrymarketbe.server.application.cart.service;
 
+import com.cherrydev.cherrymarketbe.server.application.goods.service.GoodsValidator;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.CartMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.cart.CartMapper;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.server.domain.cart.dto.request.AddCart;
 import com.cherrydev.cherrymarketbe.server.domain.cart.dto.request.ChangeCart;
@@ -29,6 +30,7 @@ public class CartServiceImpl implements CartService {
 
     private final CartMapper cartMapper;
     private final GoodsService goodsService;
+    private final GoodsValidator goodsValidator;
 
     @Transactional
     @Override
@@ -60,16 +62,11 @@ public class CartServiceImpl implements CartService {
         Cart cart = requestDto.getCart(accountDetails, responseDto);
 
         boolean isExist = cartMapper.existsByAccountIdAndGoodsId(accountDetails.getAccount().getAccountId(), requestDto.goodsId());
-
         if (isExist) {
             throw new DuplicatedException(CONFLICT_CART_ITEM);
         }
-
-        boolean checkInventory = goodsService.findInventory(requestDto.goodsId(), requestDto.quantity());
-        if(checkInventory) {
-            goodsService.updateGoodsInventory(requestDto.goodsId(), requestDto.quantity());
-        }
-
+        goodsValidator.checkInventoryStatus(requestDto.goodsId(), requestDto.quantity());
+        goodsService.updateGoodsInventory(requestDto.goodsId(), requestDto.quantity());
         cartMapper.save(cart);
     }
 
@@ -78,11 +75,8 @@ public class CartServiceImpl implements CartService {
     public void updateQuantity(ChangeCart requestChangeDto) {
         Cart cart = requestChangeDto.toEntity();
         Long findGoodsId = cartMapper.findGoodsIdByCartId(requestChangeDto.cartId());
-
-        boolean checkInventory = goodsService.findInventory(findGoodsId, requestChangeDto.quantity());
-        if(checkInventory) {
-            cartMapper.update(cart);
-        }
+        goodsValidator.checkInventoryStatus(findGoodsId, requestChangeDto.quantity());
+        cartMapper.update(cart);
     }
 
     @Transactional

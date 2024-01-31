@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.infrastructure.repository;
+package com.cherrydev.cherrymarketbe.server.infrastructure.repository.payment;
 
 import com.cherrydev.cherrymarketbe.server.domain.order.entity.Order;
 import com.cherrydev.cherrymarketbe.server.domain.order.enums.OrderStatus;

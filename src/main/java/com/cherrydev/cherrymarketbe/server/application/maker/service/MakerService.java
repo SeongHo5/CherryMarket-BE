@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.server.application.maker.service;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.FormatException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.server.domain.maker.dto.response.MakerInfo;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.MakerMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.goods.MakerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

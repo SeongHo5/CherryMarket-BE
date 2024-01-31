@@ -1,7 +1,7 @@
-package com.cherrydev.cherrymarketbe.server.infrastructure.repository;
+package com.cherrydev.cherrymarketbe.server.infrastructure.repository.customer;
 
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.AddressInfo;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.response.AddressInfo;
 import com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -5,8 +5,8 @@ import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDe
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.RequestJwt;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,8 +71,8 @@ public class AuthControllerFailureTest {
 
     private Account account;
     private AccountDetails accountDetails;
-    private JwtResponseDto jwtResponseDto;
-    private JwtRequestDto jwtRequestDto;
+    private JwtResponse jwtResponse;
+    private RequestJwt requestJwt;
 
     @Container
     private static final RedisContainer container = new RedisContainer(
@@ -106,8 +106,8 @@ public class AuthControllerFailureTest {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountDetails) {
             accountDetails = (AccountDetails) authentication.getPrincipal();
-            jwtResponseDto = jwtProvider.createJwtToken(accountDetails.getUsername());
-            jwtRequestDto = new JwtRequestDto(jwtResponseDto.getAccessToken(), jwtResponseDto.getRefreshToken());
+            jwtResponse = jwtProvider.createJwtToken(accountDetails.getUsername());
+            requestJwt = new RequestJwt(jwtResponse.accessToken(), jwtResponse.refreshToken());
             account = accountDetails.getAccount();
         }
     }
@@ -211,7 +211,7 @@ public class AuthControllerFailureTest {
     void 토큰_재발급_실패_잘못된_토큰() throws Exception {
         // Given
         String email = accountDetails.getUsername();
-        String requestBody = Jackson.toJsonString(jwtRequestDto);
+        String requestBody = Jackson.toJsonString(requestJwt);
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/auth/re-issue")

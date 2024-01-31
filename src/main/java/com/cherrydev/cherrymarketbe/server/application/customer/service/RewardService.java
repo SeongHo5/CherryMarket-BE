@@ -4,10 +4,10 @@ import com.cherrydev.cherrymarketbe.server.application.account.service.AccountSe
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAddReward;
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.RewardInfo;
+import com.cherrydev.cherrymarketbe.server.domain.customer.dto.response.RewardInfo;
 import com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerReward;
 import com.cherrydev.cherrymarketbe.server.domain.customer.enums.RewardGrantType;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.CustomerRewardMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.customer.CustomerRewardMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

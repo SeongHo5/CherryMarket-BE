@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.infrastructure.repository;
+package com.cherrydev.cherrymarketbe.server.infrastructure.repository.customer;
 
 import com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerCoupon;
 import org.apache.ibatis.annotations.Mapper;

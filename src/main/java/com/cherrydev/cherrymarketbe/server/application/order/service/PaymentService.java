@@ -6,7 +6,7 @@ import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDe
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.requests.PaymentDetailRequest;
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.OrderReceiptResponse;
 import com.cherrydev.cherrymarketbe.server.domain.order.entity.PaymentDetails;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.PaymentMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.payment.PaymentMapper;
 import com.cherrydev.cherrymarketbe.server.domain.payment.model.payment.Payment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

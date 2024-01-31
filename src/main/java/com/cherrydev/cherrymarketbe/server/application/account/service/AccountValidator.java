@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.server.application.account.service;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.AuthException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.ForbiddenUserName;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.AccountMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.account.AccountMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

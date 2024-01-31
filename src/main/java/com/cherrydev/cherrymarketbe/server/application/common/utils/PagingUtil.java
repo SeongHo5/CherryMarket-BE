@@ -29,4 +29,9 @@ public final class PagingUtil {
         return new MyPage<>(pageInfo);
     }
 
+    public static <T> MyPage<T> createPage(Pageable pageable, List<T> result) {
+        PageInfo<T> pageInfo = new PageInfo<>(result);
+        return new MyPage<>(pageInfo);
+    }
+
 }

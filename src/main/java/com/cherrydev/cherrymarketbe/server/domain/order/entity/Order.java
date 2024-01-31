@@ -2,7 +2,6 @@ package com.cherrydev.cherrymarketbe.server.domain.order.entity;
 
 
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.AmountInfo;
-import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.GoodsInfo;
 import com.cherrydev.cherrymarketbe.server.domain.order.enums.OrderStatus;
 import com.cherrydev.cherrymarketbe.server.domain.payment.model.payment.Payment;
 import lombok.*;

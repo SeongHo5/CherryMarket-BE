@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace = "com.cherrydev.cherrymarketbe.server.infrastructure.repository.DiscountMapper">
-    <resultMap id = "discountMap" type = "com.cherrydev.cherrymarketbe.server.domain.discount.dto.request.RequestDiscount">
+<mapper namespace = "com.cherrydev.cherrymarketbe.server.infrastructure.repository.payment.DiscountMapper">
+    <resultMap id = "discountMap" type = "com.cherrydev.cherrymarketbe.server.domain.tossDiscount.dto.request.RequestDiscount">
         <result property = "discountId" column = "DSCNT_ID"/>
         <result property = "discountCode" column = "DSCNT_CODE"/>
         <result property = "discountType" column = "DSCNT_TY"/>
@@ -30,12 +30,12 @@
         where DSCNT_CODE LIKE CONCAT('%', #{discountCode}, '%')
     </select>
 
-    <insert id = "save" parameterType="com.cherrydev.cherrymarketbe.server.domain.discount.dto.request.RequestDiscount">
+    <insert id = "save" parameterType="com.cherrydev.cherrymarketbe.server.domain.tossDiscount.dto.request.RequestDiscount">
         insert into DSCNT ()
         values (NULL, #{discountCode}, #{discountType}, #{discountRate}, #{discountBeginDate}, #{discountEndDate}, now(), now())
     </insert>
 
-    <update id = "updateById" parameterType="com.cherrydev.cherrymarketbe.server.domain.discount.dto.request.RequestDiscount">
+    <update id = "updateById" parameterType="com.cherrydev.cherrymarketbe.server.domain.tossDiscount.dto.request.RequestDiscount">
         update DSCNT
         <set>
             <if test = "discountCode != null">DSCNT_CODE = #{discountCode},</if>
@@ -48,7 +48,7 @@
         where DSCNT_ID = #{discountId}
     </update>
 
-    <delete id = "deleteById" parameterType="com.cherrydev.cherrymarketbe.server.domain.discount.dto.request.RequestDiscount">
+    <delete id = "deleteById" parameterType="com.cherrydev.cherrymarketbe.server.domain.tossDiscount.dto.request.RequestDiscount">
         delete
         from DSCNT
         where DSCNT_ID = #{discountId}

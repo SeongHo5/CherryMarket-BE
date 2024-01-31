@@ -72,7 +72,7 @@ public class GoodsController {
 
     @PatchMapping("/update/condition")
     public ResponseEntity<Integer> updateDiscountByCondition(
-            @RequestParam(name = "discount_id", required = true) Long discountId,
+            @RequestParam(name = "discount_id") Long discountId,
             @RequestParam(name = "maker_id", required = false) Long makerId,
             @RequestParam(name = "category_id", required = false) Long categoryId,
             @RequestParam(name = "goods_id", required = false) Long goodsId

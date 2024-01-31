@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.common;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import com.cherrydev.cherrymarketbe.server.application.common.service.FileService;
+import com.cherrydev.cherrymarketbe.server.application.common.service.file.FileService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import static com.cherrydev.cherrymarketbe.server.application.common.service.FileService.BUCKET_NAME;
+import static com.cherrydev.cherrymarketbe.server.application.common.service.file.FileService.BUCKET_NAME;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

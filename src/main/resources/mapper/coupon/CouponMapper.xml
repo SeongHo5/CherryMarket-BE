@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.CouponMapper">
+<mapper namespace="com.cherrydev.cherrymarketbe.server.infrastructure.repository.admin.CouponMapper">
     <resultMap id="couponMap" type="com.cherrydev.cherrymarketbe.server.domain.admin.entity.Coupon">
         <result property="id" column="COUPON_ID"/>
         <result property="code" column="COUPON_CODE"/>

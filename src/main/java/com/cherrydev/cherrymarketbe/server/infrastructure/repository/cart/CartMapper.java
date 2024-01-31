@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.infrastructure.repository;
+package com.cherrydev.cherrymarketbe.server.infrastructure.repository.cart;
 
 import com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart;
 import org.apache.ibatis.annotations.Mapper;

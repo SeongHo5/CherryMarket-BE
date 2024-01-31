@@ -19,7 +19,7 @@ import com.cherrydev.cherrymarketbe.server.domain.order.enums.OrderStatus;
 import com.cherrydev.cherrymarketbe.server.domain.payment.dto.PaymentApproveForm;
 import com.cherrydev.cherrymarketbe.server.domain.payment.dto.PaymentCancelForm;
 import com.cherrydev.cherrymarketbe.server.domain.payment.model.payment.Payment;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.OrderMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.payment.OrderMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

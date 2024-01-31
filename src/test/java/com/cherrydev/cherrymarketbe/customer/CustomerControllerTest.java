@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.customer;
 import com.amazonaws.util.json.Jackson;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAddAddress;
 import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestModifyAddress;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,7 @@ class CustomerControllerTest {
     JwtProvider jwtProvider;
 
     private AccountDetails accountDetails;
-    private JwtResponseDto jwtResponseDto;
+    private JwtResponse jwtResponse;
 
     @BeforeEach
     public void setup(RestDocumentationContextProvider restDocumentation) {
@@ -65,7 +65,7 @@ class CustomerControllerTest {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountDetails) {
             accountDetails = (AccountDetails) authentication.getPrincipal();
-            jwtResponseDto = jwtProvider.createJwtToken(accountDetails.getUsername());
+            jwtResponse = jwtProvider.createJwtToken(accountDetails.getUsername());
         }
     }
 
@@ -76,7 +76,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/customer/reward/summary")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType("application/json")
                         .accept("application/json")
                 )
@@ -97,7 +97,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.get("/api/customer/address/my-list")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                 )
@@ -121,7 +121,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.post("/api/customer/address/add")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .content(requestBody)
@@ -144,7 +144,7 @@ class CustomerControllerTest {
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/customer/address/add")
                         .secure(true)
-                        .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                        .header("Authorization", "Bearer " + jwtResponse.accessToken())
                         .contentType("application/json")
                         .accept("application/json")
                         .content(requestBody)
@@ -199,7 +199,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.delete("/api/customer/address/drop")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .param("addressId", String.valueOf(addressId))
@@ -223,7 +223,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.patch("/api/customer/address/modify")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .content(requestBody))
@@ -245,7 +245,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.post("/api/customer/register-coupon")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .param("couponCode", couponCode)
@@ -268,7 +268,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.post("/api/customer/register-coupon")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .param("couponCode", couponCode)
@@ -295,7 +295,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.post("/api/customer/register-coupon")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                                 .param("couponCode", couponCode)
@@ -319,7 +319,7 @@ class CustomerControllerTest {
         mockMvc.perform(
                         RestDocumentationRequestBuilders.get("/api/customer/coupon/list")
                                 .secure(true)
-                                .header("Authorization", "Bearer " + jwtResponseDto.getAccessToken())
+                                .header("Authorization", "Bearer " + jwtResponse.accessToken())
                                 .contentType("application/json")
                                 .accept("application/json")
                 )

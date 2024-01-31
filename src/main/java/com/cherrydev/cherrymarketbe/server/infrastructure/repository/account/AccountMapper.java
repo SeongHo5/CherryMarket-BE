@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.infrastructure.repository;
+package com.cherrydev.cherrymarketbe.server.infrastructure.repository.account;
 
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.RegisterType;

@@ -6,7 +6,7 @@ import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDe
 import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAddReward;
 import com.cherrydev.cherrymarketbe.server.application.customer.service.RewardService;
 import com.cherrydev.cherrymarketbe.server.application.goods.service.GoodsService;
-import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.GoodsInfo;
+import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsInfo;
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.OrderReceiptResponse;
 import com.cherrydev.cherrymarketbe.server.domain.order.enums.ShippingStatus;
 import com.cherrydev.cherrymarketbe.server.application.order.service.ShippingService;
@@ -74,7 +74,7 @@ public class OrderEventListner {
         findGoodsInfo
                 .forEach(goodsInfo -> {
                     Long goodsId = goodsInfo.goodsId();
-                    Integer quantity = goodsInfo.quantity();
+                    Integer quantity = goodsInfo.();
                     goodsService.updateGoodsInventory(goodsId, -quantity);
                 });
 
