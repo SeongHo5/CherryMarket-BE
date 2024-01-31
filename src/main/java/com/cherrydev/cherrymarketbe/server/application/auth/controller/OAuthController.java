@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.server.application.auth.controller;
 
-import com.cherrydev.cherrymarketbe.server.application.auth.service.impl.NaverOAuthService;
+import com.cherrydev.cherrymarketbe.server.application.auth.service.NaverOAuthService;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.SignInResponse;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.OAuthRequestDto;

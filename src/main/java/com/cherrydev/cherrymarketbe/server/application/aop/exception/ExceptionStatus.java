@@ -93,6 +93,7 @@ public enum ExceptionStatus {
 
     // 500 - Internal Server Error
     FAIL_TO_SEND_EMAIL(500, "이메일 전송 실패"),
+    FAIL_TO_CONSTRUCT_EMAIL(500, "이메일 생성 실패"),
     FAILED_TO_UPLOAD_FILE(500, "파일 업로드 실패"),
     FAILED_HTTP_ACTION(500, "HTTP 요청 실패");
 

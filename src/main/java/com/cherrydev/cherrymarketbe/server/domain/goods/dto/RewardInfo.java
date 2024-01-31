@@ -10,12 +10,12 @@ import java.util.List;
 @Builder
 public class RewardInfo {
 
-    List<RewardItemDto> rewards;
-    RewardSummaryDto summary;
+    List<RewardItem> rewards;
+    RewardSummary summary;
 
     @Getter
     @Builder
-    public static class RewardItemDto {
+    public static class RewardItem {
         String rewardGrantType;
         Integer amounts;
         String earnedAt;
@@ -26,7 +26,7 @@ public class RewardInfo {
 
     @Getter
     @Builder
-    public static class RewardSummaryDto {
+    public static class RewardSummary {
         Integer totalRewards;
         Integer usedRewards;
         Integer availableRewards;

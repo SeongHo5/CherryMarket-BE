@@ -15,7 +15,6 @@ public final class CookieUtil {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
-//                .domain(ALLOWED_ORIGINS)
                 .maxAge(AuthConstant.REFRESH_TOKEN_EXPIRE_TIME)
                 .build();
     }

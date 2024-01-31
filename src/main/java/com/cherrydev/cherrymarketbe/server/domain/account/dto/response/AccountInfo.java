@@ -2,12 +2,14 @@ package com.cherrydev.cherrymarketbe.server.domain.account.dto.response;
 
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.Gender;
+import lombok.Builder;
 import lombok.Value;
 
 import static com.cherrydev.cherrymarketbe.server.application.common.utils.TimeFormatter.localDateToString;
 
 
 @Value
+@Builder
 public class AccountInfo {
 
     String name;
@@ -16,12 +18,14 @@ public class AccountInfo {
     Gender gender;
     String birthdate;
 
-    public AccountInfo(Account account) {
-        this.name = account.getName();
-        this.email = account.getEmail();
-        this.contact = account.getContact();
-        this.gender = account.getGender();
-        this.birthdate = localDateToString(account.getBirthdate());
+    public static AccountInfo of(Account account) {
+        return AccountInfo.builder()
+                .name(account.getName())
+                .email(account.getEmail())
+                .contact(account.getContact())
+                .gender(account.getGender())
+                .birthdate(localDateToString(account.getBirthdate()))
+                .build();
     }
 
 }

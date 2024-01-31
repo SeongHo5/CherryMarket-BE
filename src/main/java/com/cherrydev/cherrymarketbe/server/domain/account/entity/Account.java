@@ -1,10 +1,14 @@
 package com.cherrydev.cherrymarketbe.server.domain.account.entity;
 
+import com.cherrydev.cherrymarketbe.server.domain.account.dto.request.RequestSignUp;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.Gender;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.RegisterType;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.OAuthRequestDto;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.oauth.OAuthAccountInfo;
 import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +16,12 @@ import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole.ROLE_CUSTOMER;
+
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Account {
 
@@ -48,20 +56,27 @@ public class Account {
 
     private Timestamp deletedAt;
 
-    @Builder
-    public Account(String oauthId, String name, String email, String password,
-                   String contact, Gender gender, LocalDate birthdate,
-                   RegisterType registerType, UserRole userRole, UserStatus userStatus) {
-        this.oauthId = oauthId;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.contact = contact;
-        this.gender = gender;
-        this.birthdate = birthdate;
-        this.registType = registerType;
-        this.userRole = userRole;
-        this.userStatus = userStatus;
+    public static Account of(RequestSignUp request, String encodedPassword, RegisterType registerType) {
+        return Account.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(encodedPassword)
+                .contact(request.getContact())
+                .gender(Gender.valueOf(request.getGender()))
+                .birthdate(LocalDate.parse(request.getBirthdate()))
+                .userRole(ROLE_CUSTOMER)
+                .registType(registerType)
+                .build();
+    }
+
+    public static Account of(OAuthAccountInfo oAuthAccountInfo, String encodedPassword, RegisterType registerType) {
+        return Account.builder()
+                .name(oAuthAccountInfo.getName())
+                .email(oAuthAccountInfo.getEmail())
+                .password(encodedPassword)
+                .userRole(ROLE_CUSTOMER)
+                .registType(registerType)
+                .build();
     }
 
     /**

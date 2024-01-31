@@ -9,6 +9,7 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -35,10 +36,12 @@ public class EmailService {
             message.addRecipient(TO, new InternetAddress(recipient));
             message.setSubject(subject, EmailConstant.ENCODING_CHARSET);
             message.setText(content, EmailConstant.ENCODING_CHARSET, EmailConstant.MAILER_SUBTYPE);
+            emailSender.send(message);
         } catch (MessagingException e) {
+            throw new ServiceFailedException(FAIL_TO_CONSTRUCT_EMAIL);
+        } catch (MailException e) {
             throw new ServiceFailedException(FAIL_TO_SEND_EMAIL);
         }
-        emailSender.send(message);
     }
 
     /**

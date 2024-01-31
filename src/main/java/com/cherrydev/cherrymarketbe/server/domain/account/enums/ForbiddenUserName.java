@@ -19,4 +19,8 @@ public enum ForbiddenUserName {
     ForbiddenUserName(String name) {
         this.name = name;
     }
+
+    public boolean isForbidden(String name) {
+        return this.name.equals(name);
+    }
 }

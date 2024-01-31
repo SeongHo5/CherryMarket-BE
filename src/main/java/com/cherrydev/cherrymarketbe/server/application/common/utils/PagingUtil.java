@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.server.application.common.utils;
 
-import com.cherrydev.cherrymarketbe.server.application.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.MyPage;
 import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import org.springframework.data.domain.Pageable;

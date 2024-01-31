@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.server.application.customer.service;
 
-import com.cherrydev.cherrymarketbe.server.application.account.service.impl.AccountServiceImpl;
+import com.cherrydev.cherrymarketbe.server.application.account.service.AccountService;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
@@ -27,7 +27,7 @@ import static com.cherrydev.cherrymarketbe.server.application.aop.exception.Exce
 @RequiredArgsConstructor
 public class AddressService {
 
-    private final AccountServiceImpl accountService;
+    private final AccountService accountService;
     private final CustomerAddressMapper customerAddressMapper;
 
     private static final int MAX_ADDRESS_COUNT = 3;

@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.application.account.service.impl;
+package com.cherrydev.cherrymarketbe.server.application.account.service;
 
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;

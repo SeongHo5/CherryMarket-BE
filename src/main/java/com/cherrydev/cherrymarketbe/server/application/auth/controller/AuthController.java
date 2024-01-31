@@ -1,8 +1,8 @@
 package com.cherrydev.cherrymarketbe.server.application.auth.controller;
 
-import com.cherrydev.cherrymarketbe.server.application.auth.service.impl.AuthServiceImpl;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtReissueResponseDto;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtRequestDto;
+import com.cherrydev.cherrymarketbe.server.application.auth.service.AuthService;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtReissueResponse;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.RequestJwt;
 import com.cherrydev.cherrymarketbe.server.application.common.service.EmailService;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.SignInResponse;
@@ -10,10 +10,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.AUTHORIZATION_KEY;
+import static com.cherrydev.cherrymarketbe.server.application.common.utils.CookieUtil.createCookie;
 
 @Slf4j
 @RestController
@@ -21,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
     private final EmailService emailService;
 
     /**
@@ -31,29 +34,36 @@ public class AuthController {
     public ResponseEntity<SignInResponse> signIn(
             final @Valid @RequestBody RequestSignIn requestSignIn
     ) {
-        return authService.signIn(requestSignIn);
+        SignInResponse response = authService.signIn(requestSignIn);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, createCookie(AUTHORIZATION_KEY, response.getAccessToken()).toString())
+                .header(HttpHeaders.AUTHORIZATION, response.getAccessToken())
+                .body(response);
     }
 
     /**
      * 로그아웃
      */
     @DeleteMapping("/sign-out")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-    public void signOut(
-            final @RequestBody JwtRequestDto jwtRequestDto
+    public ResponseEntity<Void> signOut(
+            @RequestBody final RequestJwt requestJwt
     ) {
-        authService.signOut(jwtRequestDto);
+        authService.signOut(requestJwt);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * 토큰 재발급
      */
     @PostMapping("/re-issue")
-    public ResponseEntity<JwtReissueResponseDto> reissue(
-            final @RequestBody JwtRequestDto jwtRequestDto
-            ) {
-        return authService.reissue(jwtRequestDto);
+    public ResponseEntity<JwtReissueResponse> reissue(
+            @RequestBody final RequestJwt requestJwt
+    ) {
+        JwtReissueResponse response = authService.reissue(requestJwt);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, response.accessToken())
+                .body(response);
     }
 
     /**
@@ -61,12 +71,12 @@ public class AuthController {
      *
      * @param email 메일 보낼 주소
      */
-    @PostMapping("/send-email")
-    @ResponseStatus(HttpStatus.OK)
-    public void sendEmail(
-            final @Email @RequestParam String email
+    @PostMapping("/email-verification/send-mail")
+    public ResponseEntity<Void> sendEmail(
+            @RequestParam @Email final String email
     ) {
         emailService.sendVerificationMail(email);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -74,37 +84,40 @@ public class AuthController {
      *
      * @param verificationCode 인증 코드
      */
-    @GetMapping("/verify-email")
+    @GetMapping("/email-verification/verify")
     public ResponseEntity<Void> verifyEmail(
-            final @RequestParam String email,
-            final @RequestParam String verificationCode
+            @RequestParam final String email,
+            @RequestParam final String verificationCode
     ) {
-        return authService.verifyEmail(email, verificationCode);
+        authService.verifyEmailByCode(email, verificationCode);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * 비밀번호 재설정 이메일 발송
+     *
      * @param email 메일 보낼 주소
      */
-    @PostMapping("/send-reset-email")
-    @ResponseStatus(HttpStatus.OK)
-    public void sendPasswordResetEmail(
-            final @Email @RequestParam String email
+    @PostMapping("/pw-reset/send-mail")
+    public ResponseEntity<Void> sendPasswordResetEmail(
+            @RequestParam @Email final String email
     ) {
         emailService.sendPasswordResetMail(email);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * 비밀번호 재설정 확인
+     *
      * @param verificationCode 인증 코드
      */
-    @GetMapping("/verify-reset-email")
-    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/pw-reset/verify")
     public ResponseEntity<String> verifyPasswordResetEmail(
-            final @RequestParam String email,
-            final @RequestParam String verificationCode
+             @RequestParam final String email,
+             @RequestParam final String verificationCode
     ) {
-        return authService.verifyPasswordResetEmail(email, verificationCode);
+        String response = authService.verifyPasswordResetEmail(email, verificationCode);
+        return ResponseEntity.ok(response);
     }
 
 }

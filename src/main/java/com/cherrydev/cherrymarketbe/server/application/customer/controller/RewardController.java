@@ -26,6 +26,7 @@ public class RewardController {
     public ResponseEntity<RewardInfo> getRewardInfo(
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
-        return rewardService.getRewardSummaryAndList(accountDetails);
+        RewardInfo response = rewardService.getRewardSummaryAndList(accountDetails);
+        return ResponseEntity.ok(response);
     }
 }

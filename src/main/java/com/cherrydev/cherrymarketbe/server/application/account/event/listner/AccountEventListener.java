@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.server.application.account.event.listner;
 
 import com.cherrydev.cherrymarketbe.server.application.account.event.AccountRegistrationEvent;
-import com.cherrydev.cherrymarketbe.server.application.account.event.PasswordResetEvent;
+import com.cherrydev.cherrymarketbe.server.application.auth.event.PasswordResetEvent;
 import com.cherrydev.cherrymarketbe.server.application.admin.service.CouponService;
 import com.cherrydev.cherrymarketbe.server.application.common.service.EmailService;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.GrantCouponByAdmin;
@@ -9,8 +9,9 @@ import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAd
 import com.cherrydev.cherrymarketbe.server.application.customer.service.RewardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 
 import static java.time.OffsetDateTime.now;
@@ -18,13 +19,12 @@ import static java.time.OffsetDateTime.now;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CherryEventListener {
+public class AccountEventListener {
 
     private final RewardService rewardService;
     private final CouponService couponService;
-    private final EmailService emailService;
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onAccountRegistration(AccountRegistrationEvent event) {
 
         rewardService.grantReward(
@@ -46,9 +46,4 @@ public class CherryEventListener {
         );
     }
 
-    @EventListener
-    public void onPasswordReset(PasswordResetEvent event) {
-        log.info("Reset password for {}", event.getEmail());
-        emailService.sendNotificationMail(event.getEmail());
-    }
 }

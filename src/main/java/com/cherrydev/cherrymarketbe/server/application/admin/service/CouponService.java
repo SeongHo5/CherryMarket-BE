@@ -2,7 +2,7 @@ package com.cherrydev.cherrymarketbe.server.application.admin.service;
 
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.ServiceFailedException;
-import com.cherrydev.cherrymarketbe.server.application.common.dto.MyPage;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.MyPage;
 import com.cherrydev.cherrymarketbe.server.application.common.utils.PagingUtil;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.GrantCouponByAdmin;
@@ -55,14 +55,10 @@ public class CouponService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<MyPage<CouponInfo>> getAllCoupons(
+    public MyPage<CouponInfo> getAllCoupons(
             final Pageable pageable
     ) {
-        MyPage<CouponInfo> infoPage = PagingUtil.createPage(pageable, couponMapper::findAll);
-
-        return ResponseEntity.ok()
-                .header(PagingUtil.PAGE_HEADER, String.valueOf(infoPage.getTotalPages()))
-                .body(infoPage);
+        return PagingUtil.createPage(pageable, couponMapper::findAll);
     }
 
     // =============== PRIVATE METHODS =============== //

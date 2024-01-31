@@ -43,29 +43,4 @@ public class RequestSignUp {
 
     Boolean marketingAgreement;
 
-    public Account toEntity(final String encodedPassword) {
-        return Account.builder()
-                .oauthId(null)
-                .name(this.getName())
-                .email(this.getEmail())
-                .password(encodedPassword)
-                .contact(this.getContact())
-                .gender(Gender.valueOf(this.getGender()))
-                .birthdate(LocalDate.parse(this.getBirthdate()))
-                .userStatus(UserStatus.ACTIVE)
-                .registerType(RegisterType.LOCAL)
-                .userRole(UserRole.ROLE_CUSTOMER)
-                .build();
-    }
-
-    public Agreement toAgreementEntity(final Account account) {
-        return Agreement.builder()
-                .accountId(account.getAccountId())
-                .termsOfService(serviceAgreement)
-                .privacyPolicy(privacyAgreement)
-                .marketing(marketingAgreement)
-                .build();
-
-    }
-
 }

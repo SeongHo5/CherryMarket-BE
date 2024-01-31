@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.application.account.event;
+package com.cherrydev.cherrymarketbe.server.application.auth.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

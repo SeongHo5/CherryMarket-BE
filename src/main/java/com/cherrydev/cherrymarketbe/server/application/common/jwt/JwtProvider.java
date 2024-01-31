@@ -1,8 +1,8 @@
 package com.cherrydev.cherrymarketbe.server.application.common.jwt;
 
-import com.cherrydev.cherrymarketbe.server.application.account.service.impl.AccountDetailsServiceImpl;
+import com.cherrydev.cherrymarketbe.server.application.account.service.AccountDetailsServiceImpl;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.AuthException;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import com.cherrydev.cherrymarketbe.server.application.common.service.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -67,13 +67,13 @@ public class JwtProvider {
      * @param email 사용자 이메일
      * @return 토큰 발급 결과(액세스 토큰, 리프레시 토큰, 만료 시간)
      */
-    public JwtResponseDto createJwtToken(String email) {
+    public JwtResponse createJwtToken(String email) {
         Authentication authentication = createAuthentication(email);
 
         String accessToken = createAccessToken(authentication);
         String refreshToken = createRefreshToken();
 
-        return JwtResponseDto.builder()
+        return JwtResponse.builder()
                 .grantType(BEARER_PREFIX)
                 .accessToken(accessToken)
                 .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME)

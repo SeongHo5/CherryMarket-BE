@@ -1,17 +1,16 @@
-package com.cherrydev.cherrymarketbe.server.application.auth.service.impl;
+package com.cherrydev.cherrymarketbe.server.application.auth.service;
 
-import com.cherrydev.cherrymarketbe.server.application.account.service.impl.AccountServiceImpl;
+import com.cherrydev.cherrymarketbe.server.application.account.service.AccountService;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.AuthException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.ServiceFailedException;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.application.common.jwt.dto.JwtResponseDto;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import com.cherrydev.cherrymarketbe.server.application.common.service.RedisService;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.RegisterType;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.SignInResponse;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.oauth.OAuthAccountInfo;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.oauth.OAuthTokenResponse;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.AccountMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,7 @@ import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole.
 @RequiredArgsConstructor
 public class CommonOAuthService {
 
-    private final AccountServiceImpl accountService;
-    private final AccountMapper accountMapper;
+    private final AccountService accountService;
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
 
@@ -38,9 +36,9 @@ public class CommonOAuthService {
         String userName = accountInfo.getName();
 
         checkAndProcessOAuthRegistration(accountInfo, provider);
-        JwtResponseDto jwtResponseDto = issueJwtToken(email);
+        JwtResponse jwtResponse = issueJwtToken(email);
 
-        return createSignInResponse(jwtResponseDto, userName);
+        return createSignInResponse(jwtResponse, userName);
     }
 
     /**
@@ -49,7 +47,7 @@ public class CommonOAuthService {
      * 소셜 로그인은 고객만 가능하므로, 응답 DTO의 userRole은 ROLE_CUSTOMER로 고정
      */
     private ResponseEntity<SignInResponse> createSignInResponse(
-            final JwtResponseDto jwtResponseDto,
+            final JwtResponse jwtResponse,
             final String userName
     ) {
         return ResponseEntity.ok()
@@ -57,10 +55,10 @@ public class CommonOAuthService {
                         SignInResponse.builder()
                                 .userName(userName)
                                 .userRole(ROLE_CUSTOMER)
-                                .grantType(jwtResponseDto.getGrantType())
-                                .accessToken(jwtResponseDto.getAccessToken())
-                                .refreshToken(jwtResponseDto.getRefreshToken())
-                                .expiresIn(jwtResponseDto.getAccessTokenExpiresIn())
+                                .grantType(jwtResponse.grantType())
+                                .accessToken(jwtResponse.accessToken())
+                                .refreshToken(jwtResponse.refreshToken())
+                                .expiresIn(jwtResponse.accessTokenExpiresIn())
                                 .build()
                 );
     }
@@ -70,11 +68,11 @@ public class CommonOAuthService {
      */
     private void checkAndProcessOAuthRegistration(final OAuthAccountInfo accountInfo, final String provider) {
         String email = accountInfo.getEmail();
-        RegisterType type = accountMapper.getRegisterTypeByEmail(email);
+        RegisterType type = accountService.getRegisterTypeByEmail(email);
 
         checkOAuthAccountType(type, provider);
 
-        if (!accountMapper.existByEmail(email)) {
+        if (!accountService.existByEmail(email)) {
             accountService.createAccountByOAuth(accountInfo, provider);
         }
     }
@@ -82,11 +80,11 @@ public class CommonOAuthService {
     /**
      * OAuth 인증이 완료된 사용자에게 토큰을 발급한다.
      */
-    private JwtResponseDto issueJwtToken(final String email) {
-        JwtResponseDto jwtResponseDto = jwtProvider.createJwtToken(email);
-        redisService.setDataExpire(email, jwtResponseDto.getRefreshToken(),
+    private JwtResponse issueJwtToken(final String email) {
+        JwtResponse jwtResponse = jwtProvider.createJwtToken(email);
+        redisService.setDataExpire(email, jwtResponse.refreshToken(),
                 REFRESH_TOKEN_EXPIRE_TIME);
-        return jwtResponseDto;
+        return jwtResponse;
     }
 
     /**
