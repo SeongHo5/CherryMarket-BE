@@ -47,3 +47,6 @@ out/
 
 ### Log ###
 /logs/
+
+### Other Config Files ###
+.jpb
