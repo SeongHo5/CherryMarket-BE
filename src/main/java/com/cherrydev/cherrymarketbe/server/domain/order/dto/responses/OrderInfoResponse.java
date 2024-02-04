@@ -1,11 +1,12 @@
 package com.cherrydev.cherrymarketbe.server.domain.order.dto.responses;
 
-import com.cherrydev.cherrymarketbe.server.domain.order.entity.Order;
+import com.cherrydev.cherrymarketbe.server.domain.order.entity.Orders;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 import java.sql.Timestamp;
-
+@Builder
 public record OrderInfoResponse(
         @NotNull String orderCode,
         @NotNull String orderStatus,
@@ -18,17 +19,13 @@ public record OrderInfoResponse(
 
 ) {
 
-    public static OrderInfoResponse getOrder(Order order) {
-
-        return new OrderInfoResponse(
-                order.getOrderCode(),
-                order.getOrderStatus().toString(),
-                (int) order.getPayment().getCard().getAmount(),
-                order.getOrderName(),
-                order.getPayment().getMethod(),
-                order.getRepresentativeGoodsCode(),
-                order.getCreatedAt()
-        );
+    public static OrderInfoResponse of(Orders orders) {
+        return OrderInfoResponse.builder()
+                .orderCode(orders.getCode().toString())
+                .orderStatus(orders.getStatus().toString())
+                .orderName(orders.getName())
+                .createdAt(orders.getCreatedAt())
+                .build();
     }
 
 

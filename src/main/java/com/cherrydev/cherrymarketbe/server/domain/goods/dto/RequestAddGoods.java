@@ -11,8 +11,6 @@ import java.sql.Date;
 @Builder
 public class RequestAddGoods {
 
-    Long goodsId;
-
     @NotNull
     Long makerId;
 
@@ -20,10 +18,10 @@ public class RequestAddGoods {
     Long categoryId;
 
     @Pattern(regexp = "\\d{7}", message = "상품 코드는 7자리 정수여야 합니다.")
-    String goodsCode;
+    String code;
 
     @NotNull
-    String goodsName;
+    String name;
 
     @NotNull
     String description;

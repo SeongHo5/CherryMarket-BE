@@ -1,13 +1,14 @@
 package com.cherrydev.cherrymarketbe.server.domain.account.dto.response;
 
+import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole;
-import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -18,7 +19,8 @@ import static com.cherrydev.cherrymarketbe.server.application.aop.exception.Exce
  * <p>
  * {@link Account} 정보를 담고 있으며, {@link Account}의 {@link UserRole}에 따라 권한을 부여한다.
  */
-public class AccountDetails implements UserDetails {
+@Getter
+public class AccountDetails implements UserDetails, Serializable {
 
     private final Account account;
 
@@ -30,10 +32,6 @@ public class AccountDetails implements UserDetails {
         }
         this.account = account;
         this.email = account.getEmail();
-    }
-
-    public Account getAccount() {
-        return account;
     }
 
     /**

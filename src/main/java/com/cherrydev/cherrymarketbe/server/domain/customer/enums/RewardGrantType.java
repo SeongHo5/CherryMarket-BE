@@ -1,8 +1,10 @@
 package com.cherrydev.cherrymarketbe.server.domain.customer.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum RewardGrantType {
 
         WELCOME("회원가입"),
@@ -14,7 +16,8 @@ public enum RewardGrantType {
 
         private final String description;
 
-        RewardGrantType(String description) {
-                this.description = description;
+        public boolean isSameType(RewardGrantType type) {
+                return this == type;
         }
+
 }

@@ -1,12 +1,8 @@
 package com.cherrydev.cherrymarketbe.server.domain.admin.dto.request;
 
-import com.cherrydev.cherrymarketbe.server.domain.admin.entity.Coupon;
-import com.cherrydev.cherrymarketbe.server.domain.admin.enums.CouponType;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Value;
-
-import java.time.LocalDate;
 
 @Value
 @Builder
@@ -26,14 +22,4 @@ public class IssueCoupon {
 
     String endDate;
 
-    public Coupon toEntity() {
-        return Coupon.builder()
-                .code(code)
-                .type(CouponType.valueOf(type))
-                .minimumOrderAmount(minimumOrderAmount)
-                .discountAmount(discountRate)
-                .startDate(LocalDate.parse(startDate))
-                .endDate(LocalDate.parse(endDate))
-                .build();
-    }
 }

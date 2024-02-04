@@ -1,18 +1,10 @@
 package com.cherrydev.cherrymarketbe.server.domain.account.dto.request;
 
-import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
-import com.cherrydev.cherrymarketbe.server.domain.account.entity.Agreement;
-import com.cherrydev.cherrymarketbe.server.domain.account.enums.Gender;
-import com.cherrydev.cherrymarketbe.server.domain.account.enums.RegisterType;
-import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole;
-import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Value;
-
-import java.time.LocalDate;
 
 @Value
 @Builder
