@@ -1,9 +1,7 @@
 package com.cherrydev.cherrymarketbe.server.application.account.event.listner;
 
 import com.cherrydev.cherrymarketbe.server.application.account.event.AccountRegistrationEvent;
-import com.cherrydev.cherrymarketbe.server.application.auth.event.PasswordResetEvent;
-import com.cherrydev.cherrymarketbe.server.application.admin.service.CouponService;
-import com.cherrydev.cherrymarketbe.server.application.common.service.EmailService;
+import com.cherrydev.cherrymarketbe.server.application.customer.service.CouponManagementService;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.GrantCouponByAdmin;
 import com.cherrydev.cherrymarketbe.server.domain.customer.dto.request.RequestAddReward;
 import com.cherrydev.cherrymarketbe.server.application.customer.service.RewardService;
@@ -22,7 +20,7 @@ import static java.time.OffsetDateTime.now;
 public class AccountEventListener {
 
     private final RewardService rewardService;
-    private final CouponService couponService;
+    private final CouponManagementService couponManagementService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onAccountRegistration(AccountRegistrationEvent event) {
@@ -37,7 +35,7 @@ public class AccountEventListener {
                         .build()
         );
 
-        couponService.grantCoupon(
+        couponManagementService.grantCoupon(
                 GrantCouponByAdmin.builder()
                         .email(event.getAccount().getEmail())
                         .couponCode(event.getCouponCode())

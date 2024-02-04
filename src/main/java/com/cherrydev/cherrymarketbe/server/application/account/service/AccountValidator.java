@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.server.application.account.service;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.AuthException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.DuplicatedException;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.ForbiddenUserName;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.account.AccountMapper;
+import com.cherrydev.cherrymarketbe.server.infrastructure.repository.account.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +16,13 @@ import static com.cherrydev.cherrymarketbe.server.application.aop.exception.Exce
 @RequiredArgsConstructor
 public class AccountValidator {
 
-    private final AccountMapper accountMapper;
+    private final AccountRepository accountRepository;
 
     /**
      * 회원 가입 시 이메일이 중복되는지 확인한다.
      */
     protected void checkEmailIsDuplicated(String email) {
-        if (accountMapper.existByEmail(email)) {
+        if (accountRepository.existsByEmail(email)) {
             throw new DuplicatedException(CONFLICT_ACCOUNT);
         }
     }
