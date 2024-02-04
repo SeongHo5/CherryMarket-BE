@@ -1,50 +1,64 @@
 package com.cherrydev.cherrymarketbe.server.domain.admin.entity;
 
+import com.cherrydev.cherrymarketbe.server.domain.BaseEntity;
+import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.IssueCoupon;
 import com.cherrydev.cherrymarketbe.server.domain.admin.enums.CouponType;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.Comment;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
+
+@Entity
 @Getter
+@Builder
+@Comment("쿠폰")
 @AllArgsConstructor
-public class Coupon {
+@NoArgsConstructor
+@Table(name = "COUPON")
+public class Coupon extends BaseEntity {
 
-    Long id;
+    @Id
+    @Comment("쿠폰 ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "COUPON_ID", nullable = false)
+    private Long id;
 
-    @Pattern(regexp = "^[A-Z0-9]{8}$", message = "쿠폰 코드는 8자리의 영문 대문자와 숫자로 이루어져야 합니다.")
-    String code;
+    @Comment("쿠폰 코드")
+    @Column(name = "COUPON_CODE", nullable = false, length = 20)
+    private String code;
 
-    CouponType type;
+    @Comment("쿠폰 이름")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "COUPON_TY", nullable = false, length = 20)
+    private CouponType type;
 
-    Integer minimumOrderAmount;
+    @Comment("쿠폰 사용 최소 금액")
+    @Column(name = "COUPON_MIN_AMOUNT", nullable = false)
+    private Integer minimumAmount;
 
-    Integer discountAmount;
+    @Comment("쿠폰 할인율")
+    @Column(name = "COUPON_DSCNT_RATE", nullable = false)
+    private Integer discountRate;
 
-    @PastOrPresent
-    LocalDate startDate;
+    @Comment("쿠폰 사용 가능일")
+    @Column(name = "COUPON_BGNDE", nullable = false)
+    private LocalDate startDate;
 
-    @Future
-    LocalDate endDate;
+    @Comment("쿠폰 만료일")
+    @Column(name = "COUPON_ENDDE", nullable = false)
+    private LocalDate endDate;
 
-    Timestamp createdAt;
-
-    Timestamp updatedAt;
-
-
-    @Builder
-    public Coupon(String code, CouponType type, Integer minimumOrderAmount, Integer discountAmount, LocalDate startDate, LocalDate endDate) {
-        this.code = code;
-        this.type = type;
-        this.minimumOrderAmount = minimumOrderAmount;
-        this.discountAmount = discountAmount;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public static Coupon of(IssueCoupon request) {
+        return Coupon.builder()
+                .code(request.getCode())
+                .type(CouponType.valueOf(request.getType()))
+                .minimumAmount(request.getMinimumOrderAmount())
+                .discountRate(request.getDiscountRate())
+                .startDate(LocalDate.parse(request.getStartDate()))
+                .endDate(LocalDate.parse(request.getEndDate()))
+                .build();
     }
 
 }

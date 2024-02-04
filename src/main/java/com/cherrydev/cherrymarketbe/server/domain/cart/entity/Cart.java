@@ -1,38 +1,57 @@
 package com.cherrydev.cherrymarketbe.server.domain.cart.entity;
 
-import com.cherrydev.cherrymarketbe.server.domain.goods.dto.ToCartResponse;
+import com.cherrydev.cherrymarketbe.server.domain.BaseEntity;
+import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
+import com.cherrydev.cherrymarketbe.server.domain.goods.entity.Goods;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import com.cherrydev.cherrymarketbe.server.domain.goods.enums.SalesStatus;
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+@Entity
 @Getter
-@NoArgsConstructor
-public class Cart {
+@Builder
+@Comment("장바구니")
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "CART", uniqueConstraints = {
+        @UniqueConstraint(name = "CART_ITEM_UNIQUE", columnNames = {"ACNT_ID", "GOODS_ID"})
+})
+public class Cart extends BaseEntity {
 
-    private Long cartId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private Long accountId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "ACNT_ID", nullable = false)
+    private Account account;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "GOODS_ID", nullable = false)
+    private Goods goods;
+
+    @NotNull
+    @Column(name = "CART_QY", nullable = false)
     private Integer quantity;
 
-    private ToCartResponse goods;
-
-    @Builder
-    public Cart(Long cartId, Long accountId, Integer quantity, ToCartResponse goods) {
-        this.cartId = cartId;
-        this.accountId = accountId;
-        this.quantity = quantity;
-        this.goods = goods;
+    public void increaseQuantity() {
+        this.quantity++;
     }
 
-    public boolean isGoodsAvailable() {
-
-        return SalesStatus.ON_SALE.name().equals(this.getGoods().getSalesStatus());
+    public void decreaseQuantity() {
+        this.quantity--;
     }
 
-
+    public static Cart of(Account account, Goods goods) {
+        return Cart.builder()
+                .account(account)
+                .goods(goods)
+                .quantity(1)
+                .build();
+    }
 
 }
