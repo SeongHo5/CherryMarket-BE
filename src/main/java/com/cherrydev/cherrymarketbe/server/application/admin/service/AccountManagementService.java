@@ -1,62 +1,57 @@
 package com.cherrydev.cherrymarketbe.server.application.admin.service;
 
-import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
+import com.cherrydev.cherrymarketbe.server.application.account.service.AccountQueryService;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.ServiceFailedException;
-import com.cherrydev.cherrymarketbe.server.domain.core.dto.MyPage;
-import com.cherrydev.cherrymarketbe.server.application.common.utils.PagingUtil;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.ModifyUserRole;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.request.ModifyUserStatus;
 import com.cherrydev.cherrymarketbe.server.domain.admin.dto.response.AdminUserInfo;
-import com.cherrydev.cherrymarketbe.server.infrastructure.repository.account.AccountMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.*;
+import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.CHANGE_ROLE_FORBIDDEN;
+import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.INVALID_INPUT_VALUE;
 import static com.cherrydev.cherrymarketbe.server.domain.account.enums.RegisterType.LOCAL;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+public class AccountManagementService {
 
-    private final AccountMapper accountMapper;
+    private final AccountQueryService accountQueryService;
 
     @Transactional(readOnly = true)
-    public MyPage<AdminUserInfo> getAllAcounts(
+    public Page<AdminUserInfo> getAllAcounts(
             final Pageable pageable
     ) {
-        return PagingUtil.createPage(pageable, accountMapper::findAll);
+        return accountQueryService.fetchAllAccountEntities(pageable)
+                .map(AdminUserInfo::of);
     }
 
     @Transactional
-    public void modifyAccountRole(final ModifyUserRole roleRequestDto) {
-        Account account = accountMapper.findByEmail(roleRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
+    public void modifyAccountRole(final ModifyUserRole request) {
+        Account account = accountQueryService.fetchAccountEntity(request.getEmail());
 
         checkAccountRegisterType(account);
 
-        account.updateAccountRole(roleRequestDto.getNewRole());
-        accountMapper.updateAccountRole(account);
+        account.updateAccountRole(request.getNewRole());
     }
 
     @Transactional
-    public void modifyAccountStatus(final ModifyUserStatus statusRequestDto) {
-        Account account = accountMapper.findByEmail(statusRequestDto.getEmail())
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACCOUNT));
-        LocalDate restrictionEndDate = LocalDate.parse(statusRequestDto.getRestrictedUntil());
+    public void modifyAccountStatus(final ModifyUserStatus request) {
+        Account account = accountQueryService.fetchAccountEntity(request.getEmail());
+        LocalDate restrictionEndDate = LocalDate.parse(request.getRestrictedUntil());
         checkAccountRestrictionEndDate(restrictionEndDate);
 
-        account.updateAccountStatus(statusRequestDto.getNewStatus());
+        account.updateAccountStatus(request.getNewStatus());
         account.updateRestrictedUntil(restrictionEndDate);
-
-        accountMapper.updateAccountStatus(account);
     }
 
 
