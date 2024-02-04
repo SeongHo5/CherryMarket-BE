@@ -6,11 +6,7 @@ import com.cherrydev.cherrymarketbe.server.domain.account.enums.RegisterType;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.Value;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import static com.cherrydev.cherrymarketbe.server.application.common.utils.TimeFormatter.timeStampToString;
 

@@ -2,7 +2,6 @@ package com.cherrydev.cherrymarketbe.server.domain.customer.dto.response;
 
 import com.cherrydev.cherrymarketbe.server.domain.customer.entity.CustomerAddress;
 import lombok.Builder;
-import lombok.Value;
 
 @Builder
 public record AddressInfo(

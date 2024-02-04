@@ -2,8 +2,6 @@ package com.cherrydev.cherrymarketbe.server.domain.goods.dto;
 
 import com.cherrydev.cherrymarketbe.server.domain.goods.entity.Maker;
 import lombok.Builder;
-import lombok.Value;
-
 
 @Builder
 public record MakerInfo(

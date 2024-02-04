@@ -24,7 +24,7 @@ public class AccountDetails implements UserDetails, Serializable {
 
     private final Account account;
 
-    private String email;
+    private final String email;
 
     public AccountDetails(Account account) {
         if (account == null) {
