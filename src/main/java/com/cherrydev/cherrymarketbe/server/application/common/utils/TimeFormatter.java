@@ -1,13 +1,13 @@
 package com.cherrydev.cherrymarketbe.server.application.common.utils;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TimeFormatter {
-
-    private TimeFormatter() {
-        throw new IllegalStateException("유틸리티 클래스는 인스턴스화할 수 없습니다.");
-    }
 
     /**
      * LocalDate를 String으로 변환
