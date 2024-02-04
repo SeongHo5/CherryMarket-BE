@@ -55,7 +55,7 @@ public class JwtProvider {
      * 토큰을 검증하기 위해 Request Header에서 "Bearer "를 제거한다.
      */
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        String bearerToken = request.getHeader(AUTHORIZATION);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
@@ -76,7 +76,7 @@ public class JwtProvider {
         return JwtResponse.builder()
                 .grantType(BEARER_PREFIX)
                 .accessToken(accessToken)
-                .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME)
+                .accessTokenExpiresIn(ACCESS_TOKEN_EXPIRE_TIME.toMillis())
                 .refreshToken(refreshToken)
                 .build();
     }
@@ -84,7 +84,7 @@ public class JwtProvider {
     public String createAccessToken(Authentication authentication) {
         String authorities = extractAuthorities(authentication);
         long now = (new Date()).getTime();
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME.toMillis());
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
@@ -95,7 +95,7 @@ public class JwtProvider {
     }
     public String createRefreshToken() {
         long now = (new Date()).getTime();
-        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
+        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME.toMillis());
 
         return Jwts.builder()
                 .setExpiration(refreshTokenExpiresIn)

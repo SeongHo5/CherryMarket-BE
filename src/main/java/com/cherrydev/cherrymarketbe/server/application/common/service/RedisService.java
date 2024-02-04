@@ -1,9 +1,8 @@
 package com.cherrydev.cherrymarketbe.server.application.common.service;
 
-import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.oauth.OAuthTokenResponse;
+import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.oauth.OAuthTokenResponse;import io.lettuce.core.RedisException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,6 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.*;
-import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.OAUTH_KAKAO_REFRESH_PREFIX;
 
 
 @Service
@@ -19,16 +17,18 @@ import static com.cherrydev.cherrymarketbe.server.application.common.constant.Au
 public class RedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final StringRedisTemplate stringRedisTemplate;
 
     /**
-     * Redis에 저장된 데이터(Key:Value) 가져오기
+     * Redis에서 데이터를 가져옵니다.<br>
      * @param key 가져올 데이터의 Key
-     * @return 데이터
+     * @param type 가져올 데이터의 타입
+     * @return 가져온 데이터
+     * @throws RedisException Redis에 저장된 데이터의 타입과 요청한 타입이 일치하지 않을 경우 발생
      */
-    public String getData(String key) {
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        return valueOperations.get(key);
+    public <T> T getData(String key, Class<T> type) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        Object result = valueOperations.get(key);
+        return castToType(result, type);
     }
 
     /**
@@ -38,8 +38,8 @@ public class RedisService {
      * @param key 저장할 데이터의 Key
      * @param value 저장할 데이터
      */
-    public void setData(String key, String value) {
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+    public <T> void setData(String key, T value) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, value);
     }
 
@@ -49,10 +49,9 @@ public class RedisService {
      * @param value 저장할 데이터
      * @param duration 만료 시간
      */
-    public void setDataExpire(String key, String value, long duration) {
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        Duration expireDuration = Duration.ofSeconds(duration);
-        valueOperations.set(key, value, expireDuration);
+    public <T> void setDataExpire(String key, T value, Duration duration) {
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value, duration);
     }
 
     /**
@@ -61,7 +60,7 @@ public class RedisService {
      * @return 데이터 존재 여부
      */
     public boolean hasKey(String key) {
-        return Boolean.TRUE.equals(stringRedisTemplate.hasKey(key));
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 
     /**
@@ -69,14 +68,14 @@ public class RedisService {
      * @param key 삭제할 데이터의 Key
      */
     public void deleteData(String key) {
-        stringRedisTemplate.delete(key);
+        redisTemplate.delete(key);
     }
 
     /**
-     * Redis에 저장된 특정 키의 값을 1만큼 증가시킨다.
+     * Redis에 저장된 특정 Key의 Value를 1만큼 증가시킨다.
      */
     public void incrementValueByKey(String key) {
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
         valueOperations.increment(key);
     }
 
@@ -85,25 +84,6 @@ public class RedisService {
     }
 
     // ==================== REDIS - OAUTH ==================== //
-    /**
-     * OAuth 인증 토큰을 Redis에 저장한다.
-     *
-     * @param oAuthTokenResponse OAuth 인증 토큰
-     * @param email                 사용자 이메일
-     */
-    public void saveKakaoTokenToRedis(
-            final OAuthTokenResponse oAuthTokenResponse,
-            final String email
-    ) {
-        String accessToken = oAuthTokenResponse.getAccessToken();
-        Long expiresIn = oAuthTokenResponse.getExpiresIn();
-
-        String refreshToken = oAuthTokenResponse.getRefreshToken();
-        Long refreshTokenExpiresIn = oAuthTokenResponse.getRefreshTokenExpiresIn();
-
-        setDataExpire(OAUTH_KAKAO_PREFIX + email, accessToken, expiresIn);
-        setDataExpire(OAUTH_KAKAO_REFRESH_PREFIX + email, refreshToken, refreshTokenExpiresIn);
-    }
 
     public void saveNaverTokenToRedis(
             final OAuthTokenResponse oAuthTokenResponse,
@@ -114,22 +94,21 @@ public class RedisService {
 
         String refreshToken = oAuthTokenResponse.getRefreshToken();
 
-        setDataExpire(OAUTH_NAVER_PREFIX + email, accessToken, expiresIn);
+        setDataExpire(OAUTH_NAVER_PREFIX + email, accessToken, Duration.ofMillis(expiresIn));
         setDataExpire(OAUTH_NAVER_REFRESH_PREFIX + email, refreshToken, REFRESH_TOKEN_EXPIRE_TIME);
-    }
-
-    /**
-     * Redis에 저장된 OAuth 인증 토큰을 삭제한다.
-     *
-     * @param email 사용자 이메일
-     */
-    public void deleteKakaoTokenFromRedis(final String email) {
-        deleteData(OAUTH_KAKAO_PREFIX + email);
-        deleteData(OAUTH_KAKAO_REFRESH_PREFIX + email);
     }
 
     public void deleteNaverTokenFromRedis(final String email) {
         deleteData(OAUTH_NAVER_PREFIX + email);
         deleteData(OAUTH_NAVER_REFRESH_PREFIX + email);
+    }
+
+    // ========== PRIVATE METHODS ========== //
+    private <T> T castToType(Object result, Class<T> type) {
+        if (type.isInstance(result)) {
+            return type.cast(result);
+        }
+        String message = "Expected :" + type.getName() + ", Actual :" + result.getClass().getName();
+        throw new RedisException("Data Type Mismatch - " + message);
     }
 }
