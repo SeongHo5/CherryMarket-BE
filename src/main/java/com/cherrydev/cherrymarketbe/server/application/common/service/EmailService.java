@@ -14,6 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.*;
+import static com.cherrydev.cherrymarketbe.server.application.common.constant.EmailConstant.*;
 import static com.cherrydev.cherrymarketbe.server.application.common.service.template.EmailTemplate.*;
 import static jakarta.mail.Message.RecipientType.TO;
 
@@ -34,8 +35,8 @@ public class EmailService {
 
         try {
             message.addRecipient(TO, new InternetAddress(recipient));
-            message.setSubject(subject, EmailConstant.ENCODING_CHARSET);
-            message.setText(content, EmailConstant.ENCODING_CHARSET, EmailConstant.MAILER_SUBTYPE);
+            message.setSubject(subject, ENCODING_CHARSET);
+            message.setText(content, ENCODING_CHARSET, MAILER_SUBTYPE);
             emailSender.send(message);
         } catch (MessagingException e) {
             throw new ServiceFailedException(FAIL_TO_CONSTRUCT_EMAIL);
@@ -57,18 +58,18 @@ public class EmailService {
         checkIfEmailIsWhiteListed(email);
         checkIfCodeAlreadySent(email, EmailConstant.PREFIX_VERIFY);
 
-        String verificationCode = CodeGenerator.generateRandomCode(EmailConstant.VERIFICATION_CODE_LENGTH);
+        String verificationCode = CodeGenerator.generateRandomCode(VERIFICATION_CODE_LENGTH);
 
-        redisService.setDataExpire(EmailConstant.PREFIX_VERIFY + email, verificationCode, EmailConstant.VERIFICATION_CODE_EXPIRE_TIME);
+        redisService.setDataExpire(EmailConstant.PREFIX_VERIFY + email, verificationCode, VERIFICATION_CODE_EXPIRE_TIME);
         sendMail(email, VERIFICATION_TITTLE, createVerificationMessage(verificationCode));
     }
 
     public void sendPasswordResetMail(final String email) {
         checkIfCodeAlreadySent(email, EmailConstant.PREFIX_PW_RESET);
 
-        String verificationCode = CodeGenerator.generateRandomCode(EmailConstant.VERIFICATION_CODE_LENGTH);
+        String verificationCode = CodeGenerator.generateRandomCode(VERIFICATION_CODE_LENGTH);
 
-        redisService.setDataExpire(EmailConstant.PREFIX_PW_RESET + email, verificationCode, EmailConstant.VERIFICATION_CODE_EXPIRE_TIME);
+        redisService.setDataExpire(EmailConstant.PREFIX_PW_RESET + email, verificationCode, VERIFICATION_CODE_EXPIRE_TIME);
         sendMail(email, PW_RESET_TITTLE, createPasswordResetMessage(verificationCode));
     }
 
