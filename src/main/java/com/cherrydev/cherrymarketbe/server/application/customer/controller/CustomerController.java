@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/customer")
+@RequestMapping("/api/customers")
 @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
 public class CustomerController {
 
@@ -25,23 +25,23 @@ public class CustomerController {
      *
      * @param couponCode 쿠폰 코드
      */
-    @PostMapping("/register-coupon")
-    @ResponseStatus(HttpStatus.OK)
-    public void registerCoupon(
+    @PostMapping("/{coupon_code}/register")
+    public ResponseEntity<Void> registerCoupon(
             final @AuthenticationPrincipal AccountDetails accountDetails,
-            final @RequestParam("couponCode") String couponCode
+            final @PathVariable("coupon_code") String couponCode
     ) {
         customerService.registerCoupon(accountDetails, couponCode);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * 내 쿠폰 목록 조회
      */
-    @GetMapping("/coupon/list")
+    @GetMapping("/coupons")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<CouponInfo>> getCouponList(
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
-        return customerService.getCouponList(accountDetails);
+        return ResponseEntity.ok(customerService.getCouponList(accountDetails));
     }
 }

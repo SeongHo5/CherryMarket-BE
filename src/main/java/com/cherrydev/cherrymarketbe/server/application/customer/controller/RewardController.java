@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/customer/reward")
+@RequestMapping("/api/customer/rewards")
 public class RewardController {
 
     private final RewardService rewardService;
@@ -22,7 +22,7 @@ public class RewardController {
      * @param accountDetails 로그인한 회원 정보
      * @return 리워드 내역 및 요약 정보
      */
-    @GetMapping("/summary")
+    @GetMapping("/")
     public ResponseEntity<RewardInfo> getRewardInfo(
             final @AuthenticationPrincipal AccountDetails accountDetails
     ) {
