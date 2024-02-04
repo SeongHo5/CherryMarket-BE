@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.Duration;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.apache.http.HttpStatus.SC_TOO_MANY_REQUESTS;
 import static org.springframework.http.HttpHeaders.RETRY_AFTER;
 
@@ -38,10 +38,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         if (!requestURI.startsWith(API_ENDPOINT_PREFIX)) {
             String key = RATE_LIMIT_KEY_PREFIX + clientIp;
-            String currentValue = redisService.getData(key);
+            String currentValue = redisService.getData(key, String.class);
 
             if (currentValue == null) {
-                redisService.setDataExpire(key, "1", MINUTES.toSeconds(1));
+                redisService.setDataExpire(key, "1", Duration.ofMinutes(1));
             } else {
                 int requests = Integer.parseInt(currentValue);
 

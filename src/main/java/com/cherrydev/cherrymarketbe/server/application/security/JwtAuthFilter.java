@@ -20,8 +20,6 @@ import java.io.IOException;
 import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.BLACK_LIST_KEY_PREFIX;
 import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.BLACKLISTED_TOKEN;
 import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.INVALID_AUTH_ERROR;
-import static com.cherrydev.cherrymarketbe.server.application.common.log.CherryLogger.logExceptionDetail;
-import static com.cherrydev.cherrymarketbe.server.application.common.log.CherryLogger.logRequestInfo;
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +33,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        logRequestInfo(request);
         String userToken = jwtProvider.resolveToken(request);
 
         // 요청에 토큰이 포함된 때만 검증 - 인증을 요구하지 않는 API에 대한 검증 방지
@@ -46,7 +43,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Claims userInfo = jwtProvider.getInfoFromToken(userToken);
                 setAuthentication(userInfo.getSubject());
             } catch (Exception e) {
-                logExceptionDetail(request, e);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, INVALID_AUTH_ERROR.getMessage());
                 return;
             }

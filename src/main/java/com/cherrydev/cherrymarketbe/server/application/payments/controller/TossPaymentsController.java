@@ -1,13 +1,14 @@
 package com.cherrydev.cherrymarketbe.server.application.payments.controller;
 
 import com.cherrydev.cherrymarketbe.server.application.payments.service.TossPaymentsService;
-import com.cherrydev.cherrymarketbe.server.domain.payment.model.cardpromotion.CardPromotion;
-import com.cherrydev.cherrymarketbe.server.domain.payment.dto.PaymentCancelForm;
-import com.cherrydev.cherrymarketbe.server.domain.payment.dto.PaymentApproveForm;
-import com.cherrydev.cherrymarketbe.server.domain.payment.model.payment.Payment;
+import com.cherrydev.cherrymarketbe.server.domain.payment.toss.dto.PaymentApproveForm;
+import com.cherrydev.cherrymarketbe.server.domain.payment.toss.dto.PaymentCancelForm;
+import com.cherrydev.cherrymarketbe.server.domain.payment.toss.model.TossPayment;
+import com.cherrydev.cherrymarketbe.server.domain.payment.toss.model.cardpromotion.CardPromotion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -18,33 +19,37 @@ public class TossPaymentsController {
 
     private final TossPaymentsService tossPaymentsService;
 
-    @GetMapping ("/find/{orderId}")
-    @ResponseStatus(HttpStatus.OK)
-    public Payment getPaymentByOrderId(
-            final @PathVariable String orderId
+    @GetMapping("/{order_code}")
+    public TossPayment getPaymentByOrderId(
+            @PathVariable("order_code") final String orderCode
     ) {
-        return tossPaymentsService.findPaymentByOrderId(orderId);
+        return tossPaymentsService.findPaymentByOrderId(orderCode);
     }
 
-    @GetMapping ("/find/{paymentKey}")
+    @GetMapping("/{payment_key}")
     @ResponseStatus(HttpStatus.OK)
-    public Payment getPaymentByPaymentKey(
-            final @PathVariable String paymentKey
+    public TossPayment getPaymentByPaymentKey(
+            @PathVariable("payment_key") final String paymentKey
     ) {
         return tossPaymentsService.findPaymentByPaymentKey(paymentKey);
     }
 
-    @PostMapping("/confirm")
-    @ResponseStatus(HttpStatus.OK)
-    public Payment confirmPayment(
-            final @RequestBody PaymentApproveForm form
-            ) {
-        return tossPaymentsService.approvePayment(form);
+    /**
+     * 결제 승인
+     */
+    @PostMapping("/{order_code}/approve")
+    public ResponseEntity<TossPayment> processPaymentApproval(
+            @PathVariable("order_code") String orderCode,
+            @RequestParam String paymentKey,
+            @RequestParam Number amount
+    ) {
+        PaymentApproveForm form = new PaymentApproveForm(paymentKey, orderCode, amount);
+        return ResponseEntity.ok(tossPaymentsService.processPaymentApproval(form));
     }
 
     @PostMapping("/cancel")
     @ResponseStatus(HttpStatus.OK)
-    public Payment cancelPayment(
+    public TossPayment cancelPayment(
             final @RequestParam String paymentKey,
             final @RequestBody PaymentCancelForm form
     ) {
@@ -53,7 +58,7 @@ public class TossPaymentsController {
 
     @GetMapping("/card-promotion")
     @ResponseStatus(HttpStatus.OK)
-    public CardPromotion getCardPromotion(){
+    public CardPromotion getCardPromotion() {
         return tossPaymentsService.getCardPromotionInfo();
     }
 

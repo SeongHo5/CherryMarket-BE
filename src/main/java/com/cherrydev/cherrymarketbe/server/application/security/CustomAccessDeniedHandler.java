@@ -11,7 +11,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.io.IOException;
 
-import static com.cherrydev.cherrymarketbe.server.application.common.log.CherryLogger.logForbiddenRequest;
 
 @Slf4j
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
@@ -22,7 +21,6 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             HttpServletResponse response,
             AccessDeniedException accessDeniedException
     ) throws IOException, ServletException {
-        logForbiddenRequest(request);
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
