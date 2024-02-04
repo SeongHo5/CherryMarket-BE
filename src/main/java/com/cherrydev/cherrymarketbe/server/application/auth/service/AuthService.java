@@ -1,15 +1,15 @@
 package com.cherrydev.cherrymarketbe.server.application.auth.service;
 
-import com.cherrydev.cherrymarketbe.server.application.account.service.AccountService;
+import com.cherrydev.cherrymarketbe.server.application.account.service.AccountQueryService;
 import com.cherrydev.cherrymarketbe.server.application.auth.event.PasswordResetEvent;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtReissueResponse;
-import com.cherrydev.cherrymarketbe.server.domain.core.dto.RequestJwt;
-import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
 import com.cherrydev.cherrymarketbe.server.application.common.service.RedisService;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.request.RequestSignIn;
 import com.cherrydev.cherrymarketbe.server.domain.auth.dto.response.SignInResponse;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtReissueResponse;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.JwtResponse;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.RequestJwt;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.*;
+import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.BLACK_LIST_KEY_PREFIX;
+import static com.cherrydev.cherrymarketbe.server.application.common.constant.AuthConstant.REFRESH_TOKEN_EXPIRE_TIME;
 import static com.cherrydev.cherrymarketbe.server.application.common.utils.CodeGenerator.generateRandomPassword;
 import static org.springframework.beans.propertyeditors.CustomBooleanEditor.VALUE_TRUE;
 
@@ -29,7 +30,7 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
-    private final AccountService accountService;
+    private final AccountQueryService accountQueryService;
     private final AuthValidator authValidator;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
@@ -48,7 +49,7 @@ public class AuthService {
     ) {
         String email = requestSignIn.getEmail();
         String requestedPassword = requestSignIn.getPassword();
-        Account account = accountService.findAccountByEmail(email);
+        Account account = accountQueryService.fetchAccountEntity(email);
 
         authValidator.checkUserStatusByEmail(account);
         authValidator.checkPasswordIsCorrect(requestedPassword, account);
@@ -71,12 +72,12 @@ public class AuthService {
      */
     @Transactional
     public void signOut(final RequestJwt requestJwt) {
-        jwtProvider.validateToken(requestJwt.getAccessToken());
+        jwtProvider.validateToken(requestJwt.accessToken());
 
-        Claims claims = jwtProvider.getInfoFromToken(requestJwt.getAccessToken());
+        Claims claims = jwtProvider.getInfoFromToken(requestJwt.accessToken());
         String email = claims.getSubject();
 
-        invalidateToken(email, requestJwt.getAccessToken());
+        invalidateToken(email, requestJwt.accessToken());
     }
 
     /**
@@ -91,7 +92,7 @@ public class AuthService {
         authValidator.validateRefreshToken(requestJwt);
         authValidator.validateRefreshTokenOwnership(requestJwt);
 
-        String email = jwtProvider.getInfoFromToken(requestJwt.getAccessToken()).getSubject();
+        String email = jwtProvider.getInfoFromToken(requestJwt.accessToken()).getSubject();
 
         JwtResponse jwtResponse = jwtProvider.createJwtToken(email);
 
@@ -123,9 +124,8 @@ public class AuthService {
         String newPassword = generateRandomPassword(NEW_PASSWORD_LENGTH);
         String encodedPassword = passwordEncoder.encode(newPassword);
 
-        Account account = accountService.findAccountByEmail(email);
+        Account account = accountQueryService.fetchAccountEntity(email);
         account.updatePassword(encodedPassword);
-        accountService.modifyAccount(account);
         publishPasswordResetEvent(account);
         return newPassword;
     }
@@ -140,7 +140,7 @@ public class AuthService {
         redisService.deleteData(email);
         redisService.setDataExpire(
                 BLACK_LIST_KEY_PREFIX + accessToken,
-                VALUE_TRUE, ACCESS_TOKEN_EXPIRE_TIME / 1000L);
+                VALUE_TRUE, REFRESH_TOKEN_EXPIRE_TIME);
     }
 
     private void publishPasswordResetEvent(Account account) {

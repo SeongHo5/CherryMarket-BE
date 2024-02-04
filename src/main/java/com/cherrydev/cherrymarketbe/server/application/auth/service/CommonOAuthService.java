@@ -1,5 +1,6 @@
 package com.cherrydev.cherrymarketbe.server.application.auth.service;
 
+import com.cherrydev.cherrymarketbe.server.application.account.service.AccountQueryService;
 import com.cherrydev.cherrymarketbe.server.application.account.service.AccountService;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.AuthException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.DuplicatedException;
@@ -24,6 +25,7 @@ import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserRole.
 @RequiredArgsConstructor
 public class CommonOAuthService {
 
+    private final AccountQueryService accountQueryService;
     private final AccountService accountService;
     private final JwtProvider jwtProvider;
     private final RedisService redisService;
@@ -68,11 +70,11 @@ public class CommonOAuthService {
      */
     private void checkAndProcessOAuthRegistration(final OAuthAccountInfo accountInfo, final String provider) {
         String email = accountInfo.getEmail();
-        RegisterType type = accountService.getRegisterTypeByEmail(email);
+        RegisterType type = accountQueryService.getRegisterTypeByEmail(email);
 
         checkOAuthAccountType(type, provider);
 
-        if (!accountService.existByEmail(email)) {
+        if (!accountQueryService.existByEmail(email)) {
             accountService.createAccountByOAuth(accountInfo, provider);
         }
     }

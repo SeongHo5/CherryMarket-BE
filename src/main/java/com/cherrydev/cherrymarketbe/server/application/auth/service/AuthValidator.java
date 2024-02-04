@@ -3,16 +3,15 @@ package com.cherrydev.cherrymarketbe.server.application.auth.service;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.AuthException;
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
 import com.cherrydev.cherrymarketbe.server.application.common.jwt.JwtProvider;
-import com.cherrydev.cherrymarketbe.server.domain.core.dto.RequestJwt;
 import com.cherrydev.cherrymarketbe.server.application.common.service.RedisService;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus;
+import com.cherrydev.cherrymarketbe.server.domain.core.dto.RequestJwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.*;
-import static com.cherrydev.cherrymarketbe.server.application.aop.exception.ExceptionStatus.EXPIRED_REFRESH_TOKEN;
 import static com.cherrydev.cherrymarketbe.server.application.common.constant.EmailConstant.*;
 import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus.DELETED;
 import static com.cherrydev.cherrymarketbe.server.domain.account.enums.UserStatus.RESTRICTED;
@@ -57,16 +56,16 @@ public class AuthValidator {
      * 토큰의 유효성을 검증한다.
      */
     protected void validateRefreshToken(RequestJwt requestJwt) {
-        jwtProvider.validateToken(requestJwt.getRefreshToken());
+        jwtProvider.validateToken(requestJwt.refreshToken());
     }
 
     /**
      * 요청자와 토큰의 소유자 정보가 일치하는지 검증한다.
      */
     protected void validateRefreshTokenOwnership(RequestJwt requestJwt) {
-        String email = jwtProvider.getInfoFromToken(requestJwt.getAccessToken()).getSubject();
-        String validRefreshToken = redisService.getData(email);
-        if (!requestJwt.getRefreshToken().equals(validRefreshToken)) {
+        String email = jwtProvider.getInfoFromToken(requestJwt.accessToken()).getSubject();
+        String validRefreshToken = redisService.getData(email, String.class);
+        if (!requestJwt.refreshToken().equals(validRefreshToken)) {
             throw new AuthException(EXPIRED_REFRESH_TOKEN);
         }
     }
@@ -84,7 +83,7 @@ public class AuthValidator {
             throw new NotFoundException(NOT_FOUND_REDIS_KEY);
         }
 
-        String validCode = redisService.getData(PREFIX_VERIFY + email);
+        String validCode = redisService.getData(PREFIX_VERIFY + email, String.class);
         if (!code.equals(validCode)) {
             throw new AuthException(INVALID_EMAIL_VERIFICATION_CODE);
         }
@@ -98,7 +97,7 @@ public class AuthValidator {
      * @return 검증 성공 여부
      */
     protected void verifyResetCode(final String email, final String code) {
-        String validCode = redisService.getData(PREFIX_PW_RESET + email);
+        String validCode = redisService.getData(PREFIX_PW_RESET + email, String.class);
         if (!code.equals(validCode)) {
             throw new AuthException(INVALID_EMAIL_VERIFICATION_CODE);
         }
