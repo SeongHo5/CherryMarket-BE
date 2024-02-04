@@ -1,18 +1,15 @@
 package com.cherrydev.cherrymarketbe.server.application.order.controller;
 
+import com.cherrydev.cherrymarketbe.server.application.order.service.OrderService;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
+import com.cherrydev.cherrymarketbe.server.domain.order.dto.request.RequestCreateOrder;
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.OrderDetailsInfo;
-import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.OrderReceiptResponse;
-import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.OrderListGroupByStatusResponse;
-import com.cherrydev.cherrymarketbe.server.domain.order.dto.requests.OrderStatusRequest;
-import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.OrderSummaryList;
-import com.cherrydev.cherrymarketbe.server.application.order.service.OrderServiceImpl;
-import com.cherrydev.cherrymarketbe.server.domain.payment.dto.PaymentCancelForm;
-import com.cherrydev.cherrymarketbe.server.domain.payment.dto.PaymentApproveForm;
-import com.cherrydev.cherrymarketbe.server.domain.payment.model.payment.Payment;
+import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.OrderInfoResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,104 +18,57 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/order")
+@RequestMapping("/api/orders")
+@PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
 public class OrderController {
 
-    private final OrderServiceImpl orderServiceImpl;
+    private final OrderService orderService;
 
     /**
-     * 주문 목록 - 전체 회원
+     * 주문 목록 조회
      */
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/list-allUsers")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<OrderListGroupByStatusResponse> getOrders() {
-        return orderServiceImpl.findAllUserOrders();
-    }
-
-    /**
-     * 주문 목록 - 전체 회원
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/list-status")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<OrderListGroupByStatusResponse> getOrdersByStatus(
-            @RequestParam String orderStatus
+    @GetMapping("/me")
+    public ResponseEntity<Page<OrderInfoResponse>> fetchAllMyOrders(
+            @AuthenticationPrincipal AccountDetails accountDetails,
+            Pageable pageable
     ) {
-        return orderServiceImpl.findAllUserOrdersByStatus(orderStatus);
+        return ResponseEntity.ok(
+                orderService.fetchAllMyOrders(accountDetails, pageable)
+        );
     }
 
     /**
-     * 주문정보 요약 목록 - 로그인 한 회원
+     * 주문 상세 조회
      */
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/list")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<OrderSummaryList> getOrderSummaryList (
-            final @AuthenticationPrincipal AccountDetails accountDetails
+    @GetMapping("/me/{order_code}/detail")
+    public ResponseEntity<OrderDetailsInfo> fetchOrderDetails(
+            @PathVariable("order_code") final String orderCode
     ) {
-        return orderServiceImpl.findOrdersByAccountId(accountDetails);
+        return ResponseEntity.ok(
+                orderService.fetchOrderDetails(orderCode)
+        );
     }
 
-    /**
-     * 주문건 상세 정보
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/list/{orderCode}/order-details")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<OrderDetailsInfo> getOrderDetails (
-            final @AuthenticationPrincipal AccountDetails accountDetails,
-            final @PathVariable String orderCode
+    @PostMapping("/")
+    public ResponseEntity<Void> createOrder(
+            @AuthenticationPrincipal final AccountDetails accountDetails,
+            @RequestBody @Valid final RequestCreateOrder request
     ) {
-        return orderServiceImpl.findOrderDetails(accountDetails, orderCode);
-    }
-
-    @PostMapping("/confirm")
-    public ResponseEntity<Payment> confirmPayment(
-            @RequestParam String orderId,
-            @RequestParam String paymentKey,
-            @RequestParam Number amount) {
-
-        PaymentApproveForm form = new PaymentApproveForm(paymentKey, orderId, amount);
-
-        return ResponseEntity.ok(orderServiceImpl.confirmPaymentInfo(form));
-    }
-
-    /**
-     * 주문 생성
-     */
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-    public void createOrder (
-            final @AuthenticationPrincipal AccountDetails accountDetails,
-            final @RequestBody OrderReceiptResponse responseDto
-    ) {
-        orderServiceImpl.createOrder(accountDetails, responseDto);
-    }
-
-    /**
-     * 주문 상태 변경
-     * <P>
-     * 주문 상태가 'COMPLETED' 로 변경될 경우 구매 금액의 10%가 리워드로 지급됩니다.
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @PatchMapping ("/change-status")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void updateOrderStatus (
-            final @RequestBody OrderStatusRequest requestChangeDto
-    ) {
-        orderServiceImpl.updateOrderStatus(requestChangeDto);
-    }
-
-    @DeleteMapping("/list/{orderCode}/cancel")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> cancelOrder(
-            final @PathVariable String orderCode,
-            final @RequestBody PaymentCancelForm form) {
-
-        orderServiceImpl.cancelOrder(orderCode, form);
+        orderService.createOrder(accountDetails, request);
         return ResponseEntity.ok().build();
-
     }
+
+    /**
+     * 결제 완료 후 주문 처리
+     */
+    @PostMapping("/{order_code}/process")
+    public void processOrder(
+            @AuthenticationPrincipal AccountDetails accountDetails,
+            @RequestParam final String tossPaymentKey,
+            @PathVariable("order_code") final String orderCode
+    ) {
+        orderService.processOrder(accountDetails, tossPaymentKey, orderCode);
+    }
+
+
 }
