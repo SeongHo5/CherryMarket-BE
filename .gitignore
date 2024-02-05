@@ -50,3 +50,5 @@ out/
 
 ### Other Config Files ###
 .jpb
+/grafana
+/prometheus
