@@ -5,11 +5,12 @@ import com.cherrydev.cherrymarketbe.server.application.goods.service.GoodsServic
 import com.cherrydev.cherrymarketbe.server.application.goods.service.GoodsValidator;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
-import com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.server.domain.goods.entity.Goods;
+import com.cherrydev.cherrymarketbe.server.domain.order.entity.Cart;
 import com.cherrydev.cherrymarketbe.server.infrastructure.repository.order.CartRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -30,9 +31,9 @@ public class CartService {
     }
 
     @Transactional
-    public void addToCart(final AccountDetails accountDetails, final Long goodsId) {
+    public void addToCart(final AccountDetails accountDetails, final String goodsCode) {
         Account account = accountDetails.getAccount();
-        Goods goods = goodsService.fetchGoodsEntity(goodsId);
+        Goods goods = goodsService.fetchGoodsEntity(goodsCode);
         Cart cart = cartRepository.findByAccountAndGoods(account, goods)
                 .orElseGet(() ->
                 {
@@ -55,6 +56,11 @@ public class CartService {
         } else {
             cartRepository.delete(cart);
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void clearCartItems(final List<Long> cartIds) {
+        cartRepository.deleteAllByIdIn(cartIds);
     }
 
     private Cart fetchCartEntity(final Long cartId, final Account account) {

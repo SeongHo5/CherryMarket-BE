@@ -19,7 +19,6 @@ public class GoodsValidator {
         validateGoodsSalesStatus(goods, ON_SALE);
         verifyGoodsInventory(goods);
     }
-
     protected void validateGoodsSalesStatus(Goods goods, SalesStatus neededSalesStatus) {
         if (goods.getSalesStatus() != neededSalesStatus) {
             throw new GoodsNotAvailableException(GOODS_STATUS_MISMATCHED);
@@ -28,7 +27,7 @@ public class GoodsValidator {
 
     protected void verifyGoodsInventory(Goods goods) {
         if (goods.getInventory() <= 0) {
-            throw new InsufficientStockException(INSUFFICIENT_STOCK);
+            throw new InsufficientStockException(INSUFFICIENT_STOCK, goods.getCode());
         }
     }
 

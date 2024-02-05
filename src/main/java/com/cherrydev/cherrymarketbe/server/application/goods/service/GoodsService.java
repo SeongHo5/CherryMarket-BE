@@ -1,9 +1,11 @@
 package com.cherrydev.cherrymarketbe.server.application.goods.service;
 
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.NotFoundException;
+import com.cherrydev.cherrymarketbe.server.domain.order.entity.Cart;
 import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsInfo;
 import com.cherrydev.cherrymarketbe.server.domain.goods.entity.Goods;
 import com.cherrydev.cherrymarketbe.server.infrastructure.repository.goods.GoodsRepository;
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +26,7 @@ import static com.cherrydev.cherrymarketbe.server.domain.goods.enums.SalesStatus
 @RequiredArgsConstructor
 public class GoodsService {
 
-    public static final String DISCONTINUED_GOODS_STATUS = "DISCONTINUANCE";
+    public static final int RETRY_LIMIT = 3;
 
     private final GoodsRepository goodsRepository;
     private final GoodsValidator goodsValidator;
@@ -37,7 +39,6 @@ public class GoodsService {
         return new PageImpl<>(goodsList, pageable, goodsList.size());
     }
 
-
     @Transactional
     public void deleteById(Long goodsId) {
         Goods goods = goodsRepository.findById(goodsId)
@@ -46,10 +47,26 @@ public class GoodsService {
         goodsRepository.delete(goods);
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void updateGoodsInventory(List<Cart> cartItems) {
+        cartItems.forEach(cart -> handleUpdateInventoryInternal(cart.getGoods(), cart.getQuantity()));
+    }
+
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Goods fetchGoodsEntity(Long goodsId) {
-        return goodsRepository.findById(goodsId)
+    public Goods fetchGoodsEntity(String goodsCode) {
+        return goodsRepository.findByCode(goodsCode)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_GOODS));
+    }
+
+    private void handleUpdateInventoryInternal(Goods goods, int requestedQuantity) {
+        int retryCount = 0;
+        do {
+            try {
+                goods.updateInventory(requestedQuantity);
+            } catch (OptimisticLockException ex) {
+                retryCount++;
+            }
+        } while (retryCount < RETRY_LIMIT);
     }
 
 }
