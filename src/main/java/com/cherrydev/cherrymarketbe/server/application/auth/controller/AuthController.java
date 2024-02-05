@@ -35,7 +35,6 @@ public class AuthController {
         SignInResponse response = authService.signIn(requestSignIn);
         String accessToken = response.getAccessToken();
         return ResponseEntity.ok()
-//                .header(SET_COOKIE, createCookie(AUTHORIZATION, BEARER_PREFIX + accessToken).toString())
                 .header(AUTHORIZATION, accessToken)
                 .body(response);
     }

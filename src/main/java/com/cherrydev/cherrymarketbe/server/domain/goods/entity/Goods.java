@@ -102,6 +102,7 @@ public class Goods extends BaseEntity {
     private SalesStatus salesStatus;
 
     @Version
+    @Column(name = "VERSION")
     private Long version;
 
     public static Goods of(RequestAddGoods request) {
