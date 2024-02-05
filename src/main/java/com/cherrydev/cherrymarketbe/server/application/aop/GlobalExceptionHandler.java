@@ -1,6 +1,7 @@
 package com.cherrydev.cherrymarketbe.server.application.aop;
 
 import com.cherrydev.cherrymarketbe.server.application.aop.exception.ApplicationException;
+import com.cherrydev.cherrymarketbe.server.application.aop.exception.InsufficientStockException;
 import com.cherrydev.cherrymarketbe.server.domain.core.dto.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,10 +38,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({ApplicationException.class})
     protected ResponseEntity<ErrorResponse> applicationException(ApplicationException ex) {
-        return ResponseEntity.
-                status(ex.getStatusCode()).
-                body(new ErrorResponse(ex.getStatusCode(), ex.getMessage()));
+        if (ex instanceof InsufficientStockException stockException) {
+            return handleInsufficientStockExceptionInternal(stockException);
+        }
+        return handleApplicationExceptionInternal(ex);
     }
+
+    protected ResponseEntity<ErrorResponse> handleApplicationExceptionInternal(ApplicationException ex) {
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(new ErrorResponse(ex.getStatusCode(), ex.getMessage()));
+    }
+
+    protected ResponseEntity<ErrorResponse> handleInsufficientStockExceptionInternal(InsufficientStockException ex) {
+        String message = String.format(ex.getMessage(), ex.getGoodsCode());
+        return ResponseEntity
+                .status(ex.getStatusCode())
+                .body(new ErrorResponse(ex.getStatusCode(), message));
+    }
+
 
     /**
      * Parameter Validation 실패 시

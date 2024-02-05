@@ -2,7 +2,7 @@ package com.cherrydev.cherrymarketbe.server.application.order.controller;
 
 import com.cherrydev.cherrymarketbe.server.application.order.service.CartService;
 import com.cherrydev.cherrymarketbe.server.domain.account.dto.response.AccountDetails;
-import com.cherrydev.cherrymarketbe.server.domain.cart.dto.response.CartByStorageType;
+import com.cherrydev.cherrymarketbe.server.domain.order.dto.responses.CartByStorageType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +36,7 @@ public class CartController {
     @PutMapping("/{goods_code}")
     public ResponseEntity<Void> addToCart(
             @AuthenticationPrincipal final AccountDetails accountDetails,
-            @PathVariable("goods_code") final Long goodsCode
+            @PathVariable("goods_code") final String goodsCode
     ) {
 
         cartService.addToCart(accountDetails, goodsCode);

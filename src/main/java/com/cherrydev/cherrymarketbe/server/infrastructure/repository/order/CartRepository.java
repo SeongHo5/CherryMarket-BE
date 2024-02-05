@@ -1,7 +1,7 @@
 package com.cherrydev.cherrymarketbe.server.infrastructure.repository.order;
 
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
-import com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart;
+import com.cherrydev.cherrymarketbe.server.domain.order.entity.Cart;
 import com.cherrydev.cherrymarketbe.server.domain.goods.entity.Goods;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,5 +15,7 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByIdAndAccount(Long id, Account account);
 
     Optional<Cart> findByAccountAndGoods(Account account, Goods goods);
+
+    void deleteAllByIdIn(List<Long> cartIds);
 
 }

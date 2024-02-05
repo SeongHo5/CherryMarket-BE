@@ -1,8 +1,6 @@
 package com.cherrydev.cherrymarketbe.server.domain.order.entity;
 
 import com.cherrydev.cherrymarketbe.server.domain.BaseEntity;
-import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
-import com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart;
 import com.cherrydev.cherrymarketbe.server.domain.goods.entity.Goods;
 import jakarta.persistence.*;
 import lombok.*;

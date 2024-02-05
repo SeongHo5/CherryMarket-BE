@@ -3,7 +3,7 @@ package com.cherrydev.cherrymarketbe.server.domain.order.enums;
 import lombok.Getter;
 
 @Getter
-public enum ShippingStatus {
+public enum DeliveryStatus {
 
     ORDER_RECEIVED("주문 접수"),
     PREPARING_FOR_SHIPMENT("배송 준비 중"),
@@ -13,7 +13,7 @@ public enum ShippingStatus {
 
     private final String status;
 
-    ShippingStatus(String status){
+    DeliveryStatus(String status){
         this.status = status;
     }
 

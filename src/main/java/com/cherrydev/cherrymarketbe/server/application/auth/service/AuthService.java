@@ -54,15 +54,9 @@ public class AuthService {
         authValidator.checkUserStatusByEmail(account);
         authValidator.checkPasswordIsCorrect(requestedPassword, account);
 
-        final JwtResponse jwtResponse = jwtProvider.createJwtToken(email);
-        redisService.setDataExpire(email, jwtResponse.refreshToken(),
-                REFRESH_TOKEN_EXPIRE_TIME);
-
-        return SignInResponse.builder()
-                .accessToken(jwtResponse.accessToken())
-                .refreshToken(jwtResponse.refreshToken())
-                .expiresIn(jwtResponse.accessTokenExpiresIn())
-                .build();
+        JwtResponse jwtResponse = jwtProvider.createJwtToken(email);
+        redisService.setDataExpire(email, jwtResponse.refreshToken(), REFRESH_TOKEN_EXPIRE_TIME);
+        return SignInResponse.of(account, jwtResponse);
     }
 
     /**

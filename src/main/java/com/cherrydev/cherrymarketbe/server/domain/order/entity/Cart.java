@@ -1,4 +1,4 @@
-package com.cherrydev.cherrymarketbe.server.domain.cart.entity;
+package com.cherrydev.cherrymarketbe.server.domain.order.entity;
 
 import com.cherrydev.cherrymarketbe.server.domain.BaseEntity;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
@@ -23,6 +23,7 @@ public class Cart extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "CART_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

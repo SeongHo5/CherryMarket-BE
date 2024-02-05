@@ -1,6 +1,6 @@
 package com.cherrydev.cherrymarketbe.server.domain.order.entity;
 
-import com.cherrydev.cherrymarketbe.server.domain.SecureBaseEntity;
+import com.cherrydev.cherrymarketbe.server.domain.BaseEntity;
 import com.cherrydev.cherrymarketbe.server.domain.account.entity.Account;
 import com.cherrydev.cherrymarketbe.server.domain.order.enums.OrderStatus;
 import com.cherrydev.cherrymarketbe.server.domain.payment.entity.PaymentDetail;
@@ -25,7 +25,7 @@ import java.util.UUID;
         @UniqueConstraint(name = "ORDERS_UNIQUE", columnNames = {"ACNT_ID", "ORDERS_CODE"})
 })
 @SQLDelete(sql = "UPDATE ORDERS SET DELETED_DE = CURRENT_TIMESTAMP WHERE ORDERS_ID = ?")
-public class Orders extends SecureBaseEntity {
+public class Orders extends BaseEntity {
 
     @Id
     @Comment("주문 ID")
@@ -73,5 +73,15 @@ public class Orders extends SecureBaseEntity {
                 .name(orderName)
                 .build();
     }
+    public void setDeliveryDetail(DeliveryDetail deliveryDetail) {
+        this.deliveryDetail = deliveryDetail;
+    }
+    public void setPaymentDetail(PaymentDetail paymentDetail) {
+        this.paymentDetail = paymentDetail;
+    }
+    public void setOrderDetails(List<OrderDetail> orderDetail) {
+        this.orderDetails = orderDetail;
+    }
+
 
 }

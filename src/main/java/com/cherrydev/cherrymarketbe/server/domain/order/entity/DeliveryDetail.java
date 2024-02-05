@@ -2,6 +2,7 @@ package com.cherrydev.cherrymarketbe.server.domain.order.entity;
 
 import com.cherrydev.cherrymarketbe.server.domain.BaseEntity;
 import com.cherrydev.cherrymarketbe.server.domain.order.dto.request.RequestCreateOrder;
+import com.cherrydev.cherrymarketbe.server.domain.order.enums.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -27,8 +28,9 @@ public class DeliveryDetail extends BaseEntity {
     private Orders orders;
 
     @Comment("배송 상태")
+    @Enumerated(EnumType.STRING)
     @Column(name = "DLVY_STTUS", nullable = false)
-    private String deliveryStatus;
+    private DeliveryStatus deliveryStatus;
 
     @Comment("배송 수령자")
     @Column(name = "DLVY_RECPTR", nullable = false)
@@ -69,6 +71,7 @@ public class DeliveryDetail extends BaseEntity {
     public static DeliveryDetail of(Orders orders, RequestCreateOrder request) {
         return DeliveryDetail.builder()
                 .orders(orders)
+                .deliveryStatus(DeliveryStatus.ORDER_RECEIVED)
                 .recipient(request.recipient())
                 .recipientContact(request.recipientContact())
                 .zipCode(request.zipCode())

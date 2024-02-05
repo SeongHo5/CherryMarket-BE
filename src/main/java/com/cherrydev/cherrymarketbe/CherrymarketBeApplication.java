@@ -3,6 +3,7 @@ package com.cherrydev.cherrymarketbe;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.TimeZone;
@@ -10,6 +11,7 @@ import java.util.TimeZone;
 import static com.cherrydev.cherrymarketbe.server.application.common.log.CherryLogger.logServerStart;
 
 @EnableScheduling
+@EnableJpaAuditing
 @SpringBootApplication
 public class CherrymarketBeApplication {
 

@@ -17,7 +17,7 @@ public record DeliveryDetailsInfo(
 ) {
     public static DeliveryDetailsInfo of(DeliveryDetail deliveryDetail) {
         return DeliveryDetailsInfo.builder()
-                .shippingStatus(deliveryDetail.getDeliveryStatus())
+                .shippingStatus(deliveryDetail.getDeliveryStatus().getStatus())
                 .recipient(deliveryDetail.getRecipient())
                 .recipientContact(deliveryDetail.getRecipientContact())
                 .zipCode(deliveryDetail.getZipCode())

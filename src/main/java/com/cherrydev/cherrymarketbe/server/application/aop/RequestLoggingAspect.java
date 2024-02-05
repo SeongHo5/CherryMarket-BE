@@ -10,7 +10,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Aspect
 @Component
-@Slf4j(topic = "request-logger")
+@Slf4j(topic = "requestLogger")
 public class RequestLoggingAspect {
 
     @Before("execution(* com..*.controller.*.*(..))")

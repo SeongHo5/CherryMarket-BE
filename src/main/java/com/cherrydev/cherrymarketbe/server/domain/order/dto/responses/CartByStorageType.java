@@ -1,6 +1,6 @@
-package com.cherrydev.cherrymarketbe.server.domain.cart.dto.response;
+package com.cherrydev.cherrymarketbe.server.domain.order.dto.responses;
 
-import com.cherrydev.cherrymarketbe.server.domain.cart.entity.Cart;
+import com.cherrydev.cherrymarketbe.server.domain.order.entity.Cart;
 import com.cherrydev.cherrymarketbe.server.domain.goods.dto.GoodsInfo;
 
 import java.util.List;

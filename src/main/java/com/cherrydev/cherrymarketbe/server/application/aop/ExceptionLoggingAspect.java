@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@Slf4j(topic = "exception-logger")
+@Slf4j(topic = "exceptionLogger")
 public class ExceptionLoggingAspect {
 
     @AfterThrowing(pointcut = "execution(* com..controller.*.*(..))", throwing = "ex")
